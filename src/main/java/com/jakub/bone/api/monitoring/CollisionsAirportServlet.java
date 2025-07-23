@@ -25,7 +25,7 @@ public class CollisionsAirportServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<String> collidedPlanes = airportServer.getDatabase().getCOLLISION_REPOSITORY().getCollidedPlanes();
+        List<String> collidedPlanes = airportServer.getDatabase().getCollisionRepository().getCollidedPlanes();
         messenger.send(response, Map.of("collided planes", collidedPlanes));
     }
 }

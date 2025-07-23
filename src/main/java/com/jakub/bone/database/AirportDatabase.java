@@ -14,33 +14,23 @@ import java.sql.SQLException;
 @Getter
 @Log4j2
 public class AirportDatabase {
-    private final String USER = "postgres";
-    private final String PASSWORD = "root";
-    private final String DATABASE = "airport_system";
-    private final String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
-    private final DSLContext CONTEXT;
-    private final PlaneRepository PLANE_REPOSITORY;
-    private final CollisionRepository COLLISION_REPOSITORY;
-    private Connection connection;
+
+    private final static String USER = "postgres";
+    private final static String PASSWORD = "root";
+    private final static String DATABASE = "airport_system";
+    private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
+
+    private final PlaneRepository planeRepository;
+    private final CollisionRepository collisionRepository;
+    private final Connection connection;
 
     public AirportDatabase() throws SQLException {
-        this.connection = getDatabaseConnection();
-        this.CONTEXT = DSL.using(connection);
-        this.PLANE_REPOSITORY = new PlaneRepository(CONTEXT);
-        this.COLLISION_REPOSITORY = new CollisionRepository(CONTEXT);
-    }
+        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        this.connection = connection;
 
-    public Connection getDatabaseConnection() throws SQLException {
-        if (connection != null && !connection.isClosed()) {
-            return connection;
-        }
-        try {
-            this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            log.info("Connection established successfully with database '{}' on port {}", DATABASE, 5432);
-        } catch (SQLException ex) {
-            log.error("Failed to establish connection to the database '{}'. Error: {}", DATABASE, ex.getMessage(), ex);
-        }
-        return connection;
+        DSLContext context = DSL.using(connection);
+        this.planeRepository = new PlaneRepository(context);
+        this.collisionRepository = new CollisionRepository(context);
     }
 
     public void closeConnection() {

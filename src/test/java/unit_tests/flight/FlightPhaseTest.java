@@ -48,8 +48,8 @@ class FlightPhaseTest {
     @BeforeEach
     void setUp() throws SQLException {
         MockitoAnnotations.openMocks(this);
-        when(mockDatabase.getPLANE_REPOSITORY()).thenReturn(mockPlaneRepository);
-        when(mockDatabase.getCOLLISION_REPOSITORY()).thenReturn(mockCollisionRepository);
+        when(mockDatabase.getPlaneRepository()).thenReturn(mockPlaneRepository);
+        when(mockDatabase.getCollisionRepository()).thenReturn(mockCollisionRepository);
         this.airport = new Airport();
         this.messenger = mock(Messenger.class);
         this.phaseCoordinator = new FlightPhaseService(controlTower, airport, messenger);

@@ -28,7 +28,7 @@ public class PlanesAirportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try{
             int planesCount= airportServer.getControlTowerService().getPlanes().size();
-            List<String> landedPlanes = airportServer.getDatabase().getPLANE_REPOSITORY().getLandedPlanes();
+            List<String> landedPlanes = airportServer.getDatabase().getPlaneRepository().getLandedPlanes();
             List<String> flightNumbers = airportServer.getControlTowerService().getAllFlightNumbers();
 
             String path = request.getPathInfo();

@@ -45,7 +45,7 @@ public class CollisionService extends Thread {
 
     private void handleCollision(Plane plane1, Plane plane2){
         String[] collidedIDs = {plane1.getFlightNumber(), plane2.getFlightNumber()};
-        controlTowerService.getDatabase().getCOLLISION_REPOSITORY().registerCollisionToDB(collidedIDs);
+        controlTowerService.getDatabase().getCollisionRepository().registerCollisionToDB(collidedIDs);
         plane1.setDestroyed(true);
         plane2.setDestroyed(true);
         log.info("Collision detected between Plane [{}] and Plane [{}]", plane1.getFlightNumber(), plane2.getFlightNumber());
