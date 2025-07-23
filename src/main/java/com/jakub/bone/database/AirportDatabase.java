@@ -15,8 +15,8 @@ import java.sql.SQLException;
 @Getter
 @Log4j2
 public class AirportDatabase {
-    private final String USER = "airport";
-    private final String PASSWORD = "plane123";
+    private final String USER = "postgres";
+    private final String PASSWORD = "root";
     private final String DATABASE = "airport_system";
     private final String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);;
     private final DSLContext CONTEXT;
@@ -28,9 +28,9 @@ public class AirportDatabase {
     public AirportDatabase() throws SQLException {
         this.connection = getDatabaseConnection();
         this.CONTEXT = DSL.using(connection);
+        this.SCHEMA = new DatabaseSchema(CONTEXT);
         this.PLANE_REPOSITORY = new PlaneRepository(CONTEXT);
         this.COLLISION_REPOSITORY = new CollisionRepository(CONTEXT);
-        this.SCHEMA = new DatabaseSchema(CONTEXT);
     }
 
     public Connection getDatabaseConnection() throws SQLException {
