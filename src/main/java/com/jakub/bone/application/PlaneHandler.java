@@ -1,10 +1,10 @@
 package com.jakub.bone.application;
 
 import com.jakub.bone.domain.airport.Airport;
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.utils.Messenger;
-import com.jakub.bone.domain.airport.Location;
 import lombok.extern.log4j.Log4j2;
 import com.jakub.bone.domain.plane.Plane;
 import org.apache.logging.log4j.ThreadContext;
@@ -87,7 +87,7 @@ public class PlaneHandler extends Thread {
         }
         controlTowerService.registerPlane(plane);
 
-        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getLocation().getX(), plane.getNavigator().getLocation().getY(), plane.getNavigator().getLocation().getAltitude());
+        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getCoordinates().getX(), plane.getNavigator().getCoordinates().getY(), plane.getNavigator().getCoordinates().getAltitude());
         return true;
     }
 
@@ -103,8 +103,8 @@ public class PlaneHandler extends Thread {
                 return;
             }
 
-            Location location = messenger.receiveAndParse(in, Location.class);
-            phaseCoordinator.processFlightPhase(plane, location, out);
+            Coordinates coordinates = messenger.receiveAndParse(in, Coordinates.class);
+            phaseCoordinator.processFlightPhase(plane, coordinates, out);
 
             if (plane.isDestroyed()) {
                 handleCollision(plane, out);

@@ -1,6 +1,6 @@
 package com.jakub.bone.client;
 
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
@@ -36,14 +36,14 @@ public class PlaneCommunicationService {
     }
 
     public boolean sendLocation() throws IOException {
-        Location location = plane.getNavigator().getLocation();
+        Coordinates coordinates = plane.getNavigator().getCoordinates();
 
-        if(location == null) {
+        if(coordinates == null) {
             log.info("Plane [{}]: disappeared from the radar", plane.getFlightNumber());
             return false;
         }
 
-        sendData(location);
+        sendData(coordinates);
         return true;
     }
 

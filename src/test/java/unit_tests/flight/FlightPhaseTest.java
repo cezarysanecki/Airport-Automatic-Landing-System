@@ -2,12 +2,12 @@ package unit_tests.flight;
 
 import com.jakub.bone.domain.airport.Airport;
 
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.domain.airport.Location;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +60,7 @@ class FlightPhaseTest {
     void testPhaseSettingToDescending() throws IOException, ClassNotFoundException {
         // Plane spawns at a certain altitude
         Plane plane = new Plane("TEST_PLANE");
-        Location descentPoint = new Location(0, 0, 3000);
+        Coordinates descentPoint = new Coordinates(0, 0, 3000);
 
         phaseCoordinator.processFlightPhase(plane, descentPoint, null);
 
@@ -76,7 +76,7 @@ class FlightPhaseTest {
         plane.descend();
 
         // Holding altitude = 1000
-        Location holdingPoint = new Location(0, 0, 1000);
+        Coordinates holdingPoint = new Coordinates(0, 0, 1000);
         phaseCoordinator.processFlightPhase(plane, holdingPoint, null);
 
         assertEquals(HOLDING, plane.getPhase(), "Flight phase should be switched to HOLDING");
@@ -91,7 +91,7 @@ class FlightPhaseTest {
         plane.setPhase(HOLDING);
 
         // Corridor entry triggers the switch to LANDING
-        Location corridorEntry = runway1.getCorridor().getEntryPoint();
+        Coordinates corridorEntry = runway1.getCorridor().getEntryPoint();
         phaseCoordinator.processFlightPhase(plane, corridorEntry, null);
 
         assertEquals(LANDING, plane.getPhase(), "Flight phase should be switched to LANDING");
@@ -102,7 +102,7 @@ class FlightPhaseTest {
     void testMarkingAsLanded(){
         // Plane is at the runway landing point
         Plane plane = new Plane("TEST_PLANE");
-        plane.getNavigator().setLocation(runway1.getLandingPoint());
+        plane.getNavigator().setCoordinates(runway1.getLandingPoint());
 
         assertTrue(controlTower.hasLandedOnRunway(plane, runway1), "TEST_PLANE should be marked as landed");
     }
@@ -112,7 +112,7 @@ class FlightPhaseTest {
     void testRunwayReleaseAfterCrossFinalApproach() {
         // Plane is exactly at final approach coordinates
         Plane plane = new Plane("TEST_PLANE");
-        plane.getNavigator().setLocation(FINAL_APPROACH_CORRIDOR_1);
+        plane.getNavigator().setCoordinates(FINAL_APPROACH_CORRIDOR_1);
 
         // Initially mark runway as unavailable
         runway1.setAvailable(false);

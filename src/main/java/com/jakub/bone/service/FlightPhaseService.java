@@ -1,8 +1,8 @@
 package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Airport;
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.airport.Location;
 import lombok.extern.log4j.Log4j2;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
@@ -27,8 +27,8 @@ public class FlightPhaseService {
         this.messenger = messenger;
     }
 
-    public void processFlightPhase(Plane plane, Location location, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        plane.getNavigator().setLocation(location);
+    public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+        plane.getNavigator().setCoordinates(coordinates);
         switch (plane.getPhase()) {
             case DESCENDING -> handleDescent(plane, out);
             case HOLDING -> handleHolding(plane, out);
@@ -98,10 +98,10 @@ public class FlightPhaseService {
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
         Runway runway;
-        if (plane.getNavigator().getLocation().equals(ENTRY_POINT_CORRIDOR_1)){
+        if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)){
             return runway = Airport.runway1;
         }
-        else if (plane.getNavigator().getLocation().equals(ENTRY_POINT_CORRIDOR_2)) {
+        else if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
             return runway = Airport.runway2;
         }
         return null;

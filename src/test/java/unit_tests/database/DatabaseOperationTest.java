@@ -57,7 +57,7 @@ class DatabaseOperationTest {
         Plane plane = new Plane("TEST_PLANE");
 
         // Place the plane on the runway's landing point
-        plane.getNavigator().setLocation(runway1.getLandingPoint());
+        plane.getNavigator().setCoordinates(runway1.getLandingPoint());
         // Inform control tower that plane has landed
         controlTower.hasLandedOnRunway(plane, runway1);
 
@@ -71,8 +71,8 @@ class DatabaseOperationTest {
         Plane plane2 = new Plane("TEST_PLANE_2");
 
         // Both planes share the same location => collision scenario
-        plane1.getNavigator().setLocation(ENTRY_POINT_CORRIDOR_1);
-        plane2.getNavigator().setLocation(ENTRY_POINT_CORRIDOR_1);
+        plane1.getNavigator().setCoordinates(ENTRY_POINT_CORRIDOR_1);
+        plane2.getNavigator().setCoordinates(ENTRY_POINT_CORRIDOR_1);
 
         controlTower.getPlanes().add(plane1);
         controlTower.getPlanes().add(plane2);

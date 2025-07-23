@@ -1,5 +1,6 @@
 package com.jakub.bone.ui.utills;
 
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.ui.model.PlaneModel;
 import com.jakub.bone.config.Constant;
@@ -9,7 +10,6 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-import com.jakub.bone.domain.airport.Location;
 import com.jakub.bone.domain.plane.Plane;
 import lombok.extern.log4j.Log4j2;
 
@@ -62,7 +62,7 @@ public class SceneUpdater {
                 planeModel.setPlaneModelColor(Color.YELLOW);
             }
 
-            Location nextWaypoint = plane.getNavigator().getLocation();
+            Coordinates nextWaypoint = plane.getNavigator().getCoordinates();
             planeModel.animateMovement(nextWaypoint);
         }
         cleanupScene();

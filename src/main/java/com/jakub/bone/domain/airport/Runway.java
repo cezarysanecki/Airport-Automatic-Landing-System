@@ -13,11 +13,11 @@ import java.io.Serializable;
 @Builder
 public class Runway implements Serializable {
     private String id;
-    private Location landingPoint;
+    private Coordinates landingPoint;
     private Corridor corridor;
     private boolean available;
 
-    public Runway(String id, Location landingPoint, Corridor corridor, boolean available) {
+    public Runway(String id, Coordinates landingPoint, Corridor corridor, boolean available) {
         this.id = id;
         this.landingPoint = landingPoint;
         this.corridor = corridor;

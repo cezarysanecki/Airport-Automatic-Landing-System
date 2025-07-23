@@ -8,12 +8,12 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class Location implements Serializable {
+public class Coordinates implements Serializable {
     int x;
     int y;
     int altitude;
 
-    public Location(int x, int y, int altitude) {
+    public Coordinates(int x, int y, int altitude) {
         this.x = x;
         this.y = y;
         this.altitude = altitude;
@@ -27,8 +27,8 @@ public class Location implements Serializable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Location location = (Location) obj;
-        return x == location.x && y == location.y && altitude == location.altitude;
+        Coordinates coordinates = (Coordinates) obj;
+        return x == coordinates.x && y == coordinates.y && altitude == coordinates.altitude;
     }
 
     @Override

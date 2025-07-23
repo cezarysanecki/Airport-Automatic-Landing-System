@@ -1,6 +1,6 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +18,10 @@ import static com.jakub.bone.config.Constant.*;
 @Setter
 @Log4j2
 public class Navigator {
-    private List<Location> waypoints;
+    private List<Coordinates> waypoints;
     private FuelManager fuelManager;
     private int currentIndex;
-    private Location location;
+    private Coordinates coordinates;
     private boolean isFirstMove;
 
     public Navigator(FuelManager fuelManager) {
@@ -43,7 +43,7 @@ public class Navigator {
         return currentIndex == waypoints.size();
     }
 
-    public void updateLocation(Location location) {
+    public void updateLocation(Coordinates coordinates) {
         if(!isFirstMove){
             try {
                 Thread.sleep(UPDATE_DELAY);
@@ -53,22 +53,22 @@ public class Navigator {
             }
         }
         this.isFirstMove = false;
-        this.location = location;
+        this.coordinates = coordinates;
     }
 
     private void spawnPlane() {
-        List<Location> waypointsToSpawn = waypoints.stream()
+        List<Coordinates> waypointsToSpawn = waypoints.stream()
                 .filter(wp -> wp.getAltitude() >= MIN_ALTITUDE && wp.getAltitude() <= MAX_ALTITUDE)
                 .collect(Collectors.toList());
 
         Random random = new Random();
         this.currentIndex = random.nextInt(waypointsToSpawn.size());
-        Location initialWaypoint = waypointsToSpawn.get(currentIndex);
-        this.location = initialWaypoint;
+        Coordinates initialWaypoint = waypointsToSpawn.get(currentIndex);
+        this.coordinates = initialWaypoint;
     }
 
-    public List <Location> getRiskZoneWaypoints() {
-        List<Location> nearWaypoints = new ArrayList<>();
+    public List <Coordinates> getRiskZoneWaypoints() {
+        List<Coordinates> nearWaypoints = new ArrayList<>();
         for (int offset = -3; offset <= 3; offset++) {
             int index = currentIndex + offset;
             if (index > 0 && index <= waypoints.size()) {

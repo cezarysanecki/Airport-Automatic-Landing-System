@@ -46,7 +46,7 @@ public class ControlTowerService {
     public boolean isAtCollisionRiskZone(Plane plane) {
         return executeWithLock(() -> planes.stream()
                 .anyMatch(otherPlane -> plane.getNavigator().getRiskZoneWaypoints()
-                .contains(otherPlane.getNavigator().getLocation())));
+                .contains(otherPlane.getNavigator().getCoordinates())));
     }
 
     public boolean isRunwayAvailable(Runway runway){
@@ -62,7 +62,7 @@ public class ControlTowerService {
     }
 
     public void releaseRunwayIfPlaneAtFinalApproach(Plane plane, Runway runway){
-        if(plane.getNavigator().getLocation().equals(runway.getCorridor().getFinalApproachPoint())){
+        if(plane.getNavigator().getCoordinates().equals(runway.getCorridor().getFinalApproachPoint())){
             releaseRunway(runway);
         }
     }
@@ -72,11 +72,11 @@ public class ControlTowerService {
     }
 
     public boolean isPlaneApproachingHoldingAltitude(Plane plane) {
-        return plane.getNavigator().getLocation().getAltitude() == HOLDING_ENTRY_ALTITUDE;
+        return plane.getNavigator().getCoordinates().getAltitude() == HOLDING_ENTRY_ALTITUDE;
     }
 
     public boolean hasLandedOnRunway(Plane plane, Runway runway){
-        boolean hasLanded = plane.getNavigator().getLocation().equals(runway.getLandingPoint());
+        boolean hasLanded = plane.getNavigator().getCoordinates().equals(runway.getLandingPoint());
         if (hasLanded) {
             database.getPlaneRepository().registerLandingInDB(plane);
         }

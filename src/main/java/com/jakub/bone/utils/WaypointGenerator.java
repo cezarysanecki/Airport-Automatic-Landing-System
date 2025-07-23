@@ -1,6 +1,6 @@
 package com.jakub.bone.utils;
 
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
 
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.List;
 import static com.jakub.bone.config.Constant.*;
 
 public class WaypointGenerator  {
-    public static List<Location> getDescentWaypoints() {
-        List<Location> waypoints = new ArrayList<>();
+    public static List<Coordinates> getDescentWaypoints() {
+        List<Coordinates> waypoints = new ArrayList<>();
         int radius = 5000;
         int totalWaypoints = 320;
         double altitudeDecrease = (double) (MAX_ALTITUDE - HOLDING_ALTITUDE) / totalWaypoints;
@@ -30,54 +30,54 @@ public class WaypointGenerator  {
             int x = (int) (radius * Math.cos(radians));
             int y = (int) (radius * Math.sin(radians));
 
-            waypoints.add(new Location(x, y, (int) Math.round(currentAltitude)));
+            waypoints.add(new Coordinates(x, y, (int) Math.round(currentAltitude)));
 
             currentAltitude -= altitudeDecrease;
         }
         return waypoints;
     }
 
-    public static List<Location> getHoldingPatternWaypoints() {
-        List<Location> waypoints = new ArrayList<>();
+    public static List<Coordinates> getHoldingPatternWaypoints() {
+        List<Coordinates> waypoints = new ArrayList<>();
         int step = 500; // Distance between waypoints in holding pattern way
 
         // Line going upwards along the y-axis
         for (int y = 0; y <= 3000; y += step) {
-            waypoints.add(new Location(5000, y, HOLDING_ALTITUDE));
+            waypoints.add(new Coordinates(5000, y, HOLDING_ALTITUDE));
         }
         // Curve for the top-right corner
         waypoints.addAll(generateArc(3500, 3500, 1500, 0, 90, HOLDING_ALTITUDE, 0));
 
         // Line going left along the x-axis
         for (int x = 3000; x >= -3000; x -= step) {
-            waypoints.add(new Location(x, 5000, HOLDING_ALTITUDE));
+            waypoints.add(new Coordinates(x, 5000, HOLDING_ALTITUDE));
         }
         // Curve for the top-left corner
         waypoints.addAll(generateArc(-3500, 3500, 1500, 90, 180, HOLDING_ALTITUDE, 0));
 
         // Line going downward along the y-axis
         for (int y = 3000; y >= -3000; y -= step) {
-            waypoints.add(new Location(-5000, y, HOLDING_ALTITUDE));
+            waypoints.add(new Coordinates(-5000, y, HOLDING_ALTITUDE));
         }
         // Curve for the bottom-left corner
         waypoints.addAll(generateArc(-3500, -3500, 1500, 180, 270, HOLDING_ALTITUDE, 0));
 
         // Line going right along the x-axis
         for (int x = -3000; x <= 3000; x += step) {
-            waypoints.add(new Location(x, -5000, HOLDING_ALTITUDE));
+            waypoints.add(new Coordinates(x, -5000, HOLDING_ALTITUDE));
         }
         // Curve for the bottom-right corner
         waypoints.addAll(generateArc(3500, -3500, 1500, -90, 0, HOLDING_ALTITUDE, 0));
 
         // Line to connect rest of way to the start
         for (int y = -3000; y <= -500; y += step) {
-            waypoints.add(new Location(5000, y, HOLDING_ALTITUDE));
+            waypoints.add(new Coordinates(5000, y, HOLDING_ALTITUDE));
         }
         return waypoints;
     }
 
-    public static List<Location> generateArc(int centerX, int centerY, int radius, double startAngle, double endAngle, int altitude, int altitudeDecrement) {
-        List<Location> arcPoints = new ArrayList<>();
+    public static List<Coordinates> generateArc(int centerX, int centerY, int radius, double startAngle, double endAngle, int altitude, int altitudeDecrement) {
+        List<Coordinates> arcPoints = new ArrayList<>();
         int waypointsOnArc = 4;
         double angleStep = (endAngle - startAngle) / (waypointsOnArc - 1);
 
@@ -90,14 +90,14 @@ public class WaypointGenerator  {
             // centerY is the circle's center along the Y-axis
             int x = (int) (centerX + radius * Math.cos(angle));
             int y = (int) (centerY + radius * Math.sin(angle));
-            arcPoints.add(new Location(x, y, altitude));
+            arcPoints.add(new Coordinates(x, y, altitude));
             altitude -= altitudeDecrement;
         }
         return arcPoints;
     }
 
-    public static List<Location> getLandingWaypoints(Runway runway) {
-        List<Location> waypoints = new ArrayList<>();
+    public static List<Coordinates> getLandingWaypoints(Runway runway) {
+        List<Coordinates> waypoints = new ArrayList<>();
         int landingWaypoints = 10;
         int altitude = HOLDING_ALTITUDE;
         int altitudeDecrement = altitude / landingWaypoints;
@@ -105,8 +105,8 @@ public class WaypointGenerator  {
         int arcCenterY = "R-2".equals(runway.getId()) ? 0 : 3000;
 
         // Generate the arc that leads planes into the runway's corridor
-        List<Location> arc4 = generateArc(-3500, arcCenterY, 1500, 180, 270, altitude, altitudeDecrement);
-        for(Location waypoint: arc4){
+        List<Coordinates> arc4 = generateArc(-3500, arcCenterY, 1500, 180, 270, altitude, altitudeDecrement);
+        for(Coordinates waypoint: arc4){
             waypoints.add(waypoint);
         }
 
@@ -115,14 +115,14 @@ public class WaypointGenerator  {
         altitude = LANDING_ALTITUDE;
         int landingDescentY = runway.getCorridor().getEntryPoint().getY() - 2000;
         for (int x = -3000; x <= 500; x += 500) {
-            waypoints.add(new Location(x, landingDescentY, altitude));
+            waypoints.add(new Coordinates(x, landingDescentY, altitude));
             altitude -= altitudeDecrement;
         }
 
         // Add waypoints directly on the runway stop point
         altitude = 0;
         for (int x = 1000; x <= 3000; x += 250) {
-            waypoints.add(new Location(x, runway.getLandingPoint().getY(), altitude));
+            waypoints.add(new Coordinates(x, runway.getLandingPoint().getY(), altitude));
         }
         return waypoints;
     }

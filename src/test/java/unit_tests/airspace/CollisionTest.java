@@ -5,7 +5,7 @@ import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class CollisionTest {
     //Helper method to create a plane, set its location, and register
     Plane createAndRegisterPlane(String name, int x, int y, int altitude) {
         Plane plane = new Plane(name);
-        plane.getNavigator().setLocation(new Location(x, y, altitude));
+        plane.getNavigator().setCoordinates(new Coordinates(x, y, altitude));
         controlTower.registerPlane(plane);
         return plane;
     }

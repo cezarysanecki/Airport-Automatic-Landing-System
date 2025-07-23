@@ -1,6 +1,6 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
@@ -36,7 +36,7 @@ public class CollisionService extends Thread {
                 Plane plane1 = controlTowerService.getPlanes().get(i);
                 for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
                     Plane plane2 = controlTowerService.getPlanes().get(j);
-                    if (arePlanesToClose(plane1.getNavigator().getLocation(), plane2.getNavigator().getLocation())) {
+                    if (arePlanesToClose(plane1.getNavigator().getCoordinates(), plane2.getNavigator().getCoordinates())) {
                         handleCollision(plane1, plane2);
                     }
                 }
@@ -60,7 +60,7 @@ public class CollisionService extends Thread {
      * In practice, if the horizontal distance <= 500 and the altitude difference <= 10,
      * it is considered a potential collision risk
      */
-    private boolean arePlanesToClose(Location loc1, Location loc2) {
+    private boolean arePlanesToClose(Coordinates loc1, Coordinates loc2) {
         double horizontalDistance = Math.sqrt(
                 Math.pow(loc1.getX() - loc2.getX(), 2) +
                         Math.pow(loc1.getY() - loc2.getY(), 2)
