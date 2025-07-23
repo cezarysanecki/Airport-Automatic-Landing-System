@@ -1,4 +1,4 @@
-package com.jakub.bone.server;
+package com.jakub.bone.runners;
 
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.domain.airport.Airport;

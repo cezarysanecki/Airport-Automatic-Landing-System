@@ -1,9 +1,12 @@
-package com.jakub.bone.ui.utills;
+package com.jakub.bone.runners;
 
 import com.jakub.bone.ui.model.TerminalModel;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.domain.airport.Airport;
 
+import com.jakub.bone.ui.utills.Camera;
+import com.jakub.bone.ui.utills.SceneUpdater;
+import com.jakub.bone.ui.utills.SmartGroup;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;

@@ -1,7 +1,7 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.client.PlaneClient;
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.PlaneClient;
+import com.jakub.bone.runners.AirportServer;
 import lombok.Getter;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
 package load_tests;
 
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.AirportServer;
 
 import java.io.IOException;
 import java.sql.SQLException;

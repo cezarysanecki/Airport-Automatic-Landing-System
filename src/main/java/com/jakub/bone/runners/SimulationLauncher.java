@@ -1,10 +1,8 @@
-package com.jakub.bone.core;
+package com.jakub.bone.runners;
 
 import com.jakub.bone.service.AirportStateService;
-import com.jakub.bone.ui.utills.SceneRenderer;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import com.jakub.bone.server.AirportServer;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.SQLException;

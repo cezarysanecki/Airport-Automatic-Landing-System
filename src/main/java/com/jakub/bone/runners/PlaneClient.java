@@ -1,6 +1,9 @@
-package com.jakub.bone.client;
+package com.jakub.bone.runners;
 
 import com.jakub.bone.application.PlaneHandler;
+import com.jakub.bone.client.Client;
+import com.jakub.bone.client.PlaneCommunicationService;
+import com.jakub.bone.client.PlaneInstructionHandler;
 import com.jakub.bone.config.Constant;
 import lombok.Getter;
 import com.jakub.bone.utils.Messenger;

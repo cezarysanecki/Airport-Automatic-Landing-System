@@ -1,4 +1,4 @@
-package com.jakub.bone.api;
+package com.jakub.bone.runners;
 
 import com.jakub.bone.api.monitoring.CollisionsAirportServlet;
 import com.jakub.bone.api.monitoring.PlanesAirportServlet;
@@ -7,7 +7,6 @@ import com.jakub.bone.api.control.PauseAirportServlet;
 import com.jakub.bone.api.control.StartAirportServlet;
 import com.jakub.bone.api.control.StopAirportServlet;
 import com.jakub.bone.api.control.ResumeAirportServlet;
-import com.jakub.bone.server.AirportServer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;

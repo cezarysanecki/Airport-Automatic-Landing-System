@@ -1,6 +1,6 @@
 package com.jakub.bone.api.control;
 
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

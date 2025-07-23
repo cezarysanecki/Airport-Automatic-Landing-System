@@ -1,6 +1,6 @@
 package integration_tests;
 
-import com.jakub.bone.client.PlaneClient;
+import com.jakub.bone.runners.PlaneClient;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.AirportServer;
 
 import java.io.IOException;
 import java.sql.SQLException;
