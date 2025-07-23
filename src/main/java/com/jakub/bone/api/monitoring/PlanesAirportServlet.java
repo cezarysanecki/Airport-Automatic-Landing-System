@@ -3,7 +3,6 @@ package com.jakub.bone.api.monitoring;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.utils.Messenger;
-import com.jakub.bone.utils.PlaneMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -42,7 +41,7 @@ public class PlanesAirportServlet extends HttpServlet {
                     if (plane == null) {
                         messenger.send(response, Map.of("message", "plane not found"));
                     } else {
-                        messenger.send(response, PlaneMapper.mapPlane(plane));
+                        messenger.send(response, PlanesMapper.toMap(plane));
                     }
                 }
             }

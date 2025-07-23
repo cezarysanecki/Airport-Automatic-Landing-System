@@ -1,12 +1,12 @@
-package com.jakub.bone.utils;
+package com.jakub.bone.api.monitoring;
 
 import com.jakub.bone.domain.plane.Plane;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class PlaneMapper {
-    public static Map<String, Object> mapPlane(Plane plane){
+class PlanesMapper {
+    static Map<String, Object> toMap(Plane plane) {
         Map<String, Object> planeMap = new LinkedHashMap<>();
         planeMap.put("flightNumber", plane.getFlightNumber());
         planeMap.put("phase", plane.getPhase());
