@@ -1,12 +1,11 @@
 package com.jakub.bone.database;
 
-import com.jakub.bone.repository.DatabaseSchema;
+import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-import com.jakub.bone.repository.CollisionRepository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,9 +17,8 @@ public class AirportDatabase {
     private final String USER = "postgres";
     private final String PASSWORD = "root";
     private final String DATABASE = "airport_system";
-    private final String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);;
+    private final String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
     private final DSLContext CONTEXT;
-    private final DatabaseSchema SCHEMA;
     private final PlaneRepository PLANE_REPOSITORY;
     private final CollisionRepository COLLISION_REPOSITORY;
     private Connection connection;
@@ -28,7 +26,6 @@ public class AirportDatabase {
     public AirportDatabase() throws SQLException {
         this.connection = getDatabaseConnection();
         this.CONTEXT = DSL.using(connection);
-        this.SCHEMA = new DatabaseSchema(CONTEXT);
         this.PLANE_REPOSITORY = new PlaneRepository(CONTEXT);
         this.COLLISION_REPOSITORY = new CollisionRepository(CONTEXT);
     }

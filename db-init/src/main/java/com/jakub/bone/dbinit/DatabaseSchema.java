@@ -1,15 +1,15 @@
-package com.jakub.bone.repository;
+package com.jakub.bone.dbinit;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
 public class DatabaseSchema {
+
     private final DSLContext CONTEXT;
 
     public DatabaseSchema(DSLContext dsl) {
         this.CONTEXT = dsl;
-        createTables();
     }
 
     public void createTables() {
@@ -35,4 +35,5 @@ public class DatabaseSchema {
         CONTEXT.truncate("planes").restartIdentity().execute();
         CONTEXT.truncate("collisions").restartIdentity().execute();
     }
+
 }
