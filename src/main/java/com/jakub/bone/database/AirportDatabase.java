@@ -16,11 +16,8 @@ public class AirportDatabase {
 
     private final PlaneRepository planeRepository;
     private final CollisionRepository collisionRepository;
-    private final Connection connection;
 
     public AirportDatabase(Connection connection) throws SQLException {
-        this.connection = connection;
-
         DSLContext context = DSL.using(connection);
         this.planeRepository = new PlaneRepository(context);
         this.collisionRepository = new CollisionRepository(context);

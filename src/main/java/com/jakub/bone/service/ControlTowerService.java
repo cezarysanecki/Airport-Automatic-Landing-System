@@ -21,9 +21,10 @@ import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 @Getter
 public class ControlTowerService {
 
-    private final List<Plane> planes;
-    private final Lock lock;
     private final PlaneRepository planeRepository;
+    private final List<Plane> planes;
+
+    private final Lock lock;
 
     public ControlTowerService(PlaneRepository planeRepository) throws SQLException {
         this.planeRepository = planeRepository;
