@@ -58,7 +58,7 @@ public class Navigator {
 
     private void spawnPlane() {
         List<Coordinates> waypointsToSpawn = waypoints.stream()
-                .filter(wp -> wp.getAltitude() >= MIN_ALTITUDE && wp.getAltitude() <= MAX_ALTITUDE)
+                .filter(wp -> wp.altitude() >= MIN_ALTITUDE && wp.altitude() <= MAX_ALTITUDE)
                 .collect(Collectors.toList());
 
         Random random = new Random();
