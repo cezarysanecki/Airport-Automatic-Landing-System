@@ -6,9 +6,11 @@ import com.jakub.bone.domain.airport.Runway;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jakub.bone.config.Constant.*;
+import static com.jakub.bone.config.Constant.HOLDING_ALTITUDE;
+import static com.jakub.bone.config.Constant.LANDING_ALTITUDE;
+import static com.jakub.bone.config.Constant.MAX_ALTITUDE;
 
-public class WaypointGenerator  {
+public class WaypointGenerator {
     public static List<Coordinates> getDescentWaypoints() {
         List<Coordinates> waypoints = new ArrayList<>();
         int radius = 5000;
@@ -106,7 +108,7 @@ public class WaypointGenerator  {
 
         // Generate the arc that leads planes into the runway's corridor
         List<Coordinates> arc4 = generateArc(-3500, arcCenterY, 1500, 180, 270, altitude, altitudeDecrement);
-        for(Coordinates waypoint: arc4){
+        for (Coordinates waypoint : arc4) {
             waypoints.add(waypoint);
         }
 

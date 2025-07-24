@@ -56,7 +56,7 @@ public class FlightPhaseService {
         }
     }
 
-    private void handleLanding(Plane plane) throws IOException, ClassNotFoundException {
+    private void handleLanding(Plane plane) {
         if (availableRunway == null) {
             log.warn("Plane [{}]: cannot proceed with landing, no available runway", plane.getFlightNumber());
             return;

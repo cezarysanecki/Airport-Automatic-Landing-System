@@ -1,18 +1,18 @@
 package com.jakub.bone.domain.plane;
 
 import com.jakub.bone.domain.airport.Coordinates;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import static com.jakub.bone.config.Constant.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static com.jakub.bone.config.Constant.MAX_ALTITUDE;
+import static com.jakub.bone.config.Constant.MIN_ALTITUDE;
+import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 
 @Getter
 @Setter
@@ -39,12 +39,12 @@ public class Navigator {
         fuelManager.burnFuel();
     }
 
-    public boolean isAtLastWaypoint(){
+    public boolean isAtLastWaypoint() {
         return currentIndex == waypoints.size();
     }
 
     public void updateLocation(Coordinates coordinates) {
-        if(!isFirstMove){
+        if (!isFirstMove) {
             try {
                 Thread.sleep(UPDATE_DELAY);
             } catch (InterruptedException ex) {
@@ -59,15 +59,14 @@ public class Navigator {
     private void spawnPlane() {
         List<Coordinates> waypointsToSpawn = waypoints.stream()
                 .filter(wp -> wp.getAltitude() >= MIN_ALTITUDE && wp.getAltitude() <= MAX_ALTITUDE)
-                .collect(Collectors.toList());
+                .toList();
 
         Random random = new Random();
         this.currentIndex = random.nextInt(waypointsToSpawn.size());
-        Coordinates initialWaypoint = waypointsToSpawn.get(currentIndex);
-        this.coordinates = initialWaypoint;
+        this.coordinates = waypointsToSpawn.get(currentIndex);
     }
 
-    public List <Coordinates> getRiskZoneWaypoints() {
+    public List<Coordinates> getRiskZoneWaypoints() {
         List<Coordinates> nearWaypoints = new ArrayList<>();
         for (int offset = -3; offset <= 3; offset++) {
             int index = currentIndex + offset;
