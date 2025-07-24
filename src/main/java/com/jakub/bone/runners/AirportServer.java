@@ -68,16 +68,10 @@ public class AirportServer {
                     continue;
                 }
 
-                try {
-                    Socket clientSocket = serverSocket.accept();
-                    if (clientSocket != null) {
-                        log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
-                        running = true;
-                        new PlaneHandler(clientSocket, controlTowerService).start();
-                    }
-                } catch (Exception ex) {
-                    log.error("Error handling client connection: {}", ex.getMessage(), ex);
-                }
+                Socket clientSocket = serverSocket.accept();
+                log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
+                running = true;
+                new PlaneHandler(clientSocket, controlTowerService).start();
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
