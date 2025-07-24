@@ -1,13 +1,12 @@
 package com.jakub.bone.runners;
 
-import com.jakub.bone.service.ControlTowerService;
-import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.service.CollisionService;
+import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.database.AirportDatabase;
+import com.jakub.bone.service.CollisionService;
+import com.jakub.bone.service.ControlTowerService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import com.jakub.bone.application.PlaneHandler;
 import org.apache.logging.log4j.ThreadContext;
 
 import java.io.IOException;
@@ -20,11 +19,11 @@ import java.time.Instant;
 @Log4j2
 @Getter
 @Setter
-public class AirportServer  {
+public class AirportServer {
+
     private ServerSocket serverSocket;
     private AirportDatabase database;
     private ControlTowerService controlTowerService;
-    private Airport airport;
     private boolean running;
     private boolean paused;
     private Instant startTime;
@@ -32,7 +31,6 @@ public class AirportServer  {
     public AirportServer() throws SQLException {
         this.database = new AirportDatabase();
         this.controlTowerService = new ControlTowerService(database);
-        this.airport = new Airport();
         this.running = false;
         this.paused = false;
     }
@@ -50,7 +48,7 @@ public class AirportServer  {
             log.info("Collision detector started");
 
             while (true) {
-                if(paused) {
+                if (paused) {
                     Thread.sleep(2000);
                     log.info("Airport paused. Waiting...");
                     continue;
@@ -61,10 +59,10 @@ public class AirportServer  {
                     if (clientSocket != null) {
                         log.debug("Server connected with client at port: {}", port);
                         running = true;
-                        new PlaneHandler(clientSocket, controlTowerService, airport).start();
+                        new PlaneHandler(clientSocket, controlTowerService).start();
                     }
                 } catch (Exception ex) {
-                    if(serverSocket.isClosed()){
+                    if (serverSocket.isClosed()) {
                         return;
                     }
                     log.error("Error handling client connection: {}", ex.getMessage(), ex);
@@ -82,7 +80,7 @@ public class AirportServer  {
     public void stopServer() {
         running = false;
         try {
-            if(database != null){
+            if (database != null) {
                 database.closeConnection();
                 log.info("Database closed successfully");
             }
@@ -104,8 +102,8 @@ public class AirportServer  {
         this.paused = false;
     }
 
-    public Duration getUptime(){
-        return Duration.between(getStartTime(),Instant.now());
+    public Duration getUptime() {
+        return Duration.between(getStartTime(), Instant.now());
     }
 
     public static void main(String[] args) throws IOException, SQLException {

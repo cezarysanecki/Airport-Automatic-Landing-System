@@ -94,7 +94,7 @@ javafx {
 }
 
 application {
-    mainClass = 'com.jakub.bone.core.SimulationLauncher'
+    mainClass = 'com.jakub.bone.runners.SimulationLauncher'
     applicationDefaultJvmArgs = [
             '--module-path', 'libs/javafx-sdk-21.0.5/lib',
             '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics'

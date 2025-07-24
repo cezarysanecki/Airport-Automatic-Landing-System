@@ -11,19 +11,19 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import static com.jakub.bone.application.PlaneHandler.AirportInstruction.*;
+import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
+import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_2;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.*;
 import static com.jakub.bone.config.Constant.*;
 
 @Log4j2
 public class FlightPhaseService {
     private ControlTowerService controlTowerService;
-    private Airport airport;
     private Messenger messenger;
     private Runway availableRunway;
 
-    public FlightPhaseService(ControlTowerService controlTower, Airport airport, Messenger messenger) {
+    public FlightPhaseService(ControlTowerService controlTower, Messenger messenger) {
         this.controlTowerService = controlTower;
-        this.airport = airport;
         this.messenger = messenger;
     }
 
@@ -97,12 +97,11 @@ public class FlightPhaseService {
     }
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
-        Runway runway;
         if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)){
-            return runway = Airport.runway1;
+            return Airport.runway1;
         }
         else if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
-            return runway = Airport.runway2;
+            return Airport.runway2;
         }
         return null;
     }

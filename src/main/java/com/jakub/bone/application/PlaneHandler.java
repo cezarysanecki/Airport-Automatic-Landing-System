@@ -1,21 +1,26 @@
 package com.jakub.bone.application;
 
-import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
-import com.jakub.bone.domain.plane.Plane;
 import org.apache.logging.log4j.ThreadContext;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.*;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.COLLISION;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.FULL;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.RISK_ZONE;
+import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
+import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
-import static com.jakub.bone.config.Constant.*;
 
 @Log4j2
 public class PlaneHandler extends Thread {
@@ -25,16 +30,14 @@ public class PlaneHandler extends Thread {
 
     private final Socket clientSocket;
     private final ControlTowerService controlTowerService;
-    private final Airport airport;
     private Messenger messenger;
     private FlightPhaseService phaseCoordinator;
 
-    public PlaneHandler(Socket clientSocket, ControlTowerService controlTowerService, Airport airport) {
+    public PlaneHandler(Socket clientSocket, ControlTowerService controlTowerService) {
         this.clientSocket = clientSocket;
         this.controlTowerService = controlTowerService;
-        this.airport = airport;
         this.messenger = new Messenger();
-        this.phaseCoordinator = new FlightPhaseService(controlTowerService, airport, messenger);
+        this.phaseCoordinator = new FlightPhaseService(controlTowerService, messenger);
     }
 
     @Override
