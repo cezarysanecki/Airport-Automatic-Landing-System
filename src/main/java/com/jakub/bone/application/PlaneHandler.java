@@ -12,6 +12,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -33,8 +34,8 @@ public class PlaneHandler extends Thread {
     private final Messenger messenger;
     private final FlightPhaseService phaseCoordinator;
 
-    public PlaneHandler(Socket clientSocket, ControlTowerService controlTowerService) {
-        this.clientSocket = clientSocket;
+    public PlaneHandler(ServerSocket serverSocket, ControlTowerService controlTowerService) throws IOException {
+        this.clientSocket = serverSocket.accept();
         this.controlTowerService = controlTowerService;
         this.messenger = new Messenger();
         this.phaseCoordinator = new FlightPhaseService(controlTowerService, messenger);
