@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class WaypointGeneratorTest {
 
     @Test
-    void test() {
+    void generate_specified_number_of_descent_waypoints() {
         List<Coordinates> descentWaypoints = WaypointGenerator.getDescentWaypoints();
 
         assertEquals(320, descentWaypoints.size());
