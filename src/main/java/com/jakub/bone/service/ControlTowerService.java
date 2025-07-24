@@ -72,7 +72,7 @@ public class ControlTowerService {
     }
 
     public boolean isPlaneApproachingHoldingAltitude(Plane plane) {
-        return plane.getNavigator().getCoordinates().altitude() == HOLDING_ENTRY_ALTITUDE;
+        return plane.getNavigator().getCoordinates().getAltitude() == HOLDING_ENTRY_ALTITUDE;
     }
 
     public boolean hasLandedOnRunway(Plane plane, Runway runway){

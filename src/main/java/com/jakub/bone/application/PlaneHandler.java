@@ -90,7 +90,7 @@ public class PlaneHandler extends Thread {
         }
         controlTowerService.registerPlane(plane);
 
-        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getCoordinates().x(), plane.getNavigator().getCoordinates().y(), plane.getNavigator().getCoordinates().altitude());
+        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getCoordinates().getX(), plane.getNavigator().getCoordinates().getY(), plane.getNavigator().getCoordinates().getAltitude());
         return true;
     }
 

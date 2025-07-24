@@ -113,7 +113,7 @@ public class WaypointGenerator  {
         // Start lowering altitude toward the ground level
         // Calculate the position for the waypoints leading to the runway
         altitude = LANDING_ALTITUDE;
-        int landingDescentY = runway.getCorridor().getEntryPoint().y() - 2000;
+        int landingDescentY = runway.getCorridor().getEntryPoint().getY() - 2000;
         for (int x = -3000; x <= 500; x += 500) {
             waypoints.add(new Coordinates(x, landingDescentY, altitude));
             altitude -= altitudeDecrement;
@@ -122,7 +122,7 @@ public class WaypointGenerator  {
         // Add waypoints directly on the runway stop point
         altitude = 0;
         for (int x = 1000; x <= 3000; x += 250) {
-            waypoints.add(new Coordinates(x, runway.getLandingPoint().y(), altitude));
+            waypoints.add(new Coordinates(x, runway.getLandingPoint().getY(), altitude));
         }
         return waypoints;
     }

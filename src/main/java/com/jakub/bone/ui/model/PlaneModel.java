@@ -48,27 +48,27 @@ public class PlaneModel {
     }
 
     private void updatePosition(Coordinates coordinates) {
-        this.planeGroup.setTranslateX(coordinates.x() / 2.0);
-        this.planeGroup.setTranslateY(-coordinates.altitude() / 2.0);
-        this.planeGroup.setTranslateZ(coordinates.y() / 2.0);
+        this.planeGroup.setTranslateX(coordinates.getX() / 2.0);
+        this.planeGroup.setTranslateY(-coordinates.getAltitude() / 2.0);
+        this.planeGroup.setTranslateZ(coordinates.getY() / 2.0);
 
-        this.label.setTranslateX(((coordinates.x() + 150)) / 2.0);
-        this.label.setTranslateY(-((coordinates.altitude() + 150)) / 2.0);
-        this.label.setTranslateZ((coordinates.y()) / 2.0);
+        this.label.setTranslateX(((coordinates.getX() + 150)) / 2.0);
+        this.label.setTranslateY(-((coordinates.getAltitude() + 150)) / 2.0);
+        this.label.setTranslateZ((coordinates.getY()) / 2.0);
     }
 
     public void animateMovement(Coordinates nextCoordinates) {
         double currentX = planeGroup.getTranslateX();
         double currentZ = planeGroup.getTranslateZ();
 
-        double toPlaneX = nextCoordinates.x() / 2.0;
-        double toPlaneY = -nextCoordinates.altitude() / 2.0;
-        double toPlaneZ = nextCoordinates.y() / 2.0;
+        double toPlaneX = nextCoordinates.getX() / 2.0;
+        double toPlaneY = -nextCoordinates.getAltitude() / 2.0;
+        double toPlaneZ = nextCoordinates.getY() / 2.0;
 
         calculateAndSetHeading(currentX, currentZ, toPlaneX, toPlaneZ);
 
         setInterpolation(planeGroup, toPlaneX, toPlaneY, toPlaneZ);
-        setInterpolation(label, (nextCoordinates.x() + 150) / 2.0, toPlaneY, (nextCoordinates.y() + 150) / 2.0);
+        setInterpolation(label, (nextCoordinates.getX() + 150) / 2.0, toPlaneY, (nextCoordinates.getY() + 150) / 2.0);
     }
 
     private void calculateAndSetHeading(double currentX, double currentZ, double targetX, double targetZ) {

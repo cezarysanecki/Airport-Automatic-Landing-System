@@ -62,10 +62,10 @@ public class CollisionService extends Thread {
      */
     private boolean arePlanesToClose(Coordinates loc1, Coordinates loc2) {
         double horizontalDistance = Math.sqrt(
-                Math.pow(loc1.x() - loc2.x(), 2) +
-                        Math.pow(loc1.y() - loc2.y(), 2)
+                Math.pow(loc1.getX() - loc2.getX(), 2) +
+                        Math.pow(loc1.getY() - loc2.getY(), 2)
         );
-        double altDiff = Math.abs(loc1.altitude() - loc2.altitude());
+        double altDiff = Math.abs(loc1.getAltitude() - loc2.getAltitude());
         return horizontalDistance <= HORIZONTAL_COLLISION_DISTANCE && altDiff <= ALTITUDE_COLLISION_DISTANCE;
     }
 }
