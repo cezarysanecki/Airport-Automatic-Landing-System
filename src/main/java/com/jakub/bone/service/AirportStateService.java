@@ -1,14 +1,14 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.infrastructure.PlaneClient;
+import com.jakub.bone.repository.CollisionRepository;
+import com.jakub.bone.runners.AirportServer;
 import lombok.Getter;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
 import static com.jakub.bone.config.Constant.CLIENT_SPAWN_DELAY;
-import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
 
 /*
  * The class manages the startup of the AirportServer
@@ -19,9 +19,13 @@ import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
 public class AirportStateService {
 
     private final AirportServer airportServer;
+    private final ControlTowerService controlTowerService;
+    private final CollisionRepository collisionRepository;
 
-    public AirportStateService(AirportServer airportServer) {
+    public AirportStateService(AirportServer airportServer, ControlTowerService controlTowerService, CollisionRepository collisionRepository) {
         this.airportServer = airportServer;
+        this.controlTowerService = controlTowerService;
+        this.collisionRepository = collisionRepository;
     }
 
     public void startAirport() {
@@ -30,22 +34,16 @@ public class AirportStateService {
         }
 
         Thread serverThread = new Thread(() -> {
-            try {
-                this.airportServer.startServer(5000, new ServerSocket(5000), new CollisionService(this.airportServer.getControlTowerService(), this.airportServer.getCollisionRepository()));
+            try (ServerSocket serverSocket = new ServerSocket(5000)) {
+                CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+                collisionService.start();
+
+                this.airportServer.startServer(5000, serverSocket);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);
             }
         });
         serverThread.start();
-
-        // Wait for the server to initialize before proceeding
-        while (airportServer.getControlTowerService() == null) {
-            try {
-                Thread.sleep(SERVER_INIT_DELAY);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
 
         new Thread(() -> {
             for (int i = 0; i < 100; i++) {

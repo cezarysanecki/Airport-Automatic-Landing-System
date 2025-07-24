@@ -35,7 +35,7 @@ public class SimulationLauncher extends Application {
         ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
         AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
 
-        this.airportStateService = new AirportStateService(airportServer);
+        this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
         this.visualization = new SceneRenderer(airportServer.getControlTowerService());
     }
 

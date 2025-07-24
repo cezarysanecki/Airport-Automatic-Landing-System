@@ -51,7 +51,7 @@ public class AirportServer {
         this.paused = false;
     }
 
-    public void startServer(int port, ServerSocket serverSocket, CollisionService collisionService) throws IOException {
+    public void startServer(int port, ServerSocket serverSocket) throws IOException {
         ThreadContext.put("type", "Server");
         running = true;
 
@@ -60,7 +60,6 @@ public class AirportServer {
             this.startTime = Instant.now();
             log.info("Server started");
 
-            collisionService.start();
 
             log.info("Collision detector started");
 
@@ -124,7 +123,12 @@ public class AirportServer {
 
             ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
             AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
-            airportServer.startServer(5000, new ServerSocket(5000), new CollisionService(airportServer.controlTowerService, airportServer.collisionRepository));
+
+            ServerSocket serverSocket = new ServerSocket(5000);
+            CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+            collisionService.start();
+
+            airportServer.startServer(5000, serverSocket);
         }
     }
 }

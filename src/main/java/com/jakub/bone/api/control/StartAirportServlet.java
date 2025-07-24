@@ -1,7 +1,9 @@
 package com.jakub.bone.api.control;
 
+import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.service.AirportStateService;
+import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,7 +23,11 @@ public class StartAirportServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
-        this.airportStateService = new AirportStateService(airportServer);
+
+        ControlTowerService controlTowerService = airportServer.getControlTowerService();
+        CollisionRepository collisionRepository = airportServer.getCollisionRepository();
+
+        this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
         this.messenger = new Messenger();
     }
 
