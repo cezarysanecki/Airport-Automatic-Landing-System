@@ -1,13 +1,14 @@
 package unit_tests.flight;
 
-import com.jakub.bone.domain.airport.Airport;
-
-import com.jakub.bone.domain.airport.Coordinates;
-import com.jakub.bone.service.ControlTowerService;
-import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.database.AirportDatabase;
+import com.jakub.bone.domain.airport.Airport;
+import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
+import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.FlightPhaseService;
+import com.jakub.bone.utils.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,18 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.utils.Messenger;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.jakub.bone.config.Constant.Corridor.FINAL_APPROACH_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.*;
-import static com.jakub.bone.config.Constant.FINAL_APPROACH_CORRIDOR_1;
 
 /*
  * This class tests how a plane's flight phase changes
@@ -50,9 +52,8 @@ class FlightPhaseTest {
         MockitoAnnotations.openMocks(this);
         when(mockDatabase.getPlaneRepository()).thenReturn(mockPlaneRepository);
         when(mockDatabase.getCollisionRepository()).thenReturn(mockCollisionRepository);
-        this.airport = new Airport();
         this.messenger = mock(Messenger.class);
-        this.phaseCoordinator = new FlightPhaseService(controlTower, airport, messenger);
+        this.phaseCoordinator = new FlightPhaseService(controlTower, messenger);
     }
 
     @Test
@@ -99,7 +100,7 @@ class FlightPhaseTest {
 
     @Test
     @DisplayName("Should test correct plane marking as landed after landing process")
-    void testMarkingAsLanded(){
+    void testMarkingAsLanded() {
         // Plane is at the runway landing point
         Plane plane = new Plane("TEST_PLANE");
         plane.getNavigator().setCoordinates(runway1.getLandingPoint());

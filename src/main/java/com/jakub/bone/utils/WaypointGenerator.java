@@ -11,30 +11,33 @@ import static com.jakub.bone.config.Constant.LANDING_ALTITUDE;
 import static com.jakub.bone.config.Constant.MAX_ALTITUDE;
 
 public class WaypointGenerator {
+
+    private static final int RADIUS = 5000;
+    private static final int TOTAL_WAYPOINTS = 320;
+
+    private static final double ALTITUDE_DECREASE = (double) (MAX_ALTITUDE - HOLDING_ALTITUDE) / TOTAL_WAYPOINTS;
+
     public static List<Coordinates> getDescentWaypoints() {
         List<Coordinates> waypoints = new ArrayList<>();
-        int radius = 5000;
-        int totalWaypoints = 320;
-        double altitudeDecrease = (double) (MAX_ALTITUDE - HOLDING_ALTITUDE) / totalWaypoints;
 
         // Each 80 points for one lap of circle
         double angleStep = 360.0 / 80;
 
         double currentAltitude = MAX_ALTITUDE;
 
-        for (int i = 0; i < totalWaypoints; i++) {
+        for (int i = 0; i < TOTAL_WAYPOINTS; i++) {
             // Convert the angle to radians for math calculations
             // (i % 80) angle resets after every 80 waypoints, completing a full circle (360 degrees)
             // angleStep defines the angular interval between next points
             double radians = Math.toRadians((i % 80) * angleStep);
 
             // Calculate coordinates based on circular geometry
-            int x = (int) (radius * Math.cos(radians));
-            int y = (int) (radius * Math.sin(radians));
+            int x = (int) (RADIUS * Math.cos(radians));
+            int y = (int) (RADIUS * Math.sin(radians));
 
             waypoints.add(new Coordinates(x, y, (int) Math.round(currentAltitude)));
 
-            currentAltitude -= altitudeDecrease;
+            currentAltitude -= ALTITUDE_DECREASE;
         }
         return waypoints;
     }
@@ -78,7 +81,7 @@ public class WaypointGenerator {
         return waypoints;
     }
 
-    public static List<Coordinates> generateArc(int centerX, int centerY, int radius, double startAngle, double endAngle, int altitude, int altitudeDecrement) {
+    private static List<Coordinates> generateArc(int centerX, int centerY, int radius, double startAngle, double endAngle, int altitude, int altitudeDecrement) {
         List<Coordinates> arcPoints = new ArrayList<>();
         int waypointsOnArc = 4;
         double angleStep = (endAngle - startAngle) / (waypointsOnArc - 1);
@@ -99,7 +102,6 @@ public class WaypointGenerator {
     }
 
     public static List<Coordinates> getLandingWaypoints(Runway runway) {
-        List<Coordinates> waypoints = new ArrayList<>();
         int landingWaypoints = 10;
         int altitude = HOLDING_ALTITUDE;
         int altitudeDecrement = altitude / landingWaypoints;
@@ -108,9 +110,7 @@ public class WaypointGenerator {
 
         // Generate the arc that leads planes into the runway's corridor
         List<Coordinates> arc4 = generateArc(-3500, arcCenterY, 1500, 180, 270, altitude, altitudeDecrement);
-        for (Coordinates waypoint : arc4) {
-            waypoints.add(waypoint);
-        }
+        List<Coordinates> waypoints = new ArrayList<>(arc4);
 
         // Start lowering altitude toward the ground level
         // Calculate the position for the waypoints leading to the runway

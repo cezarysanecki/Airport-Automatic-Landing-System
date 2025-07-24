@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DatabaseConnectionTest {
@@ -16,12 +15,6 @@ class DatabaseConnectionTest {
     @BeforeEach
     void setUp() throws SQLException {
         this.database = new AirportDatabase();
-    }
-
-    @Test
-    @DisplayName("Database connection should not return be null")
-    void testGetConnection() throws SQLException {
-        assertNotNull(database.getDatabaseConnection(), "Database connection should not return null");
     }
 
     @Test

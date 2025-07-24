@@ -37,4 +37,8 @@ public final class Coordinates implements Serializable {
         return Objects.hash(x, y, altitude);
     }
 
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ", " + altitude + ")";
+    }
 }
