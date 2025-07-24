@@ -8,51 +8,65 @@ import com.jakub.bone.api.monitoring.CollisionsAirportServlet;
 import com.jakub.bone.api.monitoring.PlanesAirportServlet;
 import com.jakub.bone.api.monitoring.UptimeAirportServlet;
 import com.jakub.bone.database.AirportDatabase;
+import com.jakub.bone.repository.CollisionRepository;
+import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.ControlTowerService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ApiServer {
+
+    private final static String USER = "postgres";
+    private final static String PASSWORD = "root";
+    private final static String DATABASE = "airport_system";
+    private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
+
     public static void main(String[] args) throws SQLException {
         Server server = new Server(8080);
 
         ServletContextHandler context = new ServletContextHandler();
         server.setHandler(context);
 
-        AirportDatabase database = new AirportDatabase();
-        ControlTowerService controlTowerService = new ControlTowerService(database);
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            AirportDatabase database = new AirportDatabase(connection);
+            PlaneRepository planeRepository = database.getPlaneRepository();
+            CollisionRepository collisionRepository = database.getCollisionRepository();
 
-        AirportServer airportServer = new AirportServer(database, controlTowerService);
-        context.setAttribute("airportServer", airportServer);
+            ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
+            AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
+            context.setAttribute("airportServer", airportServer);
 
-        // Init Servlets
-        context.addServlet(new ServletHolder(new StartAirportServlet()), "/airport/start");
-        context.addServlet(new ServletHolder(new PauseAirportServlet()), "/airport/pause");
-        context.addServlet(new ServletHolder(new ResumeAirportServlet()), "/airport/resume");
-        context.addServlet(new ServletHolder(new StopAirportServlet()), "/airport/stop");
-        context.addServlet(new ServletHolder(new UptimeAirportServlet()), "/airport/uptime");
-        context.addServlet(new ServletHolder(new PlanesAirportServlet()), "/airport/planes/*");
-        context.addServlet(new ServletHolder(new CollisionsAirportServlet()), "/airport/collisions");
+            // Init Servlets
+            context.addServlet(new ServletHolder(new StartAirportServlet()), "/airport/start");
+            context.addServlet(new ServletHolder(new PauseAirportServlet()), "/airport/pause");
+            context.addServlet(new ServletHolder(new ResumeAirportServlet()), "/airport/resume");
+            context.addServlet(new ServletHolder(new StopAirportServlet()), "/airport/stop");
+            context.addServlet(new ServletHolder(new UptimeAirportServlet()), "/airport/uptime");
+            context.addServlet(new ServletHolder(new PlanesAirportServlet()), "/airport/planes/*");
+            context.addServlet(new ServletHolder(new CollisionsAirportServlet()), "/airport/collisions");
 
-        try {
-            server.start();
-            System.out.println("Server is running on http://localhost:8080");
             try {
-                server.join();
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                System.err.println("API Server interrupted: " + ex.getMessage());
-            }
-        } catch (Exception ex) {
-            System.err.println("Failed to start API Server: " + ex.getMessage());
-        } finally {
-            try {
-                server.stop();
-            } catch (Exception e) {
-                System.err.println("Failed to stop API Server: " + e.getMessage());
+                server.start();
+                System.out.println("Server is running on http://localhost:8080");
+                try {
+                    server.join();
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    System.err.println("API Server interrupted: " + ex.getMessage());
+                }
+            } catch (Exception ex) {
+                System.err.println("Failed to start API Server: " + ex.getMessage());
+            } finally {
+                try {
+                    server.stop();
+                } catch (Exception e) {
+                    System.err.println("Failed to stop API Server: " + e.getMessage());
+                }
             }
         }
     }

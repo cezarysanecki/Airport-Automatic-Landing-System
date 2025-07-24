@@ -2,6 +2,7 @@ package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.repository.CollisionRepository;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
@@ -11,10 +12,13 @@ import static com.jakub.bone.config.Constant.HORIZONTAL_COLLISION_DISTANCE;
 
 @Log4j2
 public class CollisionService extends Thread {
-    private final ControlTowerService controlTowerService;
 
-    public CollisionService(ControlTowerService controlTowerService) {
+    private final ControlTowerService controlTowerService;
+    private final CollisionRepository collisionRepository;
+
+    public CollisionService(ControlTowerService controlTowerService, CollisionRepository collisionRepository) {
         this.controlTowerService = controlTowerService;
+        this.collisionRepository = collisionRepository;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class CollisionService extends Thread {
 
     private void handleCollision(Plane plane1, Plane plane2) {
         String[] collidedIDs = {plane1.getFlightNumber(), plane2.getFlightNumber()};
-        controlTowerService.getDatabase().getCollisionRepository().registerCollisionToDB(collidedIDs);
+        collisionRepository.registerCollisionToDB(collidedIDs);
         plane1.destroyPlane();
         plane2.destroyPlane();
         log.info("Collision detected between Plane [{}] and Plane [{}]", plane1.getFlightNumber(), plane2.getFlightNumber());

@@ -5,6 +5,7 @@ import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.service.ControlTowerService;
 
 import java.io.IOException;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,7 +21,7 @@ public class ServerTest {
 
         AirportServer airportServer = null;
         try {
-            final AirportDatabase database = new AirportDatabase();
+            final AirportDatabase database = new AirportDatabase(DriverManager.getConnection(AirportDatabase.URL, AirportDatabase.USER, AirportDatabase.PASSWORD));
             airportServer = new AirportServer(database, new ControlTowerService(database));
         } catch (SQLException e) {
             throw new RuntimeException(e);

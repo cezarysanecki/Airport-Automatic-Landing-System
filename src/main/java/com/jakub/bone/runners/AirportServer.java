@@ -2,6 +2,8 @@ package com.jakub.bone.runners;
 
 import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.database.AirportDatabase;
+import com.jakub.bone.repository.CollisionRepository;
+import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
 import lombok.Getter;
@@ -12,6 +14,8 @@ import org.apache.logging.log4j.ThreadContext;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
@@ -21,16 +25,27 @@ import java.time.Instant;
 @Setter
 public class AirportServer {
 
+    private final static String USER = "postgres";
+    private final static String PASSWORD = "root";
+    private final static String DATABASE = "airport_system";
+    private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
+
     private ServerSocket serverSocket;
-    private AirportDatabase database;
+    private CollisionRepository collisionRepository;
+    private PlaneRepository planeRepository;
     private ControlTowerService controlTowerService;
     private boolean running;
     private boolean paused;
     private Instant startTime;
 
-    public AirportServer(AirportDatabase database, ControlTowerService controlTowerService) throws SQLException {
-        this.database = database;
+    public AirportServer(
+            CollisionRepository collisionRepository,
+            PlaneRepository planeRepository,
+            ControlTowerService controlTowerService
+    ) throws SQLException {
+        this.collisionRepository = collisionRepository;
         this.controlTowerService = controlTowerService;
+        this.planeRepository = planeRepository;
 
         this.running = false;
         this.paused = false;
@@ -39,12 +54,13 @@ public class AirportServer {
     public void startServer(int port) throws IOException {
         ThreadContext.put("type", "Server");
         running = true;
+
         try {
             this.serverSocket = new ServerSocket(port);
             this.startTime = Instant.now();
             log.info("Server started");
 
-            new CollisionService(controlTowerService).start();
+            new CollisionService(controlTowerService, collisionRepository).start();
 
             log.info("Collision detector started");
 
@@ -81,11 +97,6 @@ public class AirportServer {
     public void stopServer() {
         running = false;
         try {
-            if (database != null) {
-                database.closeConnection();
-                log.info("Database closed successfully");
-            }
-
             if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
                 log.info("Server closed successfully");
@@ -108,10 +119,14 @@ public class AirportServer {
     }
 
     public static void main(String[] args) throws IOException, SQLException {
-        AirportDatabase database = new AirportDatabase();
-        ControlTowerService controlTowerService = new ControlTowerService(database);
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            AirportDatabase database = new AirportDatabase(connection);
+            PlaneRepository planeRepository = database.getPlaneRepository();
+            CollisionRepository collisionRepository = database.getCollisionRepository();
 
-        AirportServer airportServer = new AirportServer(database, controlTowerService);
-        airportServer.startServer(5000);
+            ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
+            AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
+            airportServer.startServer(5000);
+        }
     }
 }

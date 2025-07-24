@@ -1,8 +1,8 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.repository.PlaneRepository;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -23,10 +23,10 @@ public class ControlTowerService {
 
     private final List<Plane> planes;
     private final Lock lock;
-    private final AirportDatabase database;
+    private final PlaneRepository planeRepository;
 
-    public ControlTowerService(AirportDatabase database) throws SQLException {
-        this.database = database;
+    public ControlTowerService(PlaneRepository planeRepository) throws SQLException {
+        this.planeRepository = planeRepository;
 
         this.planes = new CopyOnWriteArrayList<>();
         this.lock = new ReentrantLock();
@@ -35,7 +35,7 @@ public class ControlTowerService {
     public void registerPlane(Plane plane) {
         executeWithLock(() -> {
             planes.add(plane);
-            database.getPlaneRepository().registerPlaneInDB(plane.getFlightNumber());
+            planeRepository.registerPlaneInDB(plane.getFlightNumber());
         });
     }
 
@@ -79,7 +79,7 @@ public class ControlTowerService {
     public boolean hasLandedOnRunway(Plane plane, Runway runway) {
         boolean hasLanded = plane.getNavigator().getCoordinates().equals(runway.getLandingPoint());
         if (hasLanded) {
-            database.getPlaneRepository().registerLandingInDB(plane.getFlightNumber());
+            planeRepository.registerLandingInDB(plane.getFlightNumber());
         }
         return hasLanded;
     }

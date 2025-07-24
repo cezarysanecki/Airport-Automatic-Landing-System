@@ -13,6 +13,7 @@ import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.runners.AirportServer;
 
 import java.io.IOException;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +40,7 @@ class ClientServerConnectionTest {
 
             new Thread(() -> {
                 try {
-                    final AirportDatabase database = new AirportDatabase();
+                    final AirportDatabase database = new AirportDatabase(DriverManager.getConnection(AirportDatabase.URL, AirportDatabase.USER, AirportDatabase.PASSWORD));
                     this.server = new AirportServer(database, new ControlTowerService(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
