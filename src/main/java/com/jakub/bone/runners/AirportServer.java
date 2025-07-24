@@ -30,7 +30,6 @@ public class AirportServer {
     private final static String DATABASE = "airport_system";
     private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
 
-    private ServerSocket serverSocket;
     private CollisionRepository collisionRepository;
     private PlaneRepository planeRepository;
     private ControlTowerService controlTowerService;
@@ -56,7 +55,6 @@ public class AirportServer {
         running = true;
 
         try {
-            this.serverSocket = serverSocket;
             this.startTime = Instant.now();
             log.info("Server started");
 
@@ -71,16 +69,13 @@ public class AirportServer {
                 }
 
                 try {
-                    Socket clientSocket = this.serverSocket.accept();
+                    Socket clientSocket = serverSocket.accept();
                     if (clientSocket != null) {
                         log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                         running = true;
                         new PlaneHandler(clientSocket, controlTowerService).start();
                     }
                 } catch (Exception ex) {
-                    if (this.serverSocket.isClosed()) {
-                        return;
-                    }
                     log.error("Error handling client connection: {}", ex.getMessage(), ex);
                 }
             }
@@ -93,14 +88,6 @@ public class AirportServer {
 
     public void stopServer() {
         running = false;
-        try {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-                serverSocket.close();
-                log.info("Server closed successfully");
-            }
-        } catch (IOException ex) {
-            log.error("Error occurred while closing server socket: {}", ex.getMessage(), ex);
-        }
     }
 
     public void pauseServer() {
@@ -124,11 +111,13 @@ public class AirportServer {
             ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
             AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
 
-            ServerSocket serverSocket = new ServerSocket(5000);
-            CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
-            collisionService.start();
+            try (ServerSocket serverSocket = new ServerSocket(5000)) {
+                CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+                collisionService.start();
 
-            airportServer.startServer(serverSocket);
+                airportServer.startServer(serverSocket);
+            }
+
         }
     }
 }
