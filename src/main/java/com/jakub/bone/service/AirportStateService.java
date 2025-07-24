@@ -38,7 +38,7 @@ public class AirportStateService {
             collisionService.start();
 
             try {
-                this.airportServer.startServer(5000, serverSocket);
+                this.airportServer.startServer(serverSocket);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);
             }

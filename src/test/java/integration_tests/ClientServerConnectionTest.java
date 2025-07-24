@@ -46,7 +46,7 @@ class ClientServerConnectionTest {
                     this.server = new AirportServer(database, new ControlTowerService(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
-                    this.server.startServer(5000, new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()));
+                    this.server.startServer(new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()));
                 } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }

@@ -41,7 +41,7 @@ public class ServerTest {
         }, 4200000);
 
         try {
-            airportServer.startServer(5000, new ServerSocket(5000), new CollisionService(airportServer.getControlTowerService(), airportServer.getCollisionRepository()));
+            airportServer.startServer(new ServerSocket(5000), new CollisionService(airportServer.getControlTowerService(), airportServer.getCollisionRepository()));
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Failed to start the server:", ex.getMessage());
         }

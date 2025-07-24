@@ -51,7 +51,7 @@ public class AirportServer {
         this.paused = false;
     }
 
-    public void startServer(int port, ServerSocket serverSocket) throws IOException {
+    public void startServer(ServerSocket serverSocket) throws IOException {
         ThreadContext.put("type", "Server");
         running = true;
 
@@ -73,7 +73,7 @@ public class AirportServer {
                 try {
                     Socket clientSocket = this.serverSocket.accept();
                     if (clientSocket != null) {
-                        log.debug("Server connected with client at port: {}", port);
+                        log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                         running = true;
                         new PlaneHandler(clientSocket, controlTowerService).start();
                     }
@@ -128,7 +128,7 @@ public class AirportServer {
             CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
             collisionService.start();
 
-            airportServer.startServer(5000, serverSocket);
+            airportServer.startServer(serverSocket);
         }
     }
 }
