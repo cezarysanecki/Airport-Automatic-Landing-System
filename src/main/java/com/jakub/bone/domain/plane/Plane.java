@@ -44,14 +44,15 @@ public class Plane implements Serializable {
     public void descend() {
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
-            setPhase(HOLDING);
+            this.phase = HOLDING;
             navigator.setWaypoints(WaypointGenerator.getHoldingPatternWaypoints());
             navigator.setCurrentIndex(0);
         }
     }
 
     public void hold() {
-        setPhase(HOLDING);
+        this.phase = HOLDING;
+
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
             navigator.setCurrentIndex(0);

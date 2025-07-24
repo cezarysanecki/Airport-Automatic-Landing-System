@@ -28,9 +28,10 @@ public class AirportServer {
     private boolean paused;
     private Instant startTime;
 
-    public AirportServer() throws SQLException {
-        this.database = new AirportDatabase();
-        this.controlTowerService = new ControlTowerService(database);
+    public AirportServer(AirportDatabase database, ControlTowerService controlTowerService) throws SQLException {
+        this.database = database;
+        this.controlTowerService = controlTowerService;
+
         this.running = false;
         this.paused = false;
     }
@@ -107,7 +108,10 @@ public class AirportServer {
     }
 
     public static void main(String[] args) throws IOException, SQLException {
-        AirportServer airportServer = new AirportServer();
+        AirportDatabase database = new AirportDatabase();
+        ControlTowerService controlTowerService = new ControlTowerService(database);
+
+        AirportServer airportServer = new AirportServer(database, controlTowerService);
         airportServer.startServer(5000);
     }
 }

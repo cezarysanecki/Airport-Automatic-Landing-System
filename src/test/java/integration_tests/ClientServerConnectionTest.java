@@ -39,7 +39,8 @@ class ClientServerConnectionTest {
 
             new Thread(() -> {
                 try {
-                    this.server = new AirportServer();
+                    final AirportDatabase database = new AirportDatabase();
+                    this.server = new AirportServer(database, new ControlTowerService(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
                     this.server.startServer(5000);

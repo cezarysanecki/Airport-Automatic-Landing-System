@@ -49,7 +49,7 @@ class DatabaseOperationTest {
         // Registration should trigger a DB operation
         controlTower.registerPlane(plane);
 
-        verify(mockPlaneRepository, times(1)).registerPlaneInDB(plane);
+        verify(mockPlaneRepository, times(1)).registerPlaneInDB(plane.getFlightNumber());
     }
 
     @Test
@@ -63,7 +63,7 @@ class DatabaseOperationTest {
         // Inform control tower that plane has landed
         controlTower.hasLandedOnRunway(plane, runway1);
 
-        verify(mockPlaneRepository, times(1)).registerLandingInDB(plane);
+        verify(mockPlaneRepository, times(1)).registerLandingInDB(plane.getFlightNumber());
     }
 
     @Test

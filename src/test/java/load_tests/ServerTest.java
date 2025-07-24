@@ -1,6 +1,8 @@
 package load_tests;
 
+import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.service.ControlTowerService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,7 +20,8 @@ public class ServerTest {
 
         AirportServer airportServer = null;
         try {
-            airportServer = new AirportServer();
+            final AirportDatabase database = new AirportDatabase();
+            airportServer = new AirportServer(database, new ControlTowerService(database));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

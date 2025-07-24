@@ -26,15 +26,16 @@ public class ControlTowerService {
     private final AirportDatabase database;
 
     public ControlTowerService(AirportDatabase database) throws SQLException {
+        this.database = database;
+
         this.planes = new CopyOnWriteArrayList<>();
         this.lock = new ReentrantLock();
-        this.database = database;
     }
 
     public void registerPlane(Plane plane) {
         executeWithLock(() -> {
             planes.add(plane);
-            database.getPlaneRepository().registerPlaneInDB(plane);
+            database.getPlaneRepository().registerPlaneInDB(plane.getFlightNumber());
         });
     }
 
@@ -78,7 +79,7 @@ public class ControlTowerService {
     public boolean hasLandedOnRunway(Plane plane, Runway runway) {
         boolean hasLanded = plane.getNavigator().getCoordinates().equals(runway.getLandingPoint());
         if (hasLanded) {
-            database.getPlaneRepository().registerLandingInDB(plane);
+            database.getPlaneRepository().registerLandingInDB(plane.getFlightNumber());
         }
         return hasLanded;
     }

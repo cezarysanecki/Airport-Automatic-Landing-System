@@ -1,18 +1,25 @@
 package com.jakub.bone.runners;
 
+import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.service.AirportStateService;
+import com.jakub.bone.service.ControlTowerService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class SimulationLauncher extends Application {
+
     private AirportStateService airportStateService;
     private SceneRenderer visualization;
 
     @Override
     public void init() throws Exception {
-        AirportServer airportServer = new AirportServer();
+        AirportDatabase database = new AirportDatabase();
+        ControlTowerService controlTowerService = new ControlTowerService(database);
+
+        AirportServer airportServer = new AirportServer(database, controlTowerService);
+
         this.airportStateService = new AirportStateService(airportServer);
         this.visualization = new SceneRenderer(airportServer.getControlTowerService());
     }

@@ -1,6 +1,5 @@
 package com.jakub.bone.repository;
 
-import com.jakub.bone.domain.plane.Plane;
 import org.jooq.DSLContext;
 
 import java.time.LocalDateTime;
@@ -17,19 +16,18 @@ public class PlaneRepository {
         CONTEXT = context;
     }
 
-    public void registerPlaneInDB(Plane plane) {
+    public void registerPlaneInDB(String flightNumber) {
         CONTEXT.insertInto(table("planes"),
                         field("flight_number"),
                         field("start_time"))
-                .values(plane.getFlightNumber(),
-                        LocalDateTime.now())
+                .values(flightNumber, LocalDateTime.now())
                 .execute();
     }
 
-    public void registerLandingInDB(Plane plane) {
+    public void registerLandingInDB(String flightNumber) {
         CONTEXT.update(table("planes"))
                 .set(field("landing_time"), LocalDateTime.now())
-                .where(field("flight_number").eq(plane.getFlightNumber()))
+                .where(field("flight_number").eq(flightNumber))
                 .execute();
     }
 

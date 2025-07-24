@@ -16,6 +16,7 @@ import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
  */
 @Getter
 public class AirportStateService {
+
     private final AirportServer airportServer;
 
     public AirportStateService(AirportServer airportServer) {
@@ -37,7 +38,7 @@ public class AirportStateService {
         serverThread.start();
 
         // Wait for the server to initialize before proceeding
-        while (airportServer == null || airportServer.getControlTowerService() == null) {
+        while (airportServer.getControlTowerService() == null) {
             try {
                 Thread.sleep(SERVER_INIT_DELAY);
             } catch (InterruptedException ex) {

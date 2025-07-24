@@ -15,6 +15,7 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/planes/*")
 public class PlanesAirportServlet extends HttpServlet {
+
     private AirportServer airportServer;
     private Messenger messenger;
 
@@ -25,7 +26,7 @@ public class PlanesAirportServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             int planesCount = airportServer.getControlTowerService().getPlanes().size();
             List<String> landedPlanes = airportServer.getDatabase().getPlaneRepository().getLandedPlanes();

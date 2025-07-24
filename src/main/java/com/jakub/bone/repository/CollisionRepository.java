@@ -10,6 +10,7 @@ import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
 public class CollisionRepository {
+
     private final DSLContext CONTEXT;
 
     public CollisionRepository(DSLContext CONTEXT) {
@@ -20,8 +21,7 @@ public class CollisionRepository {
         CONTEXT.insertInto(table("collisions"),
                         field("involved_planes"),
                         field("time"))
-                .values(planesIds,
-                        LocalDateTime.now())
+                .values(planesIds, LocalDateTime.now())
                 .execute();
     }
 
