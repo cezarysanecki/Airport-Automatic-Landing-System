@@ -28,16 +28,16 @@ public class AirportStateService {
         this.collisionRepository = collisionRepository;
     }
 
-    public void startAirport() {
+    public void startAirport(ServerSocket serverSocket) {
         if (airportServer.isRunning()) {
             return;
         }
 
         Thread serverThread = new Thread(() -> {
-            try (ServerSocket serverSocket = new ServerSocket(5000)) {
-                CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
-                collisionService.start();
+            CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+            collisionService.start();
 
+            try {
                 this.airportServer.startServer(5000, serverSocket);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);

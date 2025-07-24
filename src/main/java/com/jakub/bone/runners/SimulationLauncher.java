@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
 
+import java.net.ServerSocket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -21,6 +22,7 @@ public class SimulationLauncher extends Application {
     private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
 
     private Connection connection;
+    private ServerSocket serverSocket;
     private AirportStateService airportStateService;
     private SceneRenderer visualization;
 
@@ -41,7 +43,8 @@ public class SimulationLauncher extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        airportStateService.startAirport();
+        serverSocket = new ServerSocket(5000);
+        airportStateService.startAirport(serverSocket);
         visualization.start(primaryStage);
     }
 
@@ -49,6 +52,7 @@ public class SimulationLauncher extends Application {
     public void stop() throws Exception {
         super.stop();
         connection.close();
+        serverSocket.close();
     }
 
     public static void main(String[] args) {

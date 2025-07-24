@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/start")
@@ -32,13 +33,15 @@ public class StartAirportServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             if (airportServer.isRunning()) {
                 messenger.send(response, Map.of("message", "airport is already running"));
             } else {
-                airportStateService.startAirport();
-                messenger.send(response, Map.of("message", "airport started successfully"));
+                try (ServerSocket serverSocket = new ServerSocket(5000)) {
+                    airportStateService.startAirport(serverSocket);
+                    messenger.send(response, Map.of("message", "airport started successfully"));
+                }
             }
         } catch (Exception ex) {
             messenger.send(response, Map.of("error", "Failed to start airport"));
