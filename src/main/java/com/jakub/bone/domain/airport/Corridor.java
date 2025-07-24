@@ -6,9 +6,9 @@ import java.io.Serializable;
 
 @Getter
 public class Corridor implements Serializable {
-    private String id;
-    private Coordinates entryPoint;
-    private Coordinates finalApproachPoint;
+    private final String id;
+    private final Coordinates entryPoint;
+    private final Coordinates finalApproachPoint;
 
     public Corridor(String id, Coordinates entryPoint, Coordinates finalApproachPoint) {
         this.id = id;

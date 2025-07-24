@@ -1,27 +1,30 @@
 package com.jakub.bone.client;
 
-import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.application.PlaneHandler;
-import lombok.Getter;
+import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.*;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.COLLISION;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.DESCENT;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
 
 @Log4j2
 @Getter
 public class PlaneInstructionHandler {
-    private Plane plane;
-    private Messenger messenger;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private final Plane plane;
+    private final Messenger messenger;
+    private final ObjectInputStream in;
+    private final ObjectOutputStream out;
     private boolean isProcessCompleted;
-    private PlaneCommunicationService communicationService;
+    private final PlaneCommunicationService communicationService;
     private boolean descentLogged;
     private boolean holdPatternLogged;
 
@@ -57,13 +60,13 @@ public class PlaneInstructionHandler {
 
     private void performLanding(Runway runway) throws IOException {
         while (!isProcessCompleted) {
-            if(!communicationService.sendFuelLevel()){
+            if (!communicationService.sendFuelLevel()) {
                 return;
             }
 
             plane.land(runway);
 
-            if(!communicationService.sendLocation()){
+            if (!communicationService.sendLocation()) {
                 return;
             }
 

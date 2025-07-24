@@ -1,5 +1,8 @@
 package com.jakub.bone.ui.model;
 
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -11,17 +14,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import com.jakub.bone.domain.airport.Coordinates;
 import lombok.Getter;
-import com.jakub.bone.domain.plane.Plane;
-
-import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
 
 @Getter
 public class PlaneModel {
-    private Plane plane;
-    private Group planeGroup;
+    private final Plane plane;
+    private final Group planeGroup;
     private MeshView[] meshViews;
     private Text label;
 
@@ -32,6 +31,7 @@ public class PlaneModel {
         createLabel();
         updatePosition(plane.getNavigator().getCoordinates());
     }
+
     public void loadPlaneModel() {
         ObjModelImporter importer = new ObjModelImporter();
         importer.read(getClass().getResource("/models/boeing737/boeingModel.obj"));

@@ -1,27 +1,28 @@
 package com.jakub.bone.ui.utills;
 
+import com.jakub.bone.config.Constant;
 import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.ui.model.PlaneModel;
-import com.jakub.bone.config.Constant;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
-import com.jakub.bone.domain.plane.Plane;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 
 @Log4j2
 public class SceneUpdater {
     private final Group root;
-    private ControlTowerService controller;
-    private Map<String, PlaneModel> planesMap;
+    private final ControlTowerService controller;
+    private final Map<String, PlaneModel> planesMap;
     private boolean isFirstPlane;
 
     public SceneUpdater(Group root, ControlTowerService controller) {
@@ -41,10 +42,10 @@ public class SceneUpdater {
         List<Plane> planes = controller.getPlanes();
 
         for (Plane plane : planes) {
-            if(isFirstPlane){
-                try{
+            if (isFirstPlane) {
+                try {
                     Thread.sleep(Constant.SCENE_UPDATE_DELAY);
-                } catch (InterruptedException ex){
+                } catch (InterruptedException ex) {
                     log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
                     Thread.currentThread().interrupt();
                 }
@@ -58,7 +59,7 @@ public class SceneUpdater {
             }
 
             planeModel = planesMap.get(plane.getFlightNumber());
-            if(plane.getPhase().equals(LANDING)){
+            if (plane.getPhase().equals(LANDING)) {
                 planeModel.setPlaneModelColor(Color.YELLOW);
             }
 
@@ -68,7 +69,7 @@ public class SceneUpdater {
         cleanupScene();
     }
 
-    private void cleanupScene(){
+    private void cleanupScene() {
         for (String flightNumber : planesMap.keySet()) {
             Plane plane = controller.getPlaneByFlightNumber(flightNumber);
             PlaneModel planeModel = planesMap.get(flightNumber);

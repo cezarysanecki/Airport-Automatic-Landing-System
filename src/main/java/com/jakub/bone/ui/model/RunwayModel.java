@@ -12,10 +12,10 @@ import static com.jakub.bone.config.Constant.RUNWAY_WIDTH;
 
 @Getter
 public class RunwayModel {
-    private Rectangle runwayRect;
+    private final Rectangle runwayRect;
 
     public RunwayModel(Runway runway) {
-        this.runwayRect = new Rectangle(RUNWAY_WIDTH / 2.0, RUNWAY_HEIGHT/ 2.0);
+        this.runwayRect = new Rectangle(RUNWAY_WIDTH / 2.0, RUNWAY_HEIGHT / 2.0);
 
         Image runwayImage = new Image(getClass().getResource("/images/runway.png").toExternalForm());
         ImagePattern runwayPattern = new ImagePattern(runwayImage);

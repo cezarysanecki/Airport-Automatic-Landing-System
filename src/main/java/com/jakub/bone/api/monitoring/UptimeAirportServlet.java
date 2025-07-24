@@ -13,6 +13,7 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/uptime")
 public class UptimeAirportServlet extends HttpServlet {
+
     private AirportServer airportServer;
     private Messenger messenger;
 
@@ -23,8 +24,8 @@ public class UptimeAirportServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try{
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
             if (airportServer.getStartTime() == null) {
                 messenger.send(response, Map.of("message", "airport is not running"));
                 return;
@@ -35,7 +36,7 @@ public class UptimeAirportServlet extends HttpServlet {
             long seconds = airportServer.getUptime().getSeconds() % 60;
 
             messenger.send(response, Map.of("message", String.format("%02d:%02d:%02d", hours, minutes, seconds)));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             messenger.send(response, Map.of("error", "Failed to retrieve uptime"));
             System.err.println("Error retrieving update data: " + ex.getMessage());
         }

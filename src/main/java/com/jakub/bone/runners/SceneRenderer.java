@@ -1,9 +1,10 @@
 package com.jakub.bone.runners;
 
-import com.jakub.bone.ui.model.TerminalModel;
-import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.domain.airport.Airport;
-
+import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.ui.model.AirspaceModel;
+import com.jakub.bone.ui.model.RunwayModel;
+import com.jakub.bone.ui.model.TerminalModel;
 import com.jakub.bone.ui.utills.Camera;
 import com.jakub.bone.ui.utills.SceneUpdater;
 import com.jakub.bone.ui.utills.SmartGroup;
@@ -11,14 +12,12 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import com.jakub.bone.ui.model.AirspaceModel;
-import com.jakub.bone.ui.model.RunwayModel;
 
 public class SceneRenderer extends Application {
-    private SmartGroup group;
-    private Scene scene;
-    private Camera camera;
-    private Airport airport;
+    private final SmartGroup group;
+    private final Scene scene;
+    private final Camera camera;
+    private final Airport airport;
     private final ControlTowerService controller;
 
     public SceneRenderer(ControlTowerService controller) {
@@ -45,7 +44,7 @@ public class SceneRenderer extends Application {
         primaryStage.show();
     }
 
-    private void setupStaticElements(){
+    private void setupStaticElements() {
         RunwayModel runway1Model = new RunwayModel(Airport.runway1);
         RunwayModel runway2Model = new RunwayModel(Airport.runway2);
         AirspaceModel airspaceModel = new AirspaceModel();
@@ -56,11 +55,11 @@ public class SceneRenderer extends Application {
                 runway1Model.getRunwayRect(), runway2Model.getRunwayRect(), terminal1Model.getPlaneGroup(), terminal2Model.getPlaneGroup());
     }
 
-    private void setupRotationHandler(){
+    private void setupRotationHandler() {
         camera.initializeRotationControls(group, scene);
     }
 
-    public static void main (String[]args){
+    public static void main(String[] args) {
         launch(args);
     }
 

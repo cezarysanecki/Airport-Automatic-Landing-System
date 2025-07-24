@@ -10,7 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/planes/*")
 public class PlanesAirportServlet extends HttpServlet {
@@ -25,13 +26,13 @@ public class PlanesAirportServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try{
-            int planesCount= airportServer.getControlTowerService().getPlanes().size();
+        try {
+            int planesCount = airportServer.getControlTowerService().getPlanes().size();
             List<String> landedPlanes = airportServer.getDatabase().getPlaneRepository().getLandedPlanes();
             List<String> flightNumbers = airportServer.getControlTowerService().getAllFlightNumbers();
 
             String path = request.getPathInfo();
-            switch(path) {
+            switch (path) {
                 case "/count" -> messenger.send(response, Map.of("count", planesCount));
                 case "/flightNumbers" -> messenger.send(response, Map.of("flight numbers", flightNumbers));
                 case "/landed" -> messenger.send(response, Map.of("landed planes", landedPlanes));
@@ -45,7 +46,7 @@ public class PlanesAirportServlet extends HttpServlet {
                     }
                 }
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             messenger.send(response, Map.of("error", "Internal server error"));
             System.err.println("Error handling request: " + ex.getMessage());
         }

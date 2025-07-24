@@ -10,9 +10,9 @@ import java.io.ObjectOutputStream;
 
 @Log4j2
 public class PlaneCommunicationService {
-    private Plane plane;
-    private Messenger messenger;
-    private ObjectOutputStream out;
+    private final Plane plane;
+    private final Messenger messenger;
+    private final ObjectOutputStream out;
 
     public PlaneCommunicationService(Plane plane, Messenger messenger, ObjectOutputStream out) {
         this.plane = plane;
@@ -38,7 +38,7 @@ public class PlaneCommunicationService {
     public boolean sendLocation() throws IOException {
         Coordinates coordinates = plane.getNavigator().getCoordinates();
 
-        if(coordinates == null) {
+        if (coordinates == null) {
             log.info("Plane [{}]: disappeared from the radar", plane.getFlightNumber());
             return false;
         }

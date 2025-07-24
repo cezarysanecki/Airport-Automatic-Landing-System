@@ -1,7 +1,7 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +21,10 @@ public class Plane implements Serializable {
     public enum FlightPhase {
         DESCENDING, HOLDING, LANDING
     }
+
     private String flightNumber;
     private boolean landed;
-    private List <Coordinates> waypoints;
+    private List<Coordinates> waypoints;
     private boolean isDestroyed;
     private FuelManager fuelManager;
     private Navigator navigator;
@@ -40,7 +41,7 @@ public class Plane implements Serializable {
         this.assignedRunway = null;
     }
 
-    public void descend(){
+    public void descend() {
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
             setPhase(HOLDING);
@@ -49,7 +50,7 @@ public class Plane implements Serializable {
         }
     }
 
-    public void hold(){
+    public void hold() {
         setPhase(HOLDING);
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
@@ -57,10 +58,10 @@ public class Plane implements Serializable {
         }
     }
 
-    public void land(Runway runway){
+    public void land(Runway runway) {
         assignedRunway = runway;
         navigator.move();
-        if(navigator.isAtLastWaypoint()) {
+        if (navigator.isAtLastWaypoint()) {
             navigator.setCoordinates(runway.getLandingPoint());
             landed = true;
         }

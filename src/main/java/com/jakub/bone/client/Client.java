@@ -14,11 +14,11 @@ public class Client {
     private Socket socket;
     protected ObjectOutputStream out;
     protected ObjectInputStream in;
-    private int port;
-    private String ip;
+    private final int port;
+    private final String ip;
     protected boolean isConnected;
 
-    public Client(String ip,int port) {
+    public Client(String ip, int port) {
         this.ip = ip;
         this.port = port;
     }

@@ -21,6 +21,7 @@ public class ResumeAirportServlet extends HttpServlet {
         this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
         this.messenger = new Messenger();
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {

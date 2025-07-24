@@ -24,6 +24,7 @@ public class StartAirportServlet extends HttpServlet {
         this.airportStateService = new AirportStateService(airportServer);
         this.messenger = new Messenger();
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -33,7 +34,7 @@ public class StartAirportServlet extends HttpServlet {
                 airportStateService.startAirport();
                 messenger.send(response, Map.of("message", "airport started successfully"));
             }
-        } catch (Exception ex){
+        } catch (Exception ex) {
             messenger.send(response, Map.of("error", "Failed to start airport"));
             System.err.println("Error starting airport: " + ex.getMessage());
         }

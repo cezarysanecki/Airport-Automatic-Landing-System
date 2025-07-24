@@ -30,8 +30,8 @@ public class PlaneHandler extends Thread {
 
     private final Socket clientSocket;
     private final ControlTowerService controlTowerService;
-    private Messenger messenger;
-    private FlightPhaseService phaseCoordinator;
+    private final Messenger messenger;
+    private final FlightPhaseService phaseCoordinator;
 
     public PlaneHandler(Socket clientSocket, ControlTowerService controlTowerService) {
         this.clientSocket = clientSocket;

@@ -5,13 +5,13 @@ import com.jakub.bone.client.Client;
 import com.jakub.bone.client.PlaneCommunicationService;
 import com.jakub.bone.client.PlaneInstructionHandler;
 import com.jakub.bone.config.Constant;
-import lombok.Getter;
-import com.jakub.bone.utils.Messenger;
-import lombok.extern.log4j.Log4j2;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.utils.Messenger;
+import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,8 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @Log4j2
 @Getter
 public class PlaneClient extends Client implements Runnable {
-    private Plane plane;
-    private Messenger messenger;
+    private final Plane plane;
+    private final Messenger messenger;
     private PlaneInstructionHandler instructionHandler;
     private PlaneCommunicationService communicationService;
 
@@ -98,9 +98,9 @@ public class PlaneClient extends Client implements Runnable {
 
         for (int i = 0; i < numberOfClients; i++) {
             PlaneClient client = new PlaneClient("localhost", 5000);
-            try{
+            try {
                 Thread.sleep(Constant.CLIENT_SPAWN_DELAY);
-            } catch (InterruptedException ex){
+            } catch (InterruptedException ex) {
                 log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
                 Thread.currentThread().interrupt();
             }

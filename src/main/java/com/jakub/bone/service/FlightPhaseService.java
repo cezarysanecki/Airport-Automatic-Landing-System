@@ -3,23 +3,27 @@ package com.jakub.bone.service;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
-import lombok.extern.log4j.Log4j2;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.*;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.DESCENT;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_2;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.*;
-import static com.jakub.bone.config.Constant.*;
+import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 
 @Log4j2
 public class FlightPhaseService {
-    private ControlTowerService controlTowerService;
-    private Messenger messenger;
+    private final ControlTowerService controlTowerService;
+    private final Messenger messenger;
     private Runway availableRunway;
 
     public FlightPhaseService(ControlTowerService controlTower, Messenger messenger) {
@@ -49,7 +53,7 @@ public class FlightPhaseService {
         Runway runway = getRunwayIfPlaneAtCorridor(plane);
         availableRunway = runway;
 
-        if(runway != null && controlTowerService.isRunwayAvailable(runway)){
+        if (runway != null && controlTowerService.isRunwayAvailable(runway)) {
             applyLanding(plane, runway, out);
         } else {
             applyHolding(plane, out);
@@ -73,6 +77,7 @@ public class FlightPhaseService {
         }
         controlTowerService.releaseRunwayIfPlaneAtFinalApproach(plane, availableRunway);
     }
+
     private void enterHolding(Plane plane, ObjectOutputStream out) throws IOException {
         messenger.send(DESCENT, out);
         plane.changePhase(HOLDING);
@@ -97,10 +102,9 @@ public class FlightPhaseService {
     }
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
-        if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)){
+        if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)) {
             return Airport.runway1;
-        }
-        else if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
+        } else if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
             return Airport.runway2;
         }
         return null;

@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class Messenger {
-    private Gson gson;
+    private final Gson gson;
 
     public Messenger() {
         this.gson = new Gson();

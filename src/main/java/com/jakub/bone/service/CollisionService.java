@@ -5,20 +5,22 @@ import com.jakub.bone.domain.plane.Plane;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
-import static com.jakub.bone.config.Constant.*;
+import static com.jakub.bone.config.Constant.ALTITUDE_COLLISION_DISTANCE;
+import static com.jakub.bone.config.Constant.COLLISION_CHECK_DELAY;
+import static com.jakub.bone.config.Constant.HORIZONTAL_COLLISION_DISTANCE;
 
 @Log4j2
 public class CollisionService extends Thread {
-    private ControlTowerService controlTowerService;
+    private final ControlTowerService controlTowerService;
 
-    public CollisionService(ControlTowerService controlTowerService){
+    public CollisionService(ControlTowerService controlTowerService) {
         this.controlTowerService = controlTowerService;
     }
 
     @Override
     public void run() {
         ThreadContext.put("type", "Server");
-        while(true) {
+        while (true) {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     detectCollision();
@@ -32,18 +34,18 @@ public class CollisionService extends Thread {
     }
 
     public void detectCollision() {
-            for (int i = 0; i < controlTowerService.getPlanes().size(); i++) {
-                Plane plane1 = controlTowerService.getPlanes().get(i);
-                for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
-                    Plane plane2 = controlTowerService.getPlanes().get(j);
-                    if (arePlanesToClose(plane1.getNavigator().getCoordinates(), plane2.getNavigator().getCoordinates())) {
-                        handleCollision(plane1, plane2);
-                    }
+        for (int i = 0; i < controlTowerService.getPlanes().size(); i++) {
+            Plane plane1 = controlTowerService.getPlanes().get(i);
+            for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
+                Plane plane2 = controlTowerService.getPlanes().get(j);
+                if (arePlanesToClose(plane1.getNavigator().getCoordinates(), plane2.getNavigator().getCoordinates())) {
+                    handleCollision(plane1, plane2);
                 }
             }
+        }
     }
 
-    private void handleCollision(Plane plane1, Plane plane2){
+    private void handleCollision(Plane plane1, Plane plane2) {
         String[] collidedIDs = {plane1.getFlightNumber(), plane2.getFlightNumber()};
         controlTowerService.getDatabase().getCollisionRepository().registerCollisionToDB(collidedIDs);
         plane1.destroyPlane();

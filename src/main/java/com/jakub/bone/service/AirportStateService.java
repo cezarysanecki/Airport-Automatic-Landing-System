@@ -1,7 +1,7 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.runners.PlaneClient;
 import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.runners.PlaneClient;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
  */
 @Getter
 public class AirportStateService {
-    private AirportServer airportServer;
+    private final AirportServer airportServer;
 
     public AirportStateService(AirportServer airportServer) {
         this.airportServer = airportServer;
