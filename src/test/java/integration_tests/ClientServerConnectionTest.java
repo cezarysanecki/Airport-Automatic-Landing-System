@@ -1,6 +1,7 @@
 package integration_tests;
 
 import com.jakub.bone.infrastructure.PlaneClient;
+import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
@@ -13,6 +14,7 @@ import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.runners.AirportServer;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -44,7 +46,7 @@ class ClientServerConnectionTest {
                     this.server = new AirportServer(database, new ControlTowerService(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
-                    this.server.startServer(5000);
+                    this.server.startServer(5000, new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()));
                 } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }

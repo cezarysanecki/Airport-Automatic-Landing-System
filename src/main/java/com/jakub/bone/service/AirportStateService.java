@@ -5,6 +5,7 @@ import com.jakub.bone.infrastructure.PlaneClient;
 import lombok.Getter;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 
 import static com.jakub.bone.config.Constant.CLIENT_SPAWN_DELAY;
 import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
@@ -30,7 +31,7 @@ public class AirportStateService {
 
         Thread serverThread = new Thread(() -> {
             try {
-                this.airportServer.startServer(5000);
+                this.airportServer.startServer(5000, new ServerSocket(5000), new CollisionService(this.airportServer.getControlTowerService(), this.airportServer.getCollisionRepository()));
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);
             }

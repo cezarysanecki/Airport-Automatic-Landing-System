@@ -51,16 +51,16 @@ public class AirportServer {
         this.paused = false;
     }
 
-    public void startServer(int port) throws IOException {
+    public void startServer(int port, ServerSocket serverSocket, CollisionService collisionService) throws IOException {
         ThreadContext.put("type", "Server");
         running = true;
 
         try {
-            this.serverSocket = new ServerSocket(port);
+            this.serverSocket = serverSocket;
             this.startTime = Instant.now();
             log.info("Server started");
 
-            new CollisionService(controlTowerService, collisionRepository).start();
+            collisionService.start();
 
             log.info("Collision detector started");
 
@@ -72,21 +72,19 @@ public class AirportServer {
                 }
 
                 try {
-                    Socket clientSocket = serverSocket.accept();
+                    Socket clientSocket = this.serverSocket.accept();
                     if (clientSocket != null) {
                         log.debug("Server connected with client at port: {}", port);
                         running = true;
                         new PlaneHandler(clientSocket, controlTowerService).start();
                     }
                 } catch (Exception ex) {
-                    if (serverSocket.isClosed()) {
+                    if (this.serverSocket.isClosed()) {
                         return;
                     }
                     log.error("Error handling client connection: {}", ex.getMessage(), ex);
                 }
             }
-        } catch (IOException ex) {
-            log.error("Failed to start AirportServer on port {}: {}", port, ex.getMessage(), ex);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -126,7 +124,7 @@ public class AirportServer {
 
             ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
             AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
-            airportServer.startServer(5000);
+            airportServer.startServer(5000, new ServerSocket(5000), new CollisionService(airportServer.controlTowerService, airportServer.collisionRepository));
         }
     }
 }

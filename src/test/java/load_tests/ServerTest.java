@@ -2,9 +2,11 @@ package load_tests;
 
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Timer;
@@ -39,7 +41,7 @@ public class ServerTest {
         }, 4200000);
 
         try {
-            airportServer.startServer(5000);
+            airportServer.startServer(5000, new ServerSocket(5000), new CollisionService(airportServer.getControlTowerService(), airportServer.getCollisionRepository()));
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Failed to start the server:", ex.getMessage());
         }
