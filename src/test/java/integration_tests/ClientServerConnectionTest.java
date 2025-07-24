@@ -1,6 +1,6 @@
 package integration_tests;
 
-import com.jakub.bone.runners.PlaneClient;
+import com.jakub.bone.infrastructure.PlaneClient;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
