@@ -14,17 +14,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class SceneRenderer extends Application {
+
     private final SmartGroup group;
     private final Scene scene;
     private final Camera camera;
-    private final Airport airport;
     private final ControlTowerService controller;
 
     public SceneRenderer(ControlTowerService controller) {
         this.group = new SmartGroup(0.5, 0.5, 0.5);
         this.scene = new Scene(group, 800, 600, Color.BLACK);
         this.camera = new Camera();
-        this.airport = new Airport();
         this.controller = controller;
     }
 
