@@ -2,9 +2,7 @@ package com.jakub.bone.runners;
 
 import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.config.ServerConstants;
-import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
-import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.AirportStateService;
 import com.jakub.bone.service.ControlTowerService;
 import javafx.application.Application;
@@ -27,15 +25,14 @@ public class SimulationLauncher extends Application {
     public void init() throws Exception {
         this.connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD);
 
-        AirportDatabase database = new AirportDatabase(connection);
-        PlaneRepository planeRepository = database.getPlaneRepository();
-        CollisionRepository collisionRepository = database.getCollisionRepository();
+        AirportServerFactory airportServerFactory = new AirportServerFactory(connection);
 
-        ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
-        AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
+        AirportServer airportServer = airportServerFactory.airportServer;
+        CollisionRepository collisionRepository = airportServerFactory.collisionRepository;
+        ControlTowerService controlTowerService = airportServerFactory.controlTowerService;
 
         this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
-        this.visualization = new SceneRenderer(airportServer.getControlTowerService());
+        this.visualization = new SceneRenderer(controlTowerService);
     }
 
     @Override

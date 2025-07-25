@@ -1,6 +1,7 @@
 package com.jakub.bone.api.control;
 
 import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.runners.AirportServerContext;
 import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,12 +19,14 @@ public class StopAirportServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
+        AirportServerContext servletContext = (AirportServerContext) getServletContext();
+
+        this.airportServer = servletContext.airportServerFactory.airportServer;
         this.messenger = new Messenger();
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             if (!airportServer.isRunning()) {
                 messenger.send(response, Map.of("message", "airport is not running"));

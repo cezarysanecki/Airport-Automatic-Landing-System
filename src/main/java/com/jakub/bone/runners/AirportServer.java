@@ -3,9 +3,6 @@ package com.jakub.bone.runners;
 import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.config.ServerConstants;
-import com.jakub.bone.database.AirportDatabase;
-import com.jakub.bone.repository.CollisionRepository;
-import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
@@ -24,25 +21,21 @@ import java.time.Duration;
 import java.time.Instant;
 
 @Log4j2
-@Getter
-@Setter
 public class AirportServer {
 
-    private CollisionRepository collisionRepository;
-    private PlaneRepository planeRepository;
-    private ControlTowerService controlTowerService;
+    private final ControlTowerService controlTowerService;
+
+    @Getter
     private boolean running;
+    @Getter
     private boolean paused;
+    @Getter
     private Instant startTime;
 
     public AirportServer(
-            CollisionRepository collisionRepository,
-            PlaneRepository planeRepository,
             ControlTowerService controlTowerService
     ) throws SQLException {
-        this.collisionRepository = collisionRepository;
         this.controlTowerService = controlTowerService;
-        this.planeRepository = planeRepository;
 
         this.running = false;
         this.paused = false;
@@ -99,24 +92,22 @@ public class AirportServer {
     }
 
     public Duration getUptime() {
-        return Duration.between(getStartTime(), Instant.now());
+        return Duration.between(startTime, Instant.now());
     }
 
     public static void main(String[] args) throws IOException, SQLException {
         try (Connection connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD)) {
-            AirportDatabase database = new AirportDatabase(connection);
-            PlaneRepository planeRepository = database.getPlaneRepository();
-            CollisionRepository collisionRepository = database.getCollisionRepository();
-
-            ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
-            AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
+            AirportServerFactory airportServerFactory = new AirportServerFactory(connection);
 
             try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
-                CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+                CollisionService collisionService = new CollisionService(
+                        airportServerFactory.controlTowerService,
+                        airportServerFactory.collisionRepository
+                );
                 collisionService.start();
 
                 Messenger messenger = new Messenger();
-                airportServer.startServer(serverSocket, messenger);
+                airportServerFactory.airportServer.startServer(serverSocket, messenger);
             }
 
         }

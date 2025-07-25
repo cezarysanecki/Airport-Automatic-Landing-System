@@ -1,6 +1,7 @@
 package com.jakub.bone.api.monitoring;
 
-import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.repository.CollisionRepository;
+import com.jakub.bone.runners.AirportServerContext;
 import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,18 +15,21 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/collisions")
 public class CollisionsAirportServlet extends HttpServlet {
-    private AirportServer airportServer;
+
     private Messenger messenger;
+    private CollisionRepository collisionRepository;
 
     @Override
     public void init() throws ServletException {
-        this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
+        AirportServerContext servletContext = (AirportServerContext) getServletContext();
+
+        this.collisionRepository = servletContext.airportServerFactory.collisionRepository;
         this.messenger = new Messenger();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        List<String> collidedPlanes = airportServer.getCollisionRepository().getCollidedPlanes();
+        List<String> collidedPlanes = collisionRepository.getCollidedPlanes();
         messenger.send(response, Map.of("collided planes", collidedPlanes));
     }
 }
