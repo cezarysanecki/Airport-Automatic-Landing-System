@@ -1,6 +1,7 @@
 package com.jakub.bone.runners;
 
 import com.jakub.bone.application.PlaneHandler;
+import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
@@ -25,11 +26,6 @@ import java.time.Instant;
 @Getter
 @Setter
 public class AirportServer {
-
-    private final static String USER = "postgres";
-    private final static String PASSWORD = "root";
-    private final static String DATABASE = "airport_system";
-    private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
 
     private CollisionRepository collisionRepository;
     private PlaneRepository planeRepository;
@@ -106,7 +102,7 @@ public class AirportServer {
     }
 
     public static void main(String[] args) throws IOException, SQLException {
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD)) {
             AirportDatabase database = new AirportDatabase(connection);
             PlaneRepository planeRepository = database.getPlaneRepository();
             CollisionRepository collisionRepository = database.getCollisionRepository();

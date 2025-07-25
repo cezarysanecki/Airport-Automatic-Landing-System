@@ -7,6 +7,7 @@ import com.jakub.bone.api.control.StopAirportServlet;
 import com.jakub.bone.api.monitoring.CollisionsAirportServlet;
 import com.jakub.bone.api.monitoring.PlanesAirportServlet;
 import com.jakub.bone.api.monitoring.UptimeAirportServlet;
+import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
@@ -21,18 +22,13 @@ import java.sql.SQLException;
 
 public class ApiServer {
 
-    private final static String USER = "postgres";
-    private final static String PASSWORD = "root";
-    private final static String DATABASE = "airport_system";
-    private final static String URL = String.format("jdbc:postgresql://localhost:%d/%s", 5432, DATABASE);
-
     public static void main(String[] args) throws SQLException {
         Server server = new Server(8080);
 
         ServletContextHandler context = new ServletContextHandler();
         server.setHandler(context);
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD)) {
             AirportDatabase database = new AirportDatabase(connection);
             PlaneRepository planeRepository = database.getPlaneRepository();
             CollisionRepository collisionRepository = database.getCollisionRepository();
