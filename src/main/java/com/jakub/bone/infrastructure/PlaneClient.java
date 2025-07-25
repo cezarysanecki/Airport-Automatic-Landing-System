@@ -14,15 +14,16 @@ import java.io.IOException;
 
 @Log4j2
 @Getter
-public class PlaneClient extends Client implements Runnable {
+public class PlaneClient implements Runnable {
 
+    private final Client client;
     private final Plane plane;
     private final Messenger messenger;
     private PlaneInstructionHandler instructionHandler;
     private PlaneCommunicationService communicationService;
 
     public PlaneClient(String ip, int port, Messenger messenger, Plane plane) {
-        super(ip, port);
+        this.client = new Client(ip, port);
         this.plane = plane;
         this.messenger = messenger;
 
@@ -49,16 +50,16 @@ public class PlaneClient extends Client implements Runnable {
     }
 
     private void establishConnection() throws IOException {
-        startConnection();
-        if (!isConnected) {
+        client.startConnection();
+        if (!client.isConnected()) {
             throw new IOException("Unable to establish connection to the server");
         }
         log.info("PlaneClient [{}]: connected to server", plane.getFlightNumber());
     }
 
     private void initializeServices() {
-        this.communicationService = new PlaneCommunicationService(plane, messenger, out);
-        this.instructionHandler = new PlaneInstructionHandler(plane, messenger, in, out);
+        this.communicationService = new PlaneCommunicationService(plane, messenger, client.getOut());
+        this.instructionHandler = new PlaneInstructionHandler(plane, messenger, client.getIn(), client.getOut());
     }
 
     private void processInstructions() throws IOException, ClassNotFoundException {
@@ -68,7 +69,7 @@ public class PlaneClient extends Client implements Runnable {
                 return;
             }
 
-            PlaneHandler.AirportInstruction instruction = messenger.receiveAndParse(in, PlaneHandler.AirportInstruction.class);
+            PlaneHandler.AirportInstruction instruction = messenger.receiveAndParse(client.getIn(), PlaneHandler.AirportInstruction.class);
             instructionHandler.processInstruction(instruction);
 
             if (plane.isDestroyed()) {
@@ -79,7 +80,7 @@ public class PlaneClient extends Client implements Runnable {
     }
 
     private void closeConnection() {
-        stopConnection();
+        client.stopConnection();
         log.debug("Plane [{}]: connection stopped", plane.getFlightNumber());
     }
 
