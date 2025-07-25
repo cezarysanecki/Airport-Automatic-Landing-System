@@ -18,13 +18,13 @@ import static com.jakub.bone.config.Constant.HOLDING_ENTRY_ALTITUDE;
 import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 
 @Log4j2
-@Getter
 public class ControlTowerService {
 
     private final PlaneRepository planeRepository;
-    private final List<Plane> planes;
-
     private final Lock lock;
+
+    @Getter
+    private final List<Plane> planes;
 
     public ControlTowerService(PlaneRepository planeRepository) throws SQLException {
         this.planeRepository = planeRepository;

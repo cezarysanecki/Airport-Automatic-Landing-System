@@ -2,9 +2,10 @@ package com.jakub.bone.api.monitoring;
 
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.runners.AirportServerContext;
+import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.utils.Messenger;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,10 +25,11 @@ public class PlanesAirportServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        AirportServerContext servletContext = (AirportServerContext) getServletContext();
+        ServletContext servletContext = getServletContext();
+        AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
-        this.planeRepository = servletContext.airportServerFactory.planeRepository;
-        this.controlTowerService = servletContext.airportServerFactory.controlTowerService;
+        this.planeRepository = airportServerFactory.planeRepository;
+        this.controlTowerService = airportServerFactory.controlTowerService;
         this.messenger = new Messenger();
     }
 

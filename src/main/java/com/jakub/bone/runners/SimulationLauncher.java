@@ -8,6 +8,7 @@ import com.jakub.bone.service.ControlTowerService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
+import org.eclipse.jetty.server.Server;
 
 import java.net.ServerSocket;
 import java.sql.Connection;
@@ -20,11 +21,12 @@ public class SimulationLauncher extends Application {
     private ServerSocket serverSocket;
     private AirportStateService airportStateService;
     private SceneRenderer visualization;
+    private Server server;
 
     @Override
     public void init() throws Exception {
         this.connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD);
-
+        this.server = new Server(8080);
         AirportServerFactory airportServerFactory = new AirportServerFactory(connection);
 
         AirportServer airportServer = airportServerFactory.airportServer;
@@ -33,6 +35,8 @@ public class SimulationLauncher extends Application {
 
         this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
         this.visualization = new SceneRenderer(controlTowerService);
+
+        ApiServerRunner.run(connection, server);
     }
 
     @Override
@@ -47,6 +51,7 @@ public class SimulationLauncher extends Application {
         super.stop();
         connection.close();
         serverSocket.close();
+        server.stop();
     }
 
     public static void main(String[] args) {

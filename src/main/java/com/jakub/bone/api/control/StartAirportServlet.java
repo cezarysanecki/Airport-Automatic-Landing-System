@@ -3,10 +3,11 @@ package com.jakub.bone.api.control;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
-import com.jakub.bone.runners.AirportServerContext;
+import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.service.AirportStateService;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.utils.Messenger;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,12 +27,13 @@ public class StartAirportServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        AirportServerContext servletContext = (AirportServerContext) getServletContext();
+        ServletContext servletContext = getServletContext();
+        AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
-        this.airportServer = servletContext.airportServerFactory.airportServer;
+        this.airportServer = airportServerFactory.airportServer;
 
-        ControlTowerService controlTowerService = servletContext.airportServerFactory.controlTowerService;
-        CollisionRepository collisionRepository = servletContext.airportServerFactory.collisionRepository;
+        ControlTowerService controlTowerService = airportServerFactory.controlTowerService;
+        CollisionRepository collisionRepository = airportServerFactory.collisionRepository;
 
         this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
         this.messenger = new Messenger();
