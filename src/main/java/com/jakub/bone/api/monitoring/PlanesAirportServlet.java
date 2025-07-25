@@ -36,18 +36,24 @@ public class PlanesAirportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            int planesCount = controlTowerService.getPlanes().size();
-            List<String> landedPlanes = planeRepository.getLandedPlanes();
-            List<String> flightNumbers = controlTowerService.getAllFlightNumbers();
-
             String path = request.getPathInfo();
             switch (path) {
-                case "/count" -> messenger.send(response, Map.of("count", planesCount));
-                case "/flightNumbers" -> messenger.send(response, Map.of("flight numbers", flightNumbers));
-                case "/landed" -> messenger.send(response, Map.of("landed planes", landedPlanes));
+                case "/count" -> {
+                    int planesCount = controlTowerService.countPlanes();
+                    messenger.send(response, Map.of("count", planesCount));
+                }
+                case "/flightNumbers" -> {
+                    List<String> flightNumbers = controlTowerService.getAllFlightNumbers();
+                    messenger.send(response, Map.of("flight numbers", flightNumbers));
+                }
+                case "/landed" -> {
+                    List<String> landedPlanes = planeRepository.getLandedPlanes();
+                    messenger.send(response, Map.of("landed planes", landedPlanes));
+                }
                 default -> {
                     String flightNumber = path.substring(1);
                     Plane plane = controlTowerService.getPlaneByFlightNumber(flightNumber);
+
                     if (plane == null) {
                         messenger.send(response, Map.of("message", "plane not found"));
                     } else {

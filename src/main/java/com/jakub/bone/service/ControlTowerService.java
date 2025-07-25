@@ -6,7 +6,7 @@ import com.jakub.bone.repository.PlaneRepository;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,23 +21,27 @@ import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 public class ControlTowerService {
 
     private final PlaneRepository planeRepository;
-    private final Lock lock;
 
     @Getter
-    private final List<Plane> planes;
+    private final List<Plane> planes = new CopyOnWriteArrayList<>();
+    private final Lock lock = new ReentrantLock();
 
-    public ControlTowerService(PlaneRepository planeRepository) throws SQLException {
+    public ControlTowerService(PlaneRepository planeRepository) {
         this.planeRepository = planeRepository;
-
-        this.planes = new CopyOnWriteArrayList<>();
-        this.lock = new ReentrantLock();
     }
 
     public void registerPlane(Plane plane) {
         executeWithLock(() -> {
             planes.add(plane);
-            planeRepository.registerPlaneInDB(plane.getFlightNumber());
+            planeRepository.insertPlane(plane.getFlightNumber());
+            log.info("{}: Plane registered: {}", hashCode(), plane.getFlightNumber());
         });
+    }
+
+    public int countPlanes() {
+        int countFlyingPlanes = planeRepository.countFlyingPlanes();
+        log.info("Current planes count: {}", countFlyingPlanes);
+        return countFlyingPlanes;
     }
 
     public boolean isSpaceFull() {
@@ -80,7 +84,7 @@ public class ControlTowerService {
     public boolean hasLandedOnRunway(Plane plane, Runway runway) {
         boolean hasLanded = plane.getNavigator().getCoordinates().equals(runway.getLandingPoint());
         if (hasLanded) {
-            planeRepository.registerLandingInDB(plane.getFlightNumber());
+            planeRepository.updateLandingTime(plane.getFlightNumber(), LocalDateTime.now());
         }
         return hasLanded;
     }
