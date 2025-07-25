@@ -1,5 +1,6 @@
 package com.jakub.bone.api.control;
 
+import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.service.AirportStateService;
@@ -38,7 +39,7 @@ public class StartAirportServlet extends HttpServlet {
             if (airportServer.isRunning()) {
                 messenger.send(response, Map.of("message", "airport is already running"));
             } else {
-                try (ServerSocket serverSocket = new ServerSocket(5000)) {
+                try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
                     airportStateService.startAirport(serverSocket);
                     messenger.send(response, Map.of("message", "airport started successfully"));
                 }

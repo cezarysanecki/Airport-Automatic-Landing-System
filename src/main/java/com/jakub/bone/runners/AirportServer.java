@@ -2,6 +2,7 @@ package com.jakub.bone.runners;
 
 import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.config.DbConstants;
+import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
@@ -110,7 +111,7 @@ public class AirportServer {
             ControlTowerService controlTowerService = new ControlTowerService(planeRepository);
             AirportServer airportServer = new AirportServer(collisionRepository, planeRepository, controlTowerService);
 
-            try (ServerSocket serverSocket = new ServerSocket(5000)) {
+            try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
                 CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
                 collisionService.start();
 

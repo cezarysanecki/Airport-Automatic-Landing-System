@@ -18,7 +18,7 @@ public class InitDatabaseRunner {
             DatabaseSchema databaseSchema = new DatabaseSchema(context);
             databaseSchema.createTables();
         } catch (SQLException e) {
-            log.info("Connection established successfully with database '{}' on port {}", DbConstants.DATABASE, 5432);
+            log.info("Connection established successfully with database '{}' on port {}", DbConstants.DATABASE, DbConstants.DATABASE_PORT);
         }
     }
 

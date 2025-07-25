@@ -1,5 +1,6 @@
 package com.jakub.bone.service;
 
+import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.infrastructure.PlaneClient;
@@ -53,7 +54,7 @@ public class AirportStateService {
         new Thread(() -> {
             for (int i = 0; i < 100; i++) {
                 Plane plane = new Plane(PlaneNumberFactory.generateFlightNumber().value());
-                PlaneClient client = new PlaneClient("localhost", 5000, messenger, plane);
+                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT, messenger, plane);
 
                 new Thread(client).start();
 
