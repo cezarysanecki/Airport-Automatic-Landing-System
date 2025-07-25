@@ -6,6 +6,8 @@ import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.FlightPhaseService;
+import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -13,7 +15,6 @@ import org.apache.logging.log4j.ThreadContext;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -50,7 +51,7 @@ public class AirportServer {
         this.paused = false;
     }
 
-    public void startServer(ServerSocket serverSocket) throws IOException {
+    public void startServer(ServerSocket serverSocket, Messenger messenger) throws IOException {
         ThreadContext.put("type", "Server");
         running = true;
 
@@ -70,7 +71,16 @@ public class AirportServer {
 
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                 running = true;
-                new PlaneHandler(serverSocket, controlTowerService).start();
+
+                FlightPhaseService phaseCoordinator = new FlightPhaseService(controlTowerService, messenger);
+                PlaneHandler planeHandler = new PlaneHandler(
+                        serverSocket,
+                        controlTowerService,
+                        messenger,
+                        phaseCoordinator
+                );
+
+                planeHandler.start();
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -108,7 +118,8 @@ public class AirportServer {
                 CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
                 collisionService.start();
 
-                airportServer.startServer(serverSocket);
+                Messenger messenger = new Messenger();
+                airportServer.startServer(serverSocket, messenger);
             }
 
         }

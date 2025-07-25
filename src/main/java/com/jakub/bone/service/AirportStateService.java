@@ -3,6 +3,7 @@ package com.jakub.bone.service;
 import com.jakub.bone.infrastructure.PlaneClient;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -38,7 +39,8 @@ public class AirportStateService {
             collisionService.start();
 
             try {
-                this.airportServer.startServer(serverSocket);
+                Messenger messenger = new Messenger();
+                this.airportServer.startServer(serverSocket, messenger);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);
             }

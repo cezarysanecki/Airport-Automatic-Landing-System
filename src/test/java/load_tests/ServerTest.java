@@ -4,6 +4,7 @@ import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.utils.Messenger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -41,7 +42,7 @@ public class ServerTest {
         }, 4200000);
 
         try {
-            airportServer.startServer(new ServerSocket(5000), new CollisionService(airportServer.getControlTowerService(), airportServer.getCollisionRepository()));
+            airportServer.startServer(new ServerSocket(5000), new CollisionService(airportServer.getControlTowerService(), airportServer.getCollisionRepository()), new Messenger());
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Failed to start the server:", ex.getMessage());
         }

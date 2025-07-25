@@ -34,11 +34,16 @@ public class PlaneHandler extends Thread {
     private final Messenger messenger;
     private final FlightPhaseService phaseCoordinator;
 
-    public PlaneHandler(ServerSocket serverSocket, ControlTowerService controlTowerService) throws IOException {
+    public PlaneHandler(
+            ServerSocket serverSocket,
+            ControlTowerService controlTowerService,
+            Messenger messenger,
+            FlightPhaseService phaseCoordinator
+    ) throws IOException {
         this.clientSocket = serverSocket.accept();
         this.controlTowerService = controlTowerService;
-        this.messenger = new Messenger();
-        this.phaseCoordinator = new FlightPhaseService(controlTowerService, messenger);
+        this.messenger = messenger;
+        this.phaseCoordinator = phaseCoordinator;
     }
 
     @Override

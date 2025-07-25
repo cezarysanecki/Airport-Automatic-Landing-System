@@ -6,6 +6,7 @@ import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
+import com.jakub.bone.utils.Messenger;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -46,7 +47,7 @@ class ClientServerConnectionTest {
                     this.server = new AirportServer(database, new ControlTowerService(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
-                    this.server.startServer(new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()));
+                    this.server.startServer(new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()), new Messenger());
                 } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }

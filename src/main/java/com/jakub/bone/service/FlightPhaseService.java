@@ -22,6 +22,7 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 
 @Log4j2
 public class FlightPhaseService {
+
     private final ControlTowerService controlTowerService;
     private final Messenger messenger;
     private Runway availableRunway;
