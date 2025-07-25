@@ -73,18 +73,8 @@ public class PlaneHandler extends Thread {
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         Plane plane = messenger.receiveAndParse(in, Plane.class);
 
-        if (!isPlaneRegistered(plane, out)) {
+        if (!canRegisterPlane(plane, out)) {
             return;
-        }
-
-        managePlane(plane, in, out);
-    }
-
-    private boolean isPlaneRegistered(Plane plane, ObjectOutputStream out) throws IOException {
-        if (controlTowerService.isSpaceFull()) {
-            messenger.send(FULL, out);
-            log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
-            return false;
         }
 
         waitForUpdate(UPDATE_DELAY);
@@ -92,11 +82,22 @@ public class PlaneHandler extends Thread {
         if (controlTowerService.isAtCollisionRiskZone(plane)) {
             messenger.send(RISK_ZONE, out);
             log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
-            return false;
+            return;
         }
+
         controlTowerService.registerPlane(plane);
 
         log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getCoordinates().getX(), plane.getNavigator().getCoordinates().getY(), plane.getNavigator().getCoordinates().getAltitude());
+
+        managePlane(plane, in, out);
+    }
+
+    private boolean canRegisterPlane(Plane plane, ObjectOutputStream out) throws IOException {
+        if (controlTowerService.isSpaceFull()) {
+            messenger.send(FULL, out);
+            log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
+            return false;
+        }
         return true;
     }
 

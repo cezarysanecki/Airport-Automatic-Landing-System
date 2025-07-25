@@ -34,7 +34,7 @@ public class ControlTowerService {
         executeWithLock(() -> {
             planes.add(plane);
             planeRepository.insertPlane(plane.getFlightNumber());
-            log.info("{}: Plane registered: {}", hashCode(), plane.getFlightNumber());
+            log.info("Plane registered: {}", plane.getFlightNumber());
         });
     }
 
@@ -47,7 +47,6 @@ public class ControlTowerService {
     public boolean isSpaceFull() {
         return executeWithLock(() -> planes.size() >= MAX_CAPACITY);
     }
-
 
     public boolean isAtCollisionRiskZone(Plane plane) {
         return executeWithLock(() -> planes.stream()
