@@ -1,21 +1,27 @@
 package com.jakub.bone.application;
 
-import com.jakub.bone.domain.airport.Airport;
+import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.utils.Messenger;
-import com.jakub.bone.domain.airport.Location;
 import lombok.extern.log4j.Log4j2;
-import com.jakub.bone.domain.plane.Plane;
 import org.apache.logging.log4j.ThreadContext;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.*;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.COLLISION;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.FULL;
+import static com.jakub.bone.application.PlaneHandler.AirportInstruction.RISK_ZONE;
+import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
+import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
-import static com.jakub.bone.config.Constant.*;
 
 @Log4j2
 public class PlaneHandler extends Thread {
@@ -25,16 +31,19 @@ public class PlaneHandler extends Thread {
 
     private final Socket clientSocket;
     private final ControlTowerService controlTowerService;
-    private final Airport airport;
-    private Messenger messenger;
-    private FlightPhaseService phaseCoordinator;
+    private final Messenger messenger;
+    private final FlightPhaseService phaseCoordinator;
 
-    public PlaneHandler(Socket clientSocket, ControlTowerService controlTowerService, Airport airport) {
-        this.clientSocket = clientSocket;
+    public PlaneHandler(
+            ServerSocket serverSocket,
+            ControlTowerService controlTowerService,
+            Messenger messenger,
+            FlightPhaseService phaseCoordinator
+    ) throws IOException {
+        this.clientSocket = serverSocket.accept();
         this.controlTowerService = controlTowerService;
-        this.airport = airport;
-        this.messenger = new Messenger();
-        this.phaseCoordinator = new FlightPhaseService(controlTowerService, airport, messenger);
+        this.messenger = messenger;
+        this.phaseCoordinator = phaseCoordinator;
     }
 
     @Override
@@ -64,18 +73,8 @@ public class PlaneHandler extends Thread {
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         Plane plane = messenger.receiveAndParse(in, Plane.class);
 
-        if (!isPlaneRegistered(plane, out)) {
+        if (!canRegisterPlane(plane, out)) {
             return;
-        }
-
-        managePlane(plane, in, out);
-    }
-
-    private boolean isPlaneRegistered(Plane plane, ObjectOutputStream out) throws IOException {
-        if (controlTowerService.isSpaceFull()) {
-            messenger.send(FULL, out);
-            log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
-            return false;
         }
 
         waitForUpdate(UPDATE_DELAY);
@@ -83,11 +82,22 @@ public class PlaneHandler extends Thread {
         if (controlTowerService.isAtCollisionRiskZone(plane)) {
             messenger.send(RISK_ZONE, out);
             log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
-            return false;
+            return;
         }
+
         controlTowerService.registerPlane(plane);
 
-        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getLocation().getX(), plane.getNavigator().getLocation().getY(), plane.getNavigator().getLocation().getAltitude());
+        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getCoordinates().getX(), plane.getNavigator().getCoordinates().getY(), plane.getNavigator().getCoordinates().getAltitude());
+
+        managePlane(plane, in, out);
+    }
+
+    private boolean canRegisterPlane(Plane plane, ObjectOutputStream out) throws IOException {
+        if (controlTowerService.isSpaceFull()) {
+            messenger.send(FULL, out);
+            log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
+            return false;
+        }
         return true;
     }
 
@@ -103,8 +113,8 @@ public class PlaneHandler extends Thread {
                 return;
             }
 
-            Location location = messenger.receiveAndParse(in, Location.class);
-            phaseCoordinator.processFlightPhase(plane, location, out);
+            Coordinates coordinates = messenger.receiveAndParse(in, Coordinates.class);
+            phaseCoordinator.processFlightPhase(plane, coordinates, out);
 
             if (plane.isDestroyed()) {
                 handleCollision(plane, out);

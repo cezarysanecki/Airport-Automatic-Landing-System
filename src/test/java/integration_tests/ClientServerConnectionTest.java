@@ -1,18 +1,23 @@
 package integration_tests;
 
-import com.jakub.bone.client.PlaneClient;
+import com.jakub.bone.domain.plane.PlaneNumberFactory;
+import com.jakub.bone.infrastructure.PlaneClient;
+import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
+import com.jakub.bone.utils.Messenger;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.AirportServer;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,15 +39,16 @@ class ClientServerConnectionTest {
     void setUp() throws IOException, SQLException {
 
         MockitoAnnotations.openMocks(this);
-        when(mockDatabase.getPLANE_REPOSITORY()).thenReturn(mockPlaneRepository);
-        when(mockDatabase.getCOLLISION_REPOSITORY()).thenReturn(mockCollisionRepository);
+        when(mockDatabase.getPlaneRepository()).thenReturn(mockPlaneRepository);
+        when(mockDatabase.getCollisionRepository()).thenReturn(mockCollisionRepository);
 
             new Thread(() -> {
                 try {
-                    this.server = new AirportServer();
+                    final AirportDatabase database = new AirportDatabase(DriverManager.getConnection(AirportDatabase.URL, AirportDatabase.USER, AirportDatabase.PASSWORD));
+                    this.server = new AirportServer(database, new ControlTowerService(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
-                    this.server.startServer(5000);
+                    this.server.startServer(new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()), new Messenger());
                 } catch (IOException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -73,7 +79,7 @@ class ClientServerConnectionTest {
         // Wait for the server to start
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient).start();
 
         // Wait for the client to connect
@@ -87,13 +93,13 @@ class ClientServerConnectionTest {
     void testConnectionWithMultipleClients() {
         waitForUpdate();
 
-        PlaneClient planeClient1 = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient1 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient1).start();
 
         // Wait for the first client to connect
         waitForUpdate();
 
-        PlaneClient planeClient2 = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient2 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient2).start();
 
         // Wait for the second client to connect
@@ -108,7 +114,7 @@ class ClientServerConnectionTest {
     void testClientRegistration() {
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient).start();
 
         waitForUpdate();
@@ -128,7 +134,7 @@ class ClientServerConnectionTest {
             server.getControlTowerService().getPlanes().add(plane);
         }
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient).start();
 
         waitForUpdate();

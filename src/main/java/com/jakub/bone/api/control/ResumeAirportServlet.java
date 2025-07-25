@@ -1,7 +1,9 @@
 package com.jakub.bone.api.control;
 
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.utils.Messenger;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,16 +15,21 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/resume")
 public class ResumeAirportServlet extends HttpServlet {
+
     private AirportServer airportServer;
     private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
-        this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
+        ServletContext servletContext = getServletContext();
+        AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
+
+        this.airportServer = airportServerFactory.airportServer;
         this.messenger = new Messenger();
     }
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             if (airportServer.isPaused()) {
                 airportServer.resumeServer();

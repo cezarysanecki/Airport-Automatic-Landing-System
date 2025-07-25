@@ -1,13 +1,18 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.client.PlaneClient;
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.config.ServerConstants;
+import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumberFactory;
+import com.jakub.bone.infrastructure.PlaneClient;
+import com.jakub.bone.repository.CollisionRepository;
+import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 
 import static com.jakub.bone.config.Constant.CLIENT_SPAWN_DELAY;
-import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
 
 /*
  * The class manages the startup of the AirportServer
@@ -16,38 +21,41 @@ import static com.jakub.bone.config.Constant.SERVER_INIT_DELAY;
  */
 @Getter
 public class AirportStateService {
-    private AirportServer airportServer;
 
-    public AirportStateService(AirportServer airportServer) {
+    private final AirportServer airportServer;
+    private final ControlTowerService controlTowerService;
+    private final CollisionRepository collisionRepository;
+
+    public AirportStateService(AirportServer airportServer, ControlTowerService controlTowerService, CollisionRepository collisionRepository) {
         this.airportServer = airportServer;
+        this.controlTowerService = controlTowerService;
+        this.collisionRepository = collisionRepository;
     }
 
-    public void startAirport() {
+    public void startAirport(ServerSocket serverSocket) {
         if (airportServer.isRunning()) {
             return;
         }
 
+        Messenger messenger = new Messenger();
+
         Thread serverThread = new Thread(() -> {
+            CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+            collisionService.start();
+
             try {
-                this.airportServer.startServer(5000);
+                this.airportServer.startServer(serverSocket, messenger);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);
             }
         });
         serverThread.start();
 
-        // Wait for the server to initialize before proceeding
-        while (airportServer == null || airportServer.getControlTowerService() == null) {
-            try {
-                Thread.sleep(SERVER_INIT_DELAY);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
-
         new Thread(() -> {
             for (int i = 0; i < 100; i++) {
-                PlaneClient client = new PlaneClient("localhost", 5000);
+                Plane plane = new Plane(PlaneNumberFactory.generateFlightNumber().value());
+                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT, messenger, plane);
+
                 new Thread(client).start();
 
                 try {

@@ -1,7 +1,9 @@
 package com.jakub.bone.api.monitoring;
 
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.utils.Messenger;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,18 +15,22 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/uptime")
 public class UptimeAirportServlet extends HttpServlet {
+
     private AirportServer airportServer;
     private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
-        this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
+        ServletContext servletContext = getServletContext();
+        AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
+
+        this.airportServer = airportServerFactory.airportServer;
         this.messenger = new Messenger();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try{
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
             if (airportServer.getStartTime() == null) {
                 messenger.send(response, Map.of("message", "airport is not running"));
                 return;
@@ -35,7 +41,7 @@ public class UptimeAirportServlet extends HttpServlet {
             long seconds = airportServer.getUptime().getSeconds() % 60;
 
             messenger.send(response, Map.of("message", String.format("%02d:%02d:%02d", hours, minutes, seconds)));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             messenger.send(response, Map.of("error", "Failed to retrieve uptime"));
             System.err.println("Error retrieving update data: " + ex.getMessage());
         }

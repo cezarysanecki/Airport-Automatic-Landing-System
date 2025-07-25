@@ -2,7 +2,6 @@ package com.jakub.bone.ui.utills;
 
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
-
 import javafx.scene.Scene;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -10,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class Camera {
-    private PerspectiveCamera camera;
+    private final PerspectiveCamera camera;
     private final Rotate rotateX;
     private final Rotate rotateY;
     private final Translate translate;

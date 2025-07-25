@@ -1,13 +1,14 @@
 package unit_tests.flight;
 
-import com.jakub.bone.domain.airport.Airport;
-
-import com.jakub.bone.service.ControlTowerService;
-import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.database.AirportDatabase;
+import com.jakub.bone.domain.airport.Airport;
+import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.FlightPhaseService;
+import com.jakub.bone.utils.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,18 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.utils.Messenger;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.jakub.bone.config.Constant.Corridor.FINAL_APPROACH_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.*;
-import static com.jakub.bone.config.Constant.FINAL_APPROACH_CORRIDOR_1;
 
 /*
  * This class tests how a plane's flight phase changes
@@ -48,11 +50,10 @@ class FlightPhaseTest {
     @BeforeEach
     void setUp() throws SQLException {
         MockitoAnnotations.openMocks(this);
-        when(mockDatabase.getPLANE_REPOSITORY()).thenReturn(mockPlaneRepository);
-        when(mockDatabase.getCOLLISION_REPOSITORY()).thenReturn(mockCollisionRepository);
-        this.airport = new Airport();
+        when(mockDatabase.getPlaneRepository()).thenReturn(mockPlaneRepository);
+        when(mockDatabase.getCollisionRepository()).thenReturn(mockCollisionRepository);
         this.messenger = mock(Messenger.class);
-        this.phaseCoordinator = new FlightPhaseService(controlTower, airport, messenger);
+        this.phaseCoordinator = new FlightPhaseService(controlTower, messenger);
     }
 
     @Test
@@ -60,7 +61,7 @@ class FlightPhaseTest {
     void testPhaseSettingToDescending() throws IOException, ClassNotFoundException {
         // Plane spawns at a certain altitude
         Plane plane = new Plane("TEST_PLANE");
-        Location descentPoint = new Location(0, 0, 3000);
+        Coordinates descentPoint = new Coordinates(0, 0, 3000);
 
         phaseCoordinator.processFlightPhase(plane, descentPoint, null);
 
@@ -76,7 +77,7 @@ class FlightPhaseTest {
         plane.descend();
 
         // Holding altitude = 1000
-        Location holdingPoint = new Location(0, 0, 1000);
+        Coordinates holdingPoint = new Coordinates(0, 0, 1000);
         phaseCoordinator.processFlightPhase(plane, holdingPoint, null);
 
         assertEquals(HOLDING, plane.getPhase(), "Flight phase should be switched to HOLDING");
@@ -91,7 +92,7 @@ class FlightPhaseTest {
         plane.setPhase(HOLDING);
 
         // Corridor entry triggers the switch to LANDING
-        Location corridorEntry = runway1.getCorridor().getEntryPoint();
+        Coordinates corridorEntry = runway1.getCorridor().getEntryPoint();
         phaseCoordinator.processFlightPhase(plane, corridorEntry, null);
 
         assertEquals(LANDING, plane.getPhase(), "Flight phase should be switched to LANDING");
@@ -99,10 +100,10 @@ class FlightPhaseTest {
 
     @Test
     @DisplayName("Should test correct plane marking as landed after landing process")
-    void testMarkingAsLanded(){
+    void testMarkingAsLanded() {
         // Plane is at the runway landing point
         Plane plane = new Plane("TEST_PLANE");
-        plane.getNavigator().setLocation(runway1.getLandingPoint());
+        plane.getNavigator().setCoordinates(runway1.getLandingPoint());
 
         assertTrue(controlTower.hasLandedOnRunway(plane, runway1), "TEST_PLANE should be marked as landed");
     }
@@ -112,7 +113,7 @@ class FlightPhaseTest {
     void testRunwayReleaseAfterCrossFinalApproach() {
         // Plane is exactly at final approach coordinates
         Plane plane = new Plane("TEST_PLANE");
-        plane.getNavigator().setLocation(FINAL_APPROACH_CORRIDOR_1);
+        plane.getNavigator().setCoordinates(FINAL_APPROACH_CORRIDOR_1);
 
         // Initially mark runway as unavailable
         runway1.setAvailable(false);

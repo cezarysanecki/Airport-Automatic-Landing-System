@@ -1,7 +1,7 @@
 package com.jakub.bone.domain.plane;
 
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.airport.Location;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +21,10 @@ public class Plane implements Serializable {
     public enum FlightPhase {
         DESCENDING, HOLDING, LANDING
     }
+
     private String flightNumber;
     private boolean landed;
-    private List <Location> waypoints;
+    private List<Coordinates> waypoints;
     private boolean isDestroyed;
     private FuelManager fuelManager;
     private Navigator navigator;
@@ -40,28 +41,29 @@ public class Plane implements Serializable {
         this.assignedRunway = null;
     }
 
-    public void descend(){
+    public void descend() {
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
-            setPhase(HOLDING);
+            this.phase = HOLDING;
             navigator.setWaypoints(WaypointGenerator.getHoldingPatternWaypoints());
             navigator.setCurrentIndex(0);
         }
     }
 
-    public void hold(){
-        setPhase(HOLDING);
+    public void hold() {
+        this.phase = HOLDING;
+
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
             navigator.setCurrentIndex(0);
         }
     }
 
-    public void land(Runway runway){
+    public void land(Runway runway) {
         assignedRunway = runway;
         navigator.move();
-        if(navigator.isAtLastWaypoint()) {
-            navigator.setLocation(runway.getLandingPoint());
+        if (navigator.isAtLastWaypoint()) {
+            navigator.setCoordinates(runway.getLandingPoint());
             landed = true;
         }
     }

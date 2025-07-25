@@ -1,6 +1,6 @@
 package com.jakub.bone.config;
 
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 
 public class Constant {
     // Runway properties
@@ -32,33 +32,36 @@ public class Constant {
 
     // Landing properties
     public static final int LANDING_ALTITUDE = ConfigLoader.getInt("landing.altitude");
-    public static final Location LANDING_POINT_RUNWAY_1 = new Location(
+    public static final Coordinates LANDING_POINT_RUNWAY_1 = new Coordinates(
             ConfigLoader.getInt("landing.point.runway-1.x"),
             ConfigLoader.getInt("landing.point.runway-1.y"),
             ConfigLoader.getInt("landing.point.runway-1.altitude")
     );
-    public static final Location LANDING_POINT_RUNWAY_2 = new Location(
+    public static final Coordinates LANDING_POINT_RUNWAY_2 = new Coordinates(
             ConfigLoader.getInt("landing.point.runway-2.x"),
             ConfigLoader.getInt("landing.point.runway-2.y"),
             ConfigLoader.getInt("landing.point.runway-2.altitude")
     );
 
-    public static Location ENTRY_POINT_CORRIDOR_1 = new Location(
-            ConfigLoader.getInt("landing.entry.corridor-1.x"),
-            ConfigLoader.getInt("landing.entry.corridor-1.y"),
-            ConfigLoader.getInt("landing.entry.corridor-1.altitude"));
-    public static Location ENTRY_POINT_CORRIDOR_2 = new Location(
-            ConfigLoader.getInt("landing.entry.corridor-2.x"),
-            ConfigLoader.getInt("landing.entry.corridor-2.y"),
-            ConfigLoader.getInt("landing.entry.corridor-2.altitude"));
-    public static Location FINAL_APPROACH_CORRIDOR_1 = new Location(
-            ConfigLoader.getInt("landing.final.corridor-1.x"),
-            ConfigLoader.getInt("landing.final.corridor-1.y"),
-            ConfigLoader.getInt("landing.final.corridor-1.altitude"));
-    public static Location FINAL_APPROACH_CORRIDOR_2 = new Location(
-            ConfigLoader.getInt("landing.final.corridor-2.x"),
-            ConfigLoader.getInt("landing.final.corridor-2.y"),
-            ConfigLoader.getInt("landing.final.corridor-2.altitude"));
+    public static class Corridor {
+        public static Coordinates ENTRY_POINT_CORRIDOR_1 = new Coordinates(
+                ConfigLoader.getInt("landing.entry.corridor-1.x"),
+                ConfigLoader.getInt("landing.entry.corridor-1.y"),
+                ConfigLoader.getInt("landing.entry.corridor-1.altitude"));
+        public static Coordinates FINAL_APPROACH_CORRIDOR_1 = new Coordinates(
+                ConfigLoader.getInt("landing.final.corridor-1.x"),
+                ConfigLoader.getInt("landing.final.corridor-1.y"),
+                ConfigLoader.getInt("landing.final.corridor-1.altitude"));
+
+        public static Coordinates ENTRY_POINT_CORRIDOR_2 = new Coordinates(
+                ConfigLoader.getInt("landing.entry.corridor-2.x"),
+                ConfigLoader.getInt("landing.entry.corridor-2.y"),
+                ConfigLoader.getInt("landing.entry.corridor-2.altitude"));
+        public static Coordinates FINAL_APPROACH_CORRIDOR_2 = new Coordinates(
+                ConfigLoader.getInt("landing.final.corridor-2.x"),
+                ConfigLoader.getInt("landing.final.corridor-2.y"),
+                ConfigLoader.getInt("landing.final.corridor-2.altitude"));
+    }
 
     // Holding properties
     public static int HOLDING_ALTITUDE = ConfigLoader.getInt("holding.altitude");

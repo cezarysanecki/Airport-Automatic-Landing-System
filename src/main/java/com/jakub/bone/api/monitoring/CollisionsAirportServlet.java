@@ -1,7 +1,9 @@
 package com.jakub.bone.api.monitoring;
 
-import com.jakub.bone.server.AirportServer;
+import com.jakub.bone.repository.CollisionRepository;
+import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.utils.Messenger;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,18 +16,22 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/collisions")
 public class CollisionsAirportServlet extends HttpServlet {
-    private AirportServer airportServer;
+
     private Messenger messenger;
+    private CollisionRepository collisionRepository;
 
     @Override
     public void init() throws ServletException {
-        this.airportServer = (AirportServer) getServletContext().getAttribute("airportServer");
+        ServletContext servletContext = getServletContext();
+        AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
+
+        this.collisionRepository = airportServerFactory.collisionRepository;
         this.messenger = new Messenger();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<String> collidedPlanes = airportServer.getDatabase().getCOLLISION_REPOSITORY().getCollidedPlanes();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<String> collidedPlanes = collisionRepository.getCollidedPlanes();
         messenger.send(response, Map.of("collided planes", collidedPlanes));
     }
 }

@@ -11,19 +11,21 @@ import java.net.Socket;
 @Log4j2
 @Getter
 public class Client {
-    private Socket socket;
-    protected ObjectOutputStream out;
-    protected ObjectInputStream in;
-    private int port;
-    private String ip;
-    protected boolean isConnected;
 
-    public Client(String ip,int port) {
+    private final String ip;
+    private final int port;
+
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+    private boolean isConnected;
+
+    public Client(String ip, int port) {
         this.ip = ip;
         this.port = port;
     }
 
-    protected void startConnection() {
+    public void startConnection() {
         try {
             this.socket = new Socket(ip, port);
             this.out = new ObjectOutputStream(socket.getOutputStream());
@@ -35,7 +37,7 @@ public class Client {
         }
     }
 
-    protected void stopConnection() {
+    public void stopConnection() {
         closeResources(out, in);
         if (socket != null && !socket.isClosed()) {
             try {

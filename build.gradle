@@ -16,6 +16,9 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs/jim3dsModelImporterJFX'
+    }
 }
 
 dependencies {
@@ -64,8 +67,8 @@ jooq {
                 jdbc {
                     driver = 'org.postgresql.Driver'
                     url = 'jdbc:postgresql://localhost:5432/airport_system'
-                    user = 'airport'
-                    password = 'plane123'
+                    user = 'postgres'
+                    password = 'root'
                 }
                 generator {
                     name = 'org.jooq.codegen.DefaultGenerator'
@@ -85,14 +88,19 @@ jooq {
     }
 }
 
+javafx {
+    version = "21.0.4"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
 application {
-    mainClass = 'simulation.SimulationApp'
+    mainClass = 'com.jakub.bone.runners.SimulationLauncher'
+    applicationDefaultJvmArgs = [
+            '--module-path', 'libs/javafx-sdk-21.0.5/lib',
+            '--add-modules', 'javafx.controls,javafx.fxml,javafx.graphics'
+    ]
 }
 
 test {
     useJUnitPlatform()
 }
-
-
-
-

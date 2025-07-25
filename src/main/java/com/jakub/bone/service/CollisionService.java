@@ -1,24 +1,30 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.domain.airport.Location;
+import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.repository.CollisionRepository;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
-import static com.jakub.bone.config.Constant.*;
+import static com.jakub.bone.config.Constant.ALTITUDE_COLLISION_DISTANCE;
+import static com.jakub.bone.config.Constant.COLLISION_CHECK_DELAY;
+import static com.jakub.bone.config.Constant.HORIZONTAL_COLLISION_DISTANCE;
 
 @Log4j2
 public class CollisionService extends Thread {
-    private ControlTowerService controlTowerService;
 
-    public CollisionService(ControlTowerService controlTowerService){
+    private final ControlTowerService controlTowerService;
+    private final CollisionRepository collisionRepository;
+
+    public CollisionService(ControlTowerService controlTowerService, CollisionRepository collisionRepository) {
         this.controlTowerService = controlTowerService;
+        this.collisionRepository = collisionRepository;
     }
 
     @Override
     public void run() {
         ThreadContext.put("type", "Server");
-        while(true) {
+        while (true) {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     detectCollision();
@@ -32,22 +38,22 @@ public class CollisionService extends Thread {
     }
 
     public void detectCollision() {
-            for (int i = 0; i < controlTowerService.getPlanes().size(); i++) {
-                Plane plane1 = controlTowerService.getPlanes().get(i);
-                for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
-                    Plane plane2 = controlTowerService.getPlanes().get(j);
-                    if (arePlanesToClose(plane1.getNavigator().getLocation(), plane2.getNavigator().getLocation())) {
-                        handleCollision(plane1, plane2);
-                    }
+        for (int i = 0; i < controlTowerService.getPlanes().size(); i++) {
+            Plane plane1 = controlTowerService.getPlanes().get(i);
+            for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
+                Plane plane2 = controlTowerService.getPlanes().get(j);
+                if (arePlanesToClose(plane1.getNavigator().getCoordinates(), plane2.getNavigator().getCoordinates())) {
+                    handleCollision(plane1, plane2);
                 }
             }
+        }
     }
 
-    private void handleCollision(Plane plane1, Plane plane2){
+    private void handleCollision(Plane plane1, Plane plane2) {
         String[] collidedIDs = {plane1.getFlightNumber(), plane2.getFlightNumber()};
-        controlTowerService.getDatabase().getCOLLISION_REPOSITORY().registerCollisionToDB(collidedIDs);
-        plane1.setDestroyed(true);
-        plane2.setDestroyed(true);
+        collisionRepository.registerCollisionToDB(collidedIDs);
+        plane1.destroyPlane();
+        plane2.destroyPlane();
         log.info("Collision detected between Plane [{}] and Plane [{}]", plane1.getFlightNumber(), plane2.getFlightNumber());
     }
 
@@ -60,7 +66,7 @@ public class CollisionService extends Thread {
      * In practice, if the horizontal distance <= 500 and the altitude difference <= 10,
      * it is considered a potential collision risk
      */
-    private boolean arePlanesToClose(Location loc1, Location loc2) {
+    private boolean arePlanesToClose(Coordinates loc1, Coordinates loc2) {
         double horizontalDistance = Math.sqrt(
                 Math.pow(loc1.getX() - loc2.getX(), 2) +
                         Math.pow(loc1.getY() - loc2.getY(), 2)

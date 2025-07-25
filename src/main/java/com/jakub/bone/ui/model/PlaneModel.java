@@ -1,5 +1,8 @@
 package com.jakub.bone.ui.model;
 
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.domain.plane.Plane;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -11,17 +14,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import com.jakub.bone.domain.airport.Location;
 import lombok.Getter;
-import com.jakub.bone.domain.plane.Plane;
-
-import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 
 
 @Getter
 public class PlaneModel {
-    private Plane plane;
-    private Group planeGroup;
+    private final Plane plane;
+    private final Group planeGroup;
     private MeshView[] meshViews;
     private Text label;
 
@@ -30,8 +29,9 @@ public class PlaneModel {
         this.planeGroup = new Group();
         loadPlaneModel();
         createLabel();
-        updatePosition(plane.getNavigator().getLocation());
+        updatePosition(plane.getNavigator().getCoordinates());
     }
+
     public void loadPlaneModel() {
         ObjModelImporter importer = new ObjModelImporter();
         importer.read(getClass().getResource("/models/boeing737/boeingModel.obj"));
@@ -47,28 +47,28 @@ public class PlaneModel {
         this.label.setText(plane.getFlightNumber());
     }
 
-    private void updatePosition(Location location) {
-        this.planeGroup.setTranslateX(location.getX() / 2.0);
-        this.planeGroup.setTranslateY(-location.getAltitude() / 2.0);
-        this.planeGroup.setTranslateZ(location.getY() / 2.0);
+    private void updatePosition(Coordinates coordinates) {
+        this.planeGroup.setTranslateX(coordinates.getX() / 2.0);
+        this.planeGroup.setTranslateY(-coordinates.getAltitude() / 2.0);
+        this.planeGroup.setTranslateZ(coordinates.getY() / 2.0);
 
-        this.label.setTranslateX(((location.getX() + 150)) / 2.0);
-        this.label.setTranslateY(-((location.getAltitude() + 150)) / 2.0);
-        this.label.setTranslateZ((location.getY()) / 2.0);
+        this.label.setTranslateX(((coordinates.getX() + 150)) / 2.0);
+        this.label.setTranslateY(-((coordinates.getAltitude() + 150)) / 2.0);
+        this.label.setTranslateZ((coordinates.getY()) / 2.0);
     }
 
-    public void animateMovement(Location nextLocation) {
+    public void animateMovement(Coordinates nextCoordinates) {
         double currentX = planeGroup.getTranslateX();
         double currentZ = planeGroup.getTranslateZ();
 
-        double toPlaneX = nextLocation.getX() / 2.0;
-        double toPlaneY = -nextLocation.getAltitude() / 2.0;
-        double toPlaneZ = nextLocation.getY() / 2.0;
+        double toPlaneX = nextCoordinates.getX() / 2.0;
+        double toPlaneY = -nextCoordinates.getAltitude() / 2.0;
+        double toPlaneZ = nextCoordinates.getY() / 2.0;
 
         calculateAndSetHeading(currentX, currentZ, toPlaneX, toPlaneZ);
 
         setInterpolation(planeGroup, toPlaneX, toPlaneY, toPlaneZ);
-        setInterpolation(label, (nextLocation.getX() + 150) / 2.0, toPlaneY, (nextLocation.getY() + 150) / 2.0);
+        setInterpolation(label, (nextCoordinates.getX() + 150) / 2.0, toPlaneY, (nextCoordinates.getY() + 150) / 2.0);
     }
 
     private void calculateAndSetHeading(double currentX, double currentZ, double targetX, double targetZ) {

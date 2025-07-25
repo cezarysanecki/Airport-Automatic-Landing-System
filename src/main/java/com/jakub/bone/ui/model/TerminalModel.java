@@ -9,8 +9,8 @@ import lombok.Getter;
 
 @Getter
 public class TerminalModel {
-    private Group planeGroup;
-    private PhongMaterial material;
+    private final Group planeGroup;
+    private final PhongMaterial material;
     private MeshView[] meshViews;
 
     public TerminalModel(int transX, int transY, int transZ) {
@@ -24,7 +24,7 @@ public class TerminalModel {
         importer.read(getClass().getResource("/models/terminal/terminal_main.obj"));
 
         this.meshViews = importer.getImport();
-        for(MeshView meshView: meshViews){
+        for (MeshView meshView : meshViews) {
             meshView.setMaterial(material);
         }
         planeGroup.getChildren().addAll(meshViews);
@@ -33,7 +33,7 @@ public class TerminalModel {
 
     private void setLocation(int transX, int transY, int transZ) {
         this.planeGroup.setTranslateX(transX);
-        this.planeGroup.setTranslateY(- transY);
+        this.planeGroup.setTranslateY(-transY);
         this.planeGroup.setTranslateZ(transZ);
     }
 }

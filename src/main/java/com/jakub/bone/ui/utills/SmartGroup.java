@@ -1,7 +1,6 @@
 package com.jakub.bone.ui.utills;
 
 import javafx.scene.Group;
-
 import javafx.scene.transform.Scale;
 
 public class SmartGroup extends Group {

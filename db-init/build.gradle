@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'nu.studer.jooq' version '8.2'
+}
+
+group 'com.jakub.bone'
+version '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // PostgreSQL
+    implementation 'org.postgresql:postgresql:42.5.4'
+
+    // JOOQ
+    implementation 'org.jooq:jooq:3.19.15'
+    jooqGenerator 'org.postgresql:postgresql:42.5.4'
+
+    // Log4j
+    implementation 'org.apache.logging.log4j:log4j-core:2.23.0'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+}
+
+test {
+    useJUnitPlatform()
+}
