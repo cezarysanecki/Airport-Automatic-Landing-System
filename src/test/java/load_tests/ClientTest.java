@@ -1,7 +1,10 @@
 package load_tests;
 
+import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.infrastructure.PlaneClient;
 import com.jakub.bone.config.Constant;
+import com.jakub.bone.utils.Messenger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,7 +35,7 @@ public class ClientTest {
 
         while (true) {
             try {
-                PlaneClient client = new PlaneClient("localhost", 5000);
+                PlaneClient client = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
                 executorService.execute(client);
 
                 try {

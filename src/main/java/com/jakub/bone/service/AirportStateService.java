@@ -1,5 +1,7 @@
 package com.jakub.bone.service;
 
+import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.infrastructure.PlaneClient;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
@@ -34,12 +36,13 @@ public class AirportStateService {
             return;
         }
 
+        Messenger messenger = new Messenger();
+
         Thread serverThread = new Thread(() -> {
             CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
             collisionService.start();
 
             try {
-                Messenger messenger = new Messenger();
                 this.airportServer.startServer(serverSocket, messenger);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to initialize AirportServer due to I/O issues", ex);
@@ -49,7 +52,9 @@ public class AirportStateService {
 
         new Thread(() -> {
             for (int i = 0; i < 100; i++) {
-                PlaneClient client = new PlaneClient("localhost", 5000);
+                Plane plane = new Plane(PlaneNumberFactory.generateFlightNumber().value());
+                PlaneClient client = new PlaneClient("localhost", 5000, messenger, plane);
+
                 new Thread(client).start();
 
                 try {

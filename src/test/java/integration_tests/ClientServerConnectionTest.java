@@ -1,5 +1,6 @@
 package integration_tests;
 
+import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.infrastructure.PlaneClient;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
@@ -78,7 +79,7 @@ class ClientServerConnectionTest {
         // Wait for the server to start
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient).start();
 
         // Wait for the client to connect
@@ -92,13 +93,13 @@ class ClientServerConnectionTest {
     void testConnectionWithMultipleClients() {
         waitForUpdate();
 
-        PlaneClient planeClient1 = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient1 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient1).start();
 
         // Wait for the first client to connect
         waitForUpdate();
 
-        PlaneClient planeClient2 = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient2 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient2).start();
 
         // Wait for the second client to connect
@@ -113,7 +114,7 @@ class ClientServerConnectionTest {
     void testClientRegistration() {
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient).start();
 
         waitForUpdate();
@@ -133,7 +134,7 @@ class ClientServerConnectionTest {
             server.getControlTowerService().getPlanes().add(plane);
         }
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000);
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
         new Thread(planeClient).start();
 
         waitForUpdate();

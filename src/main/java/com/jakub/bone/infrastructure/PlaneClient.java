@@ -5,7 +5,6 @@ import com.jakub.bone.client.Client;
 import com.jakub.bone.client.PlaneCommunicationService;
 import com.jakub.bone.client.PlaneInstructionHandler;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -22,11 +21,12 @@ public class PlaneClient extends Client implements Runnable {
     private PlaneInstructionHandler instructionHandler;
     private PlaneCommunicationService communicationService;
 
-    public PlaneClient(String ip, int port) {
+    public PlaneClient(String ip, int port, Messenger messenger, Plane plane) {
         super(ip, port);
-        this.plane = new Plane(PlaneNumberFactory.generateFlightNumber().value());
-        this.messenger = new Messenger();
-        log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", plane.getFlightNumber(), ip, port);
+        this.plane = plane;
+        this.messenger = messenger;
+
+        log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", this.plane.getFlightNumber(), ip, port);
     }
 
     @Override
