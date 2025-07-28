@@ -11,42 +11,25 @@ import java.io.ObjectOutputStream;
 @Log4j2
 public class PlaneCommunicationService {
 
-    private final Plane plane;
     private final ObjectOutputStream out;
 
-    public PlaneCommunicationService(Plane plane, ObjectOutputStream out) {
-        this.plane = plane;
+    public PlaneCommunicationService(ObjectOutputStream out) {
         this.out = out;
     }
 
-    public void sendInitialData() throws IOException {
+    public void sendInitialData(Plane plane) throws IOException {
         Messenger.send(out, plane);
         out.flush();
     }
 
-    public boolean sendFuelLevel() throws IOException {
-        double fuelLevel = plane.getFuelLevel();
+    public void sendFuelLevel(double fuelLevel) throws IOException {
         Messenger.send(out, fuelLevel);
         out.flush();
-
-        if (plane.isOutOfFuel()) {
-            log.info("Plane [{}]: out of fuel. Collision detected", plane.getFlightNumber());
-            return false;
-        }
-        return true;
     }
 
-    public boolean sendLocation() throws IOException {
-        Coordinates coordinates = plane.getCoordinates();
-
-        if (coordinates == null) {
-            log.info("Plane [{}]: disappeared from the radar", plane.getFlightNumber());
-            return false;
-        }
-
+    public void sendLocation(Coordinates coordinates) throws IOException {
         Messenger.send(out, coordinates);
         out.flush();
-        return true;
     }
 
 }

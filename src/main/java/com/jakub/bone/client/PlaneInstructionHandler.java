@@ -20,11 +20,14 @@ import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
 @Log4j2
 @Getter
 public class PlaneInstructionHandler {
-    private final Plane plane;
+
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
-    private boolean isProcessCompleted;
+
+    private final Plane plane;
     private final PlaneCommunicationService communicationService;
+
+    private boolean isProcessCompleted;
     private boolean descentLogged;
     private boolean holdPatternLogged;
 
@@ -32,7 +35,7 @@ public class PlaneInstructionHandler {
         this.plane = plane;
         this.in = in;
         this.out = out;
-        this.communicationService = new PlaneCommunicationService(plane, out);
+        this.communicationService = new PlaneCommunicationService(out);
         this.descentLogged = false;
         this.holdPatternLogged = false;
     }
@@ -59,15 +62,21 @@ public class PlaneInstructionHandler {
 
     private void performLanding(Runway runway) throws IOException {
         while (!isProcessCompleted) {
-            if (!communicationService.sendFuelLevel()) {
+            Messenger.send(out, plane.getFuelLevel());
+            out.flush();
+
+            if (plane.isOutOfFuel()) {
+                log.info("Plane [{}]: out of fuel. Collision detected", plane.getFlightNumber());
                 return;
             }
 
             plane.land(runway, runway.getLandingPoint());
 
-            if (!communicationService.sendLocation()) {
+            if (plane.getCoordinates() == null) {
+                log.info("Plane [{}]: disappeared from the radar", plane.getFlightNumber());
                 return;
             }
+            communicationService.sendLocation(plane.getCoordinates());
 
             if (plane.isLanded()) {
                 isProcessCompleted = true;

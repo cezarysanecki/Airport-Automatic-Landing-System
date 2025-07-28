@@ -38,7 +38,7 @@ public class PlaneClient implements Runnable {
         try {
             establishConnection();
             initializeServices();
-            communicationService.sendInitialData();
+            communicationService.sendInitialData(plane);
             processInstructions();
         } catch (IOException | ClassNotFoundException ex) {
             log.error("PlaneClient [{}]: encountered an error: {}", plane.getFlightNumber(), ex.getMessage(), ex);
@@ -56,16 +56,19 @@ public class PlaneClient implements Runnable {
     }
 
     private void initializeServices() {
-        this.communicationService = new PlaneCommunicationService(plane, client.getOut());
+        this.communicationService = new PlaneCommunicationService(client.getOut());
         this.instructionHandler = new PlaneInstructionHandler(plane, client.getIn(), client.getOut());
     }
 
     private void processInstructions() throws IOException, ClassNotFoundException {
         while (!instructionHandler.isProcessCompleted()) {
-            if (!communicationService.sendFuelLevel() || !communicationService.sendLocation()) {
+            communicationService.sendFuelLevel(plane.getFuelLevel());
+
+            if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                 log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                 return;
             }
+            communicationService.sendLocation(plane.getCoordinates());
 
             PlaneHandler.AirportInstruction instruction = Messenger.handleResponseAirportInstruction(client.getIn());
             instructionHandler.processInstruction(instruction);
