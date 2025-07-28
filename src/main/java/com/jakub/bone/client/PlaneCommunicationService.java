@@ -1,6 +1,5 @@
 package com.jakub.bone.client;
 
-import com.jakub.bone.domain.airport.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
@@ -17,19 +16,14 @@ public class PlaneCommunicationService {
         this.out = out;
     }
 
-    public void sendInitialData(Plane plane) throws IOException {
-        Messenger.send(out, plane);
+    public void update(Plane plane) throws IOException {
+        Messenger.send(out, plane.getFuelLevel());
         out.flush();
-    }
 
-    public void sendFuelLevel(double fuelLevel) throws IOException {
-        Messenger.send(out, fuelLevel);
-        out.flush();
-    }
-
-    public void sendLocation(Coordinates coordinates) throws IOException {
-        Messenger.send(out, coordinates);
-        out.flush();
+        if (plane.getCoordinates() != null) {
+            Messenger.send(out, plane.getCoordinates());
+            out.flush();
+        }
     }
 
 }

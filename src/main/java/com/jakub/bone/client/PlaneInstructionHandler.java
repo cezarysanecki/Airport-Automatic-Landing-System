@@ -62,20 +62,13 @@ public class PlaneInstructionHandler {
 
     private void performLanding(Runway runway) throws IOException {
         while (!isProcessCompleted) {
-            communicationService.sendFuelLevel(plane.getFuelLevel());
-
-            if (plane.isOutOfFuel()) {
-                log.info("Plane [{}]: out of fuel. Collision detected", plane.getFlightNumber());
-                return;
-            }
-
             plane.land(runway, runway.getLandingPoint());
 
-            if (plane.getCoordinates() == null) {
-                log.info("Plane [{}]: disappeared from the radar", plane.getFlightNumber());
-                return;
+            communicationService.update(plane);
+            if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
+                log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
+                break;
             }
-            communicationService.sendLocation(plane.getCoordinates());
 
             if (plane.isLanded()) {
                 isProcessCompleted = true;

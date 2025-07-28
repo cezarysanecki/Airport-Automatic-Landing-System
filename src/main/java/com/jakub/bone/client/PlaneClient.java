@@ -43,16 +43,15 @@ public class PlaneClient implements Runnable {
             PlaneCommunicationService communicationService = new PlaneCommunicationService(out);
             PlaneInstructionHandler instructionHandler = new PlaneInstructionHandler(plane, in, out);
 
-            communicationService.sendInitialData(plane);
+            Messenger.send(out, plane);
+            out.flush();
 
             while (!instructionHandler.isProcessCompleted()) {
-                communicationService.sendFuelLevel(plane.getFuelLevel());
-
+                communicationService.update(plane);
                 if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                     log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                     break;
                 }
-                communicationService.sendLocation(plane.getCoordinates());
 
                 PlaneHandler.AirportInstruction instruction = Messenger.handleResponseAirportInstruction(in);
                 instructionHandler.processInstruction(instruction);
