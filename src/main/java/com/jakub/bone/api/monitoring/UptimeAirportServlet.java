@@ -1,8 +1,8 @@
 package com.jakub.bone.api.monitoring;
 
+import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.runners.AirportServerFactory;
-import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,6 @@ import java.util.Map;
 public class UptimeAirportServlet extends HttpServlet {
 
     private AirportServer airportServer;
-    private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
@@ -25,14 +24,13 @@ public class UptimeAirportServlet extends HttpServlet {
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
         this.airportServer = airportServerFactory.airportServer;
-        this.messenger = new Messenger();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             if (airportServer.getStartTime() == null) {
-                messenger.send(response, Map.of("message", "airport is not running"));
+                JsonSender.responseWithJson(response, Map.of("message", "airport is not running"));
                 return;
             }
 
@@ -40,9 +38,9 @@ public class UptimeAirportServlet extends HttpServlet {
             long minutes = airportServer.getUptime().toMinutes() % 60;
             long seconds = airportServer.getUptime().getSeconds() % 60;
 
-            messenger.send(response, Map.of("message", String.format("%02d:%02d:%02d", hours, minutes, seconds)));
+            JsonSender.responseWithJson(response, Map.of("message", String.format("%02d:%02d:%02d", hours, minutes, seconds)));
         } catch (Exception ex) {
-            messenger.send(response, Map.of("error", "Failed to retrieve uptime"));
+            JsonSender.responseWithJson(response, Map.of("error", "Failed to retrieve uptime"));
             System.err.println("Error retrieving update data: " + ex.getMessage());
         }
     }

@@ -80,25 +80,25 @@ public class FlightPhaseService {
     }
 
     private void enterHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        messenger.send(DESCENT, out);
+        messenger.send(out, DESCENT);
         plane.changePhase(HOLDING);
     }
 
     private void applyDescending(Plane plane, ObjectOutputStream out) throws IOException {
-        messenger.send(DESCENT, out);
+        messenger.send(out, DESCENT);
         plane.changePhase(DESCENDING);
     }
 
     private void applyHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        messenger.send(HOLD_PATTERN, out);
+        messenger.send(out, HOLD_PATTERN);
         plane.changePhase(HOLDING);
     }
 
     private void applyLanding(Plane plane, Runway runway, ObjectOutputStream out) throws IOException {
         controlTowerService.assignRunway(runway);
         plane.changePhase(LANDING);
-        messenger.send(LAND, out);
-        messenger.send(runway, out);
+        messenger.send(out, LAND);
+        messenger.send(out, runway);
         log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
     }
 

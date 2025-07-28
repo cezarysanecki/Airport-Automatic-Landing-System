@@ -80,7 +80,7 @@ public class PlaneHandler extends Thread {
         waitForUpdate(UPDATE_DELAY);
 
         if (controlTowerService.isAtCollisionRiskZone(plane)) {
-            messenger.send(RISK_ZONE, out);
+            messenger.send(out, RISK_ZONE);
             log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
             return;
         }
@@ -94,7 +94,7 @@ public class PlaneHandler extends Thread {
 
     private boolean canRegisterPlane(Plane plane, ObjectOutputStream out) throws IOException {
         if (controlTowerService.isSpaceFull()) {
-            messenger.send(FULL, out);
+            messenger.send(out, FULL);
             log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
             return false;
         }
@@ -133,12 +133,12 @@ public class PlaneHandler extends Thread {
             controlTowerService.releaseRunway(plane.getAssignedRunway());
         }
         controlTowerService.getPlanes().remove(plane);
-        messenger.send(COLLISION, out);
+        messenger.send(out, COLLISION);
 
         waitForUpdate(AFTER_COLLISION_DELAY);
     }
 
-    private void handleOutOfFuel(Plane plane) throws IOException {
+    private void handleOutOfFuel(Plane plane) {
         plane.destroyPlane();
         controlTowerService.removePlaneFromSpace(plane);
         log.info("Plane [{}]: out of fuel. Disappeared from the radar", plane.getFlightNumber());

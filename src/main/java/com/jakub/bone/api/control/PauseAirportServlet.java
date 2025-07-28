@@ -1,8 +1,8 @@
 package com.jakub.bone.api.control;
 
+import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.runners.AirportServerFactory;
-import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,6 @@ import java.util.Map;
 public class PauseAirportServlet extends HttpServlet {
 
     private AirportServer airportServer;
-    private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
@@ -25,20 +24,19 @@ public class PauseAirportServlet extends HttpServlet {
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
         this.airportServer = airportServerFactory.airportServer;
-        this.messenger = new Messenger();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             if (airportServer.isPaused()) {
-                messenger.send(response, Map.of("message", "airport is already paused"));
+                JsonSender.responseWithJson(response, Map.of("message", "airport is already paused"));
             } else {
                 airportServer.pauseServer();
-                messenger.send(response, Map.of("message", "airport paused successfully"));
+                JsonSender.responseWithJson(response, Map.of("message", "airport paused successfully"));
             }
         } catch (Exception ex) {
-            messenger.send(response, Map.of("error", "Failed to pause airport"));
+            JsonSender.responseWithJson(response, Map.of("error", "Failed to pause airport"));
             System.err.println("Error pausing airport: " + ex.getMessage());
         }
     }

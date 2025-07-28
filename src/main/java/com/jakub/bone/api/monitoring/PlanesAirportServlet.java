@@ -1,5 +1,6 @@
 package com.jakub.bone.api.monitoring;
 
+import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.runners.AirportServerFactory;
@@ -21,7 +22,6 @@ public class PlanesAirportServlet extends HttpServlet {
 
     private PlaneRepository planeRepository;
     private ControlTowerService controlTowerService;
-    private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
@@ -30,7 +30,6 @@ public class PlanesAirportServlet extends HttpServlet {
 
         this.planeRepository = airportServerFactory.planeRepository;
         this.controlTowerService = airportServerFactory.controlTowerService;
-        this.messenger = new Messenger();
     }
 
     @Override
@@ -40,29 +39,29 @@ public class PlanesAirportServlet extends HttpServlet {
             switch (path) {
                 case "/count" -> {
                     int planesCount = controlTowerService.countPlanes();
-                    messenger.send(response, Map.of("count", planesCount));
+                    JsonSender.responseWithJson(response, Map.of("count", planesCount));
                 }
                 case "/flightNumbers" -> {
                     List<String> flightNumbers = controlTowerService.getAllFlightNumbers();
-                    messenger.send(response, Map.of("flight numbers", flightNumbers));
+                    JsonSender.responseWithJson(response, Map.of("flight numbers", flightNumbers));
                 }
                 case "/landed" -> {
                     List<String> landedPlanes = planeRepository.getLandedPlanes();
-                    messenger.send(response, Map.of("landed planes", landedPlanes));
+                    JsonSender.responseWithJson(response, Map.of("landed planes", landedPlanes));
                 }
                 default -> {
                     String flightNumber = path.substring(1);
                     Plane plane = controlTowerService.getPlaneByFlightNumber(flightNumber);
 
                     if (plane == null) {
-                        messenger.send(response, Map.of("message", "plane not found"));
+                        JsonSender.responseWithJson(response, Map.of("message", "plane not found"));
                     } else {
-                        messenger.send(response, PlanesMapper.toMap(plane));
+                        JsonSender.responseWithJson(response, PlanesMapper.toMap(plane));
                     }
                 }
             }
         } catch (Exception ex) {
-            messenger.send(response, Map.of("error", "Internal server error"));
+            JsonSender.responseWithJson(response, Map.of("error", "Internal server error"));
             System.err.println("Error handling request: " + ex.getMessage());
         }
     }

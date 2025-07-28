@@ -1,8 +1,8 @@
 package com.jakub.bone.api.control;
 
+import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.runners.AirportServerFactory;
-import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,8 +15,8 @@ import java.util.Map;
 
 @WebServlet(urlPatterns = "/airport/stop")
 public class StopAirportServlet extends HttpServlet {
+
     private AirportServer airportServer;
-    private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
@@ -24,21 +24,20 @@ public class StopAirportServlet extends HttpServlet {
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
         this.airportServer = airportServerFactory.airportServer;
-        this.messenger = new Messenger();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             if (!airportServer.isRunning()) {
-                messenger.send(response, Map.of("message", "airport is not running"));
+                JsonSender.responseWithJson(response, Map.of("message", "airport is not running"));
                 return;
             }
             airportServer.stopServer();
         } catch (Exception ex) {
-            messenger.send(response, Map.of("error", "Failed to stop airport"));
+            JsonSender.responseWithJson(response, Map.of("error", "Failed to stop airport"));
             System.err.println("Error stopping airport: " + ex.getMessage());
         }
-        messenger.send(response, Map.of("message", "airport stopped successfully"));
+        JsonSender.responseWithJson(response, Map.of("message", "airport stopped successfully"));
     }
 }

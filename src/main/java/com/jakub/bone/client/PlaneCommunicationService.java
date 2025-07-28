@@ -48,7 +48,7 @@ public class PlaneCommunicationService {
     }
 
     private void sendData(Object data) throws IOException {
-        messenger.send(data, out);
+        messenger.send(out, data);
         out.flush();
     }
 }

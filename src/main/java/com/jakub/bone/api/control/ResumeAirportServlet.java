@@ -1,8 +1,8 @@
 package com.jakub.bone.api.control;
 
+import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.runners.AirportServerFactory;
-import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,6 @@ import java.util.Map;
 public class ResumeAirportServlet extends HttpServlet {
 
     private AirportServer airportServer;
-    private Messenger messenger;
 
     @Override
     public void init() throws ServletException {
@@ -25,7 +24,6 @@ public class ResumeAirportServlet extends HttpServlet {
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
         this.airportServer = airportServerFactory.airportServer;
-        this.messenger = new Messenger();
     }
 
     @Override
@@ -35,9 +33,9 @@ public class ResumeAirportServlet extends HttpServlet {
                 airportServer.resumeServer();
             }
         } catch (Exception ex) {
-            messenger.send(response, Map.of("error", "Failed to resume airport"));
+            JsonSender.responseWithJson(response, Map.of("error", "Failed to resume airport"));
             System.err.println("Error resuming airport: " + ex.getMessage());
         }
-        messenger.send(response, Map.of("message", "airport resumed successfully"));
+        JsonSender.responseWithJson(response, Map.of("message", "airport resumed successfully"));
     }
 }
