@@ -1,4 +1,4 @@
-package com.jakub.bone.ui.utills;
+package com.jakub.bone.ui;
 
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.domain.airport.Coordinates;
@@ -19,20 +19,21 @@ import java.util.Map;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 
 @Log4j2
-public class SceneUpdater {
+class SceneUpdater {
+
     private final Group root;
     private final ControlTowerService controller;
     private final Map<String, PlaneModel> planesMap;
     private boolean isFirstPlane;
 
-    public SceneUpdater(Group root, ControlTowerService controller) {
+    SceneUpdater(Group root, ControlTowerService controller) {
         this.root = root;
         this.controller = controller;
         this.planesMap = new HashMap<>();
         this.isFirstPlane = true;
     }
 
-    public void start() {
+    void start() {
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> updateAirspace()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();

@@ -1,4 +1,4 @@
-package com.jakub.bone.ui.utills;
+package com.jakub.bone.ui;
 
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -8,18 +8,17 @@ import javafx.scene.transform.Translate;
 import lombok.Getter;
 
 @Getter
-public class Camera {
-    private final PerspectiveCamera camera;
+class Camera extends PerspectiveCamera {
+
     private final Rotate rotateX;
     private final Rotate rotateY;
     private final Translate translate;
 
-    public Camera() {
-        this.camera = new PerspectiveCamera();
+    Camera() {
         this.translate = new Translate(0, -5000, -2200);
         this.rotateX = new Rotate(-60, Rotate.X_AXIS);
         this.rotateY = new Rotate(0, Rotate.Y_AXIS);
-        this.camera.getTransforms().addAll(translate, rotateX, rotateY);
+        getTransforms().addAll(translate, rotateX, rotateY);
     }
 
     public void initializeRotationControls(Group group, Scene scene) {

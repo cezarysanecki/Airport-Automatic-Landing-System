@@ -5,6 +5,7 @@ import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.service.AirportStateService;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.ui.SceneRenderer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
