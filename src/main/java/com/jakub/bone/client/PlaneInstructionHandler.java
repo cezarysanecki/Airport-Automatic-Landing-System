@@ -57,10 +57,6 @@ public class PlaneInstructionHandler {
         plane.setLandingPhase(WaypointGenerator.getLandingWaypoints(runway));
 
         log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());
-        performLanding(runway);
-    }
-
-    private void performLanding(Runway runway) throws IOException {
         while (!isProcessCompleted) {
             plane.land(runway, runway.getLandingPoint());
 
