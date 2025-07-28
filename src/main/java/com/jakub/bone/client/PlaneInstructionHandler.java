@@ -62,8 +62,7 @@ public class PlaneInstructionHandler {
 
     private void performLanding(Runway runway) throws IOException {
         while (!isProcessCompleted) {
-            Messenger.send(out, plane.getFuelLevel());
-            out.flush();
+            communicationService.sendFuelLevel(plane.getFuelLevel());
 
             if (plane.isOutOfFuel()) {
                 log.info("Plane [{}]: out of fuel. Collision detected", plane.getFlightNumber());
