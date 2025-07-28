@@ -42,9 +42,11 @@ public class FlightPhaseService {
 
     private void handleDescent(Plane plane, ObjectOutputStream out) throws IOException {
         if (controlTowerService.isPlaneApproachingHoldingAltitude(plane)) {
-            enterHolding(plane, out);
+            Messenger.send(out, DESCENT);
+            plane.changePhase(HOLDING);
         } else {
-            applyDescending(plane, out);
+            Messenger.send(out, DESCENT);
+            plane.changePhase(DESCENDING);
         }
     }
 
@@ -53,9 +55,14 @@ public class FlightPhaseService {
         availableRunway = runway;
 
         if (runway != null && controlTowerService.isRunwayAvailable(runway)) {
-            applyLanding(plane, runway, out);
+            controlTowerService.assignRunway(runway);
+            plane.changePhase(LANDING);
+            Messenger.send(out, LAND);
+            Messenger.send(out, runway);
+            log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
         } else {
-            applyHolding(plane, out);
+            Messenger.send(out, HOLD_PATTERN);
+            plane.changePhase(HOLDING);
         }
     }
 
@@ -75,29 +82,6 @@ public class FlightPhaseService {
             return;
         }
         controlTowerService.releaseRunwayIfPlaneAtFinalApproach(plane, availableRunway);
-    }
-
-    private void enterHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        Messenger.send(out, DESCENT);
-        plane.changePhase(HOLDING);
-    }
-
-    private void applyDescending(Plane plane, ObjectOutputStream out) throws IOException {
-        Messenger.send(out, DESCENT);
-        plane.changePhase(DESCENDING);
-    }
-
-    private void applyHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        Messenger.send(out, HOLD_PATTERN);
-        plane.changePhase(HOLDING);
-    }
-
-    private void applyLanding(Plane plane, Runway runway, ObjectOutputStream out) throws IOException {
-        controlTowerService.assignRunway(runway);
-        plane.changePhase(LANDING);
-        Messenger.send(out, LAND);
-        Messenger.send(out, runway);
-        log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
     }
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {

@@ -4,6 +4,7 @@ import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -50,7 +51,7 @@ public class PlaneInstructionHandler {
 
     private void handleLanding() throws IOException, ClassNotFoundException {
         Runway runway = Messenger.handleResponseRunway(in);
-        plane.setLandingPhase(runway);
+        plane.setLandingPhase(WaypointGenerator.getLandingWaypoints(runway));
 
         log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());
         performLanding(runway);
@@ -62,7 +63,7 @@ public class PlaneInstructionHandler {
                 return;
             }
 
-            plane.land(runway);
+            plane.land(runway, runway.getLandingPoint());
 
             if (!communicationService.sendLocation()) {
                 return;

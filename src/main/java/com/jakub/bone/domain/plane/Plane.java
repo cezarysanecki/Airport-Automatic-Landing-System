@@ -57,19 +57,19 @@ public class Plane implements Serializable {
         }
     }
 
-    public void land(Runway runway) {
+    public void land(Runway runway, Coordinates landingPoint) {
         assignedRunway = runway;
         navigator.move();
         if (navigator.isAtLastWaypoint()) {
-            navigator.setCoordinates(runway.getLandingPoint());
+            navigator.setCoordinates(landingPoint);
             landed = true;
         }
     }
 
-    public void setLandingPhase(Runway runway) {
+    public void setLandingPhase(List<Coordinates> landingWaypoints) {
         changePhase(LANDING);
         //setPhase(FlightPhase.LANDING);
-        navigator.setWaypoints(WaypointGenerator.getLandingWaypoints(runway));
+        navigator.setWaypoints(landingWaypoints);
         navigator.setCurrentIndex(0);
     }
 
