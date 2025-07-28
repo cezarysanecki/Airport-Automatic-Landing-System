@@ -9,18 +9,19 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 @Log4j2
-@Getter
-public class Client {
+public class SocketClient {
 
     private final String ip;
     private final int port;
 
     private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private boolean isConnected;
 
-    public Client(String ip, int port) {
+    @Getter
+    private ObjectOutputStream out;
+    @Getter
+    private ObjectInputStream in;
+
+    public SocketClient(String ip, int port) {
         this.ip = ip;
         this.port = port;
     }
@@ -30,7 +31,6 @@ public class Client {
             this.socket = new Socket(ip, port);
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.in = new ObjectInputStream(socket.getInputStream());
-            this.isConnected = true;
             log.debug("Connection established successfully");
         } catch (IOException ex) {
             log.error("Failed to connect to server at {}:{} - {}", ip, port, ex.getMessage(), ex);

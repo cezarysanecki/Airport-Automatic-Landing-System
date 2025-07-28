@@ -1,9 +1,9 @@
 package com.jakub.bone.infrastructure;
 
 import com.jakub.bone.application.PlaneHandler;
-import com.jakub.bone.client.Client;
 import com.jakub.bone.client.PlaneCommunicationService;
 import com.jakub.bone.client.PlaneInstructionHandler;
+import com.jakub.bone.client.SocketClient;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
@@ -16,13 +16,13 @@ import java.io.IOException;
 @Getter
 public class PlaneClient implements Runnable {
 
-    private final Client client;
+    private final SocketClient socketClient;
     private final Plane plane;
     private PlaneInstructionHandler instructionHandler;
     private PlaneCommunicationService communicationService;
 
     public PlaneClient(String ip, int port, Plane plane) {
-        this.client = new Client(ip, port);
+        this.socketClient = new SocketClient(ip, port);
         this.plane = plane;
 
         log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", this.plane.getFlightNumber(), ip, port);
@@ -48,16 +48,13 @@ public class PlaneClient implements Runnable {
     }
 
     private void establishConnection() throws IOException {
-        client.startConnection();
-        if (!client.isConnected()) {
-            throw new IOException("Unable to establish connection to the server");
-        }
+        socketClient.startConnection();
         log.info("PlaneClient [{}]: connected to server", plane.getFlightNumber());
     }
 
     private void initializeServices() {
-        this.communicationService = new PlaneCommunicationService(client.getOut());
-        this.instructionHandler = new PlaneInstructionHandler(plane, client.getIn(), client.getOut());
+        this.communicationService = new PlaneCommunicationService(socketClient.getOut());
+        this.instructionHandler = new PlaneInstructionHandler(plane, socketClient.getIn(), socketClient.getOut());
     }
 
     private void processInstructions() throws IOException, ClassNotFoundException {
@@ -70,7 +67,7 @@ public class PlaneClient implements Runnable {
             }
             communicationService.sendLocation(plane.getCoordinates());
 
-            PlaneHandler.AirportInstruction instruction = Messenger.handleResponseAirportInstruction(client.getIn());
+            PlaneHandler.AirportInstruction instruction = Messenger.handleResponseAirportInstruction(socketClient.getIn());
             instructionHandler.processInstruction(instruction);
 
             if (plane.isDestroyed()) {
@@ -81,7 +78,7 @@ public class PlaneClient implements Runnable {
     }
 
     private void closeConnection() {
-        client.stopConnection();
+        socketClient.stopConnection();
         log.debug("Plane [{}]: connection stopped", plane.getFlightNumber());
     }
 
