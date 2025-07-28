@@ -21,10 +21,9 @@ public class PlaneClientRunner {
         try (ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_CLIENTS)) {
             for (int i = 0; i < NUMBER_OF_CLIENTS; i++) {
 
-                Messenger messenger = new Messenger();
                 Plane plane = new Plane(PlaneNumberFactory.generateFlightNumber().value());
 
-                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT, messenger, plane);
+                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT, plane);
                 try {
                     Thread.sleep(CLIENT_SPAWN_DELAY);
                 } catch (InterruptedException ex) {

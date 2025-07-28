@@ -18,14 +18,12 @@ public class PlaneClient implements Runnable {
 
     private final Client client;
     private final Plane plane;
-    private final Messenger messenger;
     private PlaneInstructionHandler instructionHandler;
     private PlaneCommunicationService communicationService;
 
-    public PlaneClient(String ip, int port, Messenger messenger, Plane plane) {
+    public PlaneClient(String ip, int port, Plane plane) {
         this.client = new Client(ip, port);
         this.plane = plane;
-        this.messenger = messenger;
 
         log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", this.plane.getFlightNumber(), ip, port);
     }
@@ -58,8 +56,8 @@ public class PlaneClient implements Runnable {
     }
 
     private void initializeServices() {
-        this.communicationService = new PlaneCommunicationService(plane, messenger, client.getOut());
-        this.instructionHandler = new PlaneInstructionHandler(plane, messenger, client.getIn(), client.getOut());
+        this.communicationService = new PlaneCommunicationService(plane, client.getOut());
+        this.instructionHandler = new PlaneInstructionHandler(plane, client.getIn(), client.getOut());
     }
 
     private void processInstructions() throws IOException, ClassNotFoundException {
@@ -69,7 +67,7 @@ public class PlaneClient implements Runnable {
                 return;
             }
 
-            PlaneHandler.AirportInstruction instruction = messenger.receiveAndParse(client.getIn(), PlaneHandler.AirportInstruction.class);
+            PlaneHandler.AirportInstruction instruction = Messenger.handleResponseAirportInstruction(client.getIn());
             instructionHandler.processInstruction(instruction);
 
             if (plane.isDestroyed()) {

@@ -6,9 +6,7 @@ import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
-import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
@@ -41,7 +39,7 @@ public class AirportServer {
         this.paused = false;
     }
 
-    public void startServer(ServerSocket serverSocket, Messenger messenger) throws IOException {
+    public void startServer(ServerSocket serverSocket) throws IOException {
         ThreadContext.put("type", "Server");
         running = true;
 
@@ -62,11 +60,10 @@ public class AirportServer {
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                 running = true;
 
-                FlightPhaseService phaseCoordinator = new FlightPhaseService(controlTowerService, messenger);
+                FlightPhaseService phaseCoordinator = new FlightPhaseService(controlTowerService);
                 PlaneHandler planeHandler = new PlaneHandler(
                         serverSocket,
                         controlTowerService,
-                        messenger,
                         phaseCoordinator
                 );
 
@@ -106,8 +103,7 @@ public class AirportServer {
                 );
                 collisionService.start();
 
-                Messenger messenger = new Messenger();
-                airportServerFactory.airportServer.startServer(serverSocket, messenger);
+                airportServerFactory.airportServer.startServer(serverSocket);
             }
 
         }

@@ -24,12 +24,10 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 public class FlightPhaseService {
 
     private final ControlTowerService controlTowerService;
-    private final Messenger messenger;
     private Runway availableRunway;
 
-    public FlightPhaseService(ControlTowerService controlTower, Messenger messenger) {
+    public FlightPhaseService(ControlTowerService controlTower) {
         this.controlTowerService = controlTower;
-        this.messenger = messenger;
     }
 
     public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException, ClassNotFoundException {
@@ -80,25 +78,25 @@ public class FlightPhaseService {
     }
 
     private void enterHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        messenger.send(out, DESCENT);
+        Messenger.send(out, DESCENT);
         plane.changePhase(HOLDING);
     }
 
     private void applyDescending(Plane plane, ObjectOutputStream out) throws IOException {
-        messenger.send(out, DESCENT);
+        Messenger.send(out, DESCENT);
         plane.changePhase(DESCENDING);
     }
 
     private void applyHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        messenger.send(out, HOLD_PATTERN);
+        Messenger.send(out, HOLD_PATTERN);
         plane.changePhase(HOLDING);
     }
 
     private void applyLanding(Plane plane, Runway runway, ObjectOutputStream out) throws IOException {
         controlTowerService.assignRunway(runway);
         plane.changePhase(LANDING);
-        messenger.send(out, LAND);
-        messenger.send(out, runway);
+        Messenger.send(out, LAND);
+        Messenger.send(out, runway);
         log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
     }
 

@@ -31,18 +31,15 @@ public class PlaneHandler extends Thread {
 
     private final Socket clientSocket;
     private final ControlTowerService controlTowerService;
-    private final Messenger messenger;
     private final FlightPhaseService phaseCoordinator;
 
     public PlaneHandler(
             ServerSocket serverSocket,
             ControlTowerService controlTowerService,
-            Messenger messenger,
             FlightPhaseService phaseCoordinator
     ) throws IOException {
         this.clientSocket = serverSocket.accept();
         this.controlTowerService = controlTowerService;
-        this.messenger = messenger;
         this.phaseCoordinator = phaseCoordinator;
     }
 
@@ -71,7 +68,7 @@ public class PlaneHandler extends Thread {
     }
 
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        Plane plane = messenger.receiveAndParse(in, Plane.class);
+        Plane plane = Messenger.handleResponsePlane(in);
 
         if (!canRegisterPlane(plane, out)) {
             return;
@@ -80,7 +77,7 @@ public class PlaneHandler extends Thread {
         waitForUpdate(UPDATE_DELAY);
 
         if (controlTowerService.isAtCollisionRiskZone(plane)) {
-            messenger.send(out, RISK_ZONE);
+            Messenger.send(out, RISK_ZONE);
             log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
             return;
         }
@@ -94,7 +91,7 @@ public class PlaneHandler extends Thread {
 
     private boolean canRegisterPlane(Plane plane, ObjectOutputStream out) throws IOException {
         if (controlTowerService.isSpaceFull()) {
-            messenger.send(out, FULL);
+            Messenger.send(out, FULL);
             log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
             return false;
         }
@@ -105,7 +102,7 @@ public class PlaneHandler extends Thread {
         plane.setPhase(DESCENDING);
 
         while (true) {
-            double fuelLevel = messenger.receiveAndParse(in, Double.class);
+            double fuelLevel = Messenger.handleResponseFuelLevel(in);
             plane.getFuelManager().setFuelLevel(fuelLevel);
 
             if (fuelLevel <= 0) {
@@ -113,7 +110,7 @@ public class PlaneHandler extends Thread {
                 return;
             }
 
-            Coordinates coordinates = messenger.receiveAndParse(in, Coordinates.class);
+            Coordinates coordinates = Messenger.handleResponseCoordinates(in);
             phaseCoordinator.processFlightPhase(plane, coordinates, out);
 
             if (plane.isDestroyed()) {
@@ -133,7 +130,7 @@ public class PlaneHandler extends Thread {
             controlTowerService.releaseRunway(plane.getAssignedRunway());
         }
         controlTowerService.getPlanes().remove(plane);
-        messenger.send(out, COLLISION);
+        Messenger.send(out, COLLISION);
 
         waitForUpdate(AFTER_COLLISION_DELAY);
     }

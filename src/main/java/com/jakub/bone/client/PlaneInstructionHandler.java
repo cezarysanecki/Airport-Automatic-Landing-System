@@ -20,7 +20,6 @@ import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
 @Getter
 public class PlaneInstructionHandler {
     private final Plane plane;
-    private final Messenger messenger;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
     private boolean isProcessCompleted;
@@ -28,12 +27,11 @@ public class PlaneInstructionHandler {
     private boolean descentLogged;
     private boolean holdPatternLogged;
 
-    public PlaneInstructionHandler(Plane plane, Messenger messenger, ObjectInputStream in, ObjectOutputStream out) {
+    public PlaneInstructionHandler(Plane plane, ObjectInputStream in, ObjectOutputStream out) {
         this.plane = plane;
-        this.messenger = messenger;
         this.in = in;
         this.out = out;
-        this.communicationService = new PlaneCommunicationService(plane, messenger, out);
+        this.communicationService = new PlaneCommunicationService(plane, out);
         this.descentLogged = false;
         this.holdPatternLogged = false;
     }
@@ -51,7 +49,7 @@ public class PlaneInstructionHandler {
     }
 
     private void handleLanding() throws IOException, ClassNotFoundException {
-        Runway runway = messenger.receiveAndParse(in, Runway.class);
+        Runway runway = Messenger.handleResponseRunway(in);
         plane.setLandingPhase(runway);
 
         log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());

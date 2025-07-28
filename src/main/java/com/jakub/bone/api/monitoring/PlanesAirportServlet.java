@@ -5,7 +5,6 @@ import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.service.ControlTowerService;
-import com.jakub.bone.utils.Messenger;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
