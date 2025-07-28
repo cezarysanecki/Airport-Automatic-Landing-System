@@ -25,11 +25,11 @@ public class PlaneCommunicationService {
     }
 
     public boolean sendFuelLevel() throws IOException {
-        double fuelLevel = plane.getFuelManager().getFuelLevel();
+        double fuelLevel = plane.getNavigator().getFuelManager().getFuelLevel();
         Messenger.send(out, fuelLevel);
         out.flush();
 
-        if (plane.getFuelManager().isOutOfFuel()) {
+        if (plane.getNavigator().getFuelManager().isOutOfFuel()) {
             log.info("Plane [{}]: out of fuel. Collision detected", plane.getFlightNumber());
             return false;
         }

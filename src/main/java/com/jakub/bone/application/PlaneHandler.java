@@ -70,7 +70,7 @@ public class PlaneHandler extends Thread {
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         Plane plane = Messenger.handleResponsePlane(in);
 
-        if (!canRegisterPlane(plane, out)) {
+        if (!canRegisterPlane(out, plane.getFlightNumber())) {
             return;
         }
 
@@ -89,10 +89,10 @@ public class PlaneHandler extends Thread {
         managePlane(plane, in, out);
     }
 
-    private boolean canRegisterPlane(Plane plane, ObjectOutputStream out) throws IOException {
+    private boolean canRegisterPlane(ObjectOutputStream out, String flightNumber) throws IOException {
         if (controlTowerService.isSpaceFull()) {
             Messenger.send(out, FULL);
-            log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
+            log.info("Plane [{}]: no capacity in airspace", flightNumber);
             return false;
         }
         return true;
@@ -103,7 +103,7 @@ public class PlaneHandler extends Thread {
 
         while (true) {
             double fuelLevel = Messenger.handleResponseFuelLevel(in);
-            plane.getFuelManager().setFuelLevel(fuelLevel);
+            plane.getNavigator().getFuelManager().setFuelLevel(fuelLevel);
 
             if (fuelLevel <= 0) {
                 handleOutOfFuel(plane);

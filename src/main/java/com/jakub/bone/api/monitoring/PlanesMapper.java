@@ -17,7 +17,7 @@ class PlanesMapper {
         locationMap.put("altitude", plane.getNavigator().getCoordinates().getAltitude());
 
         planeMap.put("location", locationMap);
-        planeMap.put("fuel level", plane.getFuelManager().getFuelLevel());
+        planeMap.put("fuel level", plane.getNavigator().getFuelManager().getFuelLevel());
 
         return planeMap;
     }

@@ -26,7 +26,6 @@ public class Plane implements Serializable {
     private boolean landed;
     private List<Coordinates> waypoints;
     private boolean isDestroyed;
-    private FuelManager fuelManager;
     private Navigator navigator;
     private FlightPhase phase;
     private Runway assignedRunway;
@@ -34,8 +33,7 @@ public class Plane implements Serializable {
     public Plane(String flightNumber) {
         this.flightNumber = flightNumber;
         this.phase = DESCENDING;
-        this.fuelManager = new FuelManager();
-        this.navigator = new Navigator(fuelManager);
+        this.navigator = new Navigator();
         this.isDestroyed = false;
         this.landed = false;
         this.assignedRunway = null;

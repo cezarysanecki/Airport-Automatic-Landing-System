@@ -24,9 +24,9 @@ public class Navigator {
     private Coordinates coordinates;
     private boolean isFirstMove;
 
-    public Navigator(FuelManager fuelManager) {
+    public Navigator() {
         this.waypoints = WaypointGenerator.getDescentWaypoints();
-        this.fuelManager = fuelManager;
+        this.fuelManager = new FuelManager();
         this.isFirstMove = true;
         spawnPlane();
     }
