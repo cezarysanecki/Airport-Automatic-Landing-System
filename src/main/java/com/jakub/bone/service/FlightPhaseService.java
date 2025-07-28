@@ -31,7 +31,7 @@ public class FlightPhaseService {
     }
 
     public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        plane.getNavigator().setCoordinates(coordinates);
+        plane.setCoordinates(coordinates);
         switch (plane.getPhase()) {
             case DESCENDING -> handleDescent(plane, out);
             case HOLDING -> handleHolding(plane, out);
@@ -85,9 +85,9 @@ public class FlightPhaseService {
     }
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
-        if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)) {
+        if (plane.getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)) {
             return Airport.runway1;
-        } else if (plane.getNavigator().getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
+        } else if (plane.getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
             return Airport.runway2;
         }
         return null;

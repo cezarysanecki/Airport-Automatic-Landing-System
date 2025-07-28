@@ -29,7 +29,7 @@ public class PlaneModel {
         this.planeGroup = new Group();
         loadPlaneModel();
         createLabel();
-        updatePosition(plane.getNavigator().getCoordinates());
+        updatePosition(plane.getCoordinates());
     }
 
     public void loadPlaneModel() {

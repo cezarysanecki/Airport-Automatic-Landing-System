@@ -84,7 +84,7 @@ public class PlaneHandler extends Thread {
 
         controlTowerService.registerPlane(plane);
 
-        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getNavigator().getCoordinates().getX(), plane.getNavigator().getCoordinates().getY(), plane.getNavigator().getCoordinates().getAltitude());
+        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getCoordinates().getX(), plane.getCoordinates().getY(), plane.getCoordinates().getAltitude());
 
         managePlane(plane, in, out);
     }
@@ -103,7 +103,7 @@ public class PlaneHandler extends Thread {
 
         while (true) {
             double fuelLevel = Messenger.handleResponseFuelLevel(in);
-            plane.getNavigator().getFuelManager().setFuelLevel(fuelLevel);
+            plane.setFuelLevel(fuelLevel);
 
             if (fuelLevel <= 0) {
                 handleOutOfFuel(plane);

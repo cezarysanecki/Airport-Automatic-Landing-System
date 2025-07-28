@@ -12,12 +12,12 @@ class PlanesMapper {
         planeMap.put("phase", plane.getPhase());
 
         Map<String, Object> locationMap = new LinkedHashMap<>();
-        locationMap.put("x", plane.getNavigator().getCoordinates().getX());
-        locationMap.put("y", plane.getNavigator().getCoordinates().getY());
-        locationMap.put("altitude", plane.getNavigator().getCoordinates().getAltitude());
+        locationMap.put("x", plane.getCoordinates().getX());
+        locationMap.put("y", plane.getCoordinates().getY());
+        locationMap.put("altitude", plane.getCoordinates().getAltitude());
 
         planeMap.put("location", locationMap);
-        planeMap.put("fuel level", plane.getNavigator().getFuelManager().getFuelLevel());
+        planeMap.put("fuel level", plane.getFuelLevel());
 
         return planeMap;
     }

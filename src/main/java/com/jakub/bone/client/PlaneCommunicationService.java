@@ -25,11 +25,11 @@ public class PlaneCommunicationService {
     }
 
     public boolean sendFuelLevel() throws IOException {
-        double fuelLevel = plane.getNavigator().getFuelManager().getFuelLevel();
+        double fuelLevel = plane.getFuelLevel();
         Messenger.send(out, fuelLevel);
         out.flush();
 
-        if (plane.getNavigator().getFuelManager().isOutOfFuel()) {
+        if (plane.isOutOfFuel()) {
             log.info("Plane [{}]: out of fuel. Collision detected", plane.getFlightNumber());
             return false;
         }
@@ -37,7 +37,7 @@ public class PlaneCommunicationService {
     }
 
     public boolean sendLocation() throws IOException {
-        Coordinates coordinates = plane.getNavigator().getCoordinates();
+        Coordinates coordinates = plane.getCoordinates();
 
         if (coordinates == null) {
             log.info("Plane [{}]: disappeared from the radar", plane.getFlightNumber());

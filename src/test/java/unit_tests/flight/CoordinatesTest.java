@@ -21,8 +21,8 @@ class CoordinatesTest {
         // Update location
         plane.getNavigator().updateLocation(newCoordinates);
 
-        assertNotEquals(plane.getNavigator().getCoordinates(), initCoordinates, "Plane should not remain at the initial location");
-        assertEquals(plane.getNavigator().getCoordinates(), newCoordinates, "Plane should have the new location after update");
+        assertNotEquals(plane.getCoordinates(), initCoordinates, "Plane should not remain at the initial location");
+        assertEquals(plane.getCoordinates(), newCoordinates, "Plane should have the new location after update");
     }
 
     @Test

@@ -64,7 +64,7 @@ class SceneUpdater {
                 planeModel.setPlaneModelColor(Color.YELLOW);
             }
 
-            Coordinates nextWaypoint = plane.getNavigator().getCoordinates();
+            Coordinates nextWaypoint = plane.getCoordinates();
             planeModel.animateMovement(nextWaypoint);
         }
         cleanupScene();

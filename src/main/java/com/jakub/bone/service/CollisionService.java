@@ -42,7 +42,7 @@ public class CollisionService extends Thread {
             Plane plane1 = controlTowerService.getPlanes().get(i);
             for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
                 Plane plane2 = controlTowerService.getPlanes().get(j);
-                if (arePlanesToClose(plane1.getNavigator().getCoordinates(), plane2.getNavigator().getCoordinates())) {
+                if (arePlanesToClose(plane1.getCoordinates(), plane2.getCoordinates())) {
                     handleCollision(plane1, plane2);
                 }
             }
