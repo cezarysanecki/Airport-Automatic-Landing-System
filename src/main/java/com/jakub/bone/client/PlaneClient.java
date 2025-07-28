@@ -1,10 +1,8 @@
-package com.jakub.bone.infrastructure;
+package com.jakub.bone.client;
 
 import com.jakub.bone.application.PlaneHandler;
-import com.jakub.bone.client.PlaneCommunicationService;
-import com.jakub.bone.client.PlaneInstructionHandler;
-import com.jakub.bone.client.SocketClient;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.infrastructure.SocketClient;
 import com.jakub.bone.utils.Messenger;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;

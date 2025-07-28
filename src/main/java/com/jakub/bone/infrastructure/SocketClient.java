@@ -1,4 +1,4 @@
-package com.jakub.bone.client;
+package com.jakub.bone.infrastructure;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;

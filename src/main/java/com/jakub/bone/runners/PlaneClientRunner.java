@@ -4,8 +4,7 @@ import com.jakub.bone.config.Constant;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
-import com.jakub.bone.infrastructure.PlaneClient;
-import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.client.PlaneClient;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.ExecutorService;
