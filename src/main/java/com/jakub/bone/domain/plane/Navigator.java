@@ -18,10 +18,12 @@ import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 @Setter
 @Log4j2
 public class Navigator {
+
     private List<Coordinates> waypoints;
-    private FuelManager fuelManager;
-    private int currentIndex;
     private Coordinates coordinates;
+    private int currentIndex;
+
+    private FuelManager fuelManager;
     private boolean isFirstMove;
 
     public Navigator() {
@@ -75,6 +77,11 @@ public class Navigator {
             }
         }
         return nearWaypoints;
+    }
+
+    public void assignNewWaypoints(List<Coordinates> newWaypoints) {
+        this.waypoints = newWaypoints;
+        this.currentIndex = 0;
     }
 }
 
