@@ -31,20 +31,20 @@ public class Plane implements Serializable {
     private FlightPhase phase;
     private Runway assignedRunway;
 
-    private Plane(String flightNumber, List<Coordinates> waypoints, FlightPhase flightPhase) {
+    private Plane(String flightNumber, FlightPhase flightPhase, Navigator navigator) {
         this.flightNumber = flightNumber;
         this.phase = flightPhase;
-        this.navigator = new Navigator(waypoints);
+        this.navigator = navigator;
         this.isDestroyed = false;
         this.landed = false;
         this.assignedRunway = null;
     }
 
-    public static Plane descendingPlane(String flightNumber) {
+    public static Plane createPlane(String flightNumber, Navigator navigator) {
         return new Plane(
                 flightNumber,
-                WaypointGenerator.getDescentWaypoints(),
-                DESCENDING
+                DESCENDING,
+                navigator
         );
     }
 
