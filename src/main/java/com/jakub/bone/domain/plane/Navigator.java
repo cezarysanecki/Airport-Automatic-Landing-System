@@ -25,11 +25,18 @@ public class Navigator {
     private FuelManager fuelManager;
     private boolean isFirstMove;
 
-    public Navigator(List<Coordinates> waypoints) {
+    public Navigator(List<Coordinates> waypoints, FuelManager fuelManager) {
         this.waypoints = waypoints;
-        this.fuelManager = new FuelManager();
+        this.fuelManager = fuelManager;
         this.isFirstMove = true;
-        spawnPlane();
+
+        List<Coordinates> waypointsToSpawn = this.waypoints.stream()
+                .filter(wp -> wp.getAltitude() >= MIN_ALTITUDE && wp.getAltitude() <= MAX_ALTITUDE)
+                .toList();
+
+        Random random = new Random();
+        this.currentIndex = random.nextInt(waypointsToSpawn.size());
+        this.coordinates = waypointsToSpawn.get(currentIndex);
     }
 
     public void move() {
@@ -42,29 +49,6 @@ public class Navigator {
 
     public boolean isAtLastWaypoint() {
         return currentIndex == waypoints.size();
-    }
-
-    public void updateLocation(Coordinates coordinates) {
-        if (!isFirstMove) {
-            try {
-                Thread.sleep(UPDATE_DELAY);
-            } catch (InterruptedException ex) {
-                log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
-                Thread.currentThread().interrupt();
-            }
-        }
-        this.isFirstMove = false;
-        this.coordinates = coordinates;
-    }
-
-    private void spawnPlane() {
-        List<Coordinates> waypointsToSpawn = waypoints.stream()
-                .filter(wp -> wp.getAltitude() >= MIN_ALTITUDE && wp.getAltitude() <= MAX_ALTITUDE)
-                .toList();
-
-        Random random = new Random();
-        this.currentIndex = random.nextInt(waypointsToSpawn.size());
-        this.coordinates = waypointsToSpawn.get(currentIndex);
     }
 
     public List<Coordinates> getRiskZoneWaypoints() {
@@ -82,5 +66,19 @@ public class Navigator {
         this.waypoints = newWaypoints;
         this.currentIndex = 0;
     }
+
+    private void updateLocation(Coordinates coordinates) {
+        if (!isFirstMove) {
+            try {
+                Thread.sleep(UPDATE_DELAY);
+            } catch (InterruptedException ex) {
+                log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
+                Thread.currentThread().interrupt();
+            }
+        }
+        this.isFirstMove = false;
+        this.coordinates = coordinates;
+    }
+
 }
 
