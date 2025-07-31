@@ -27,60 +27,59 @@ public class Plane implements Serializable {
     private String flightNumber;
     private boolean landed;
     private boolean isDestroyed;
-    private Navigator navigator;
     private FlightPhase phase;
     private Runway assignedRunway;
     private FuelManager fuelManager;
     private Waypoints waypoints;
+    private Coordinates currentCoordinates;
 
-    private Plane(String flightNumber, FlightPhase flightPhase, Navigator navigator, FuelManager fuelManager, Waypoints waypoints) {
+    private Plane(String flightNumber, FlightPhase flightPhase, FuelManager fuelManager, Waypoints waypoints) {
         this.flightNumber = flightNumber;
         this.phase = flightPhase;
-        this.navigator = navigator;
         this.isDestroyed = false;
         this.landed = false;
         this.assignedRunway = null;
         this.fuelManager = fuelManager;
         this.waypoints = waypoints;
+        this.currentCoordinates = waypoints.next();
     }
 
-    public static Plane createPlane(String flightNumber, Navigator navigator, FuelManager fuelManager, Waypoints waypoints) {
+    public static Plane createPlane(String flightNumber, FuelManager fuelManager, Waypoints waypoints) {
         return new Plane(
                 flightNumber,
                 DESCENDING,
-                navigator,
                 fuelManager,
                 waypoints
         );
     }
 
     public void descend() {
-        navigator.move();
+        currentCoordinates = waypoints.next();
         fuelManager.burnFuel();
 
-        if (navigator.isAtLastWaypoint()) {
+        if (waypoints.isLastWaypoint()) {
             changePhase(HOLDING);
-            navigator.assignNewWaypoints(WaypointGenerator.getHoldingPatternWaypoints());
+            this.waypoints = Waypoints.first(WaypointGenerator.getHoldingPatternWaypoints());
         }
     }
 
     public void hold() {
         changePhase(HOLDING);
-        navigator.move();
+        currentCoordinates = waypoints.next();
         fuelManager.burnFuel();
 
-        if (navigator.isAtLastWaypoint()) {
-            navigator.setCurrentIndex(0);
+        if (waypoints.isLastWaypoint()) {
+            waypoints.resetToStart();
         }
     }
 
     public void land(Runway runway, Coordinates landingPoint) {
         assignedRunway = runway;
-        navigator.move();
+        currentCoordinates = waypoints.next();
         fuelManager.burnFuel();
 
-        if (navigator.isAtLastWaypoint()) {
-            navigator.setCoordinates(landingPoint);
+        if (waypoints.isLastWaypoint()) {
+            this.currentCoordinates = landingPoint;
             landed = true;
         }
     }
@@ -88,7 +87,7 @@ public class Plane implements Serializable {
     public void setLandingPhase(List<Coordinates> landingWaypoints) {
         changePhase(LANDING);
 
-        navigator.assignNewWaypoints(landingWaypoints);
+        this.waypoints = Waypoints.first(landingWaypoints);
     }
 
     public void changePhase(FlightPhase newPhase) {
@@ -107,7 +106,7 @@ public class Plane implements Serializable {
     }
 
     public void setCoordinates(Coordinates coordinates) {
-        navigator.setCoordinates(coordinates);
+        this.currentCoordinates = coordinates;
     }
 
     public boolean isOutOfFuel() {
@@ -119,10 +118,10 @@ public class Plane implements Serializable {
     }
 
     public Coordinates getCoordinates() {
-        return navigator.getCoordinates();
+        return currentCoordinates;
     }
 
     public List<Coordinates> getRiskZoneWaypoints() {
-        return navigator.getRiskZoneWaypoints();
+        return waypoints.getNearestWaypointsTo(3);
     }
 }

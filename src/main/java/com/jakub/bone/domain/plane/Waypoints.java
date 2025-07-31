@@ -25,12 +25,26 @@ public class Waypoints {
         return new Waypoints(coordinates, RANDOM.nextInt(coordinates.size()));
     }
 
+    public void resetToStart() {
+        this.currentIndex = 0;
+    }
+
     public Coordinates next() {
         if (currentIndex < coordinates.size()) {
             currentIndex++;
             return coordinates.get(currentIndex - 1);
         }
         throw new IndexOutOfBoundsException("No more waypoints available");
+    }
+
+    public List<Coordinates> getNearestWaypointsTo(int range) {
+        int start = Math.max(0, currentIndex - range);
+        int end = Math.min(coordinates.size(), currentIndex + range);
+        return coordinates.subList(start, end);
+    }
+
+    public boolean isLastWaypoint() {
+        return currentIndex == coordinates.size();
     }
 
 }
