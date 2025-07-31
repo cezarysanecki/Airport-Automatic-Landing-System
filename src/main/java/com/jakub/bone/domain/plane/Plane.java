@@ -1,7 +1,7 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,26 +30,30 @@ public class Plane implements Serializable {
     private Navigator navigator;
     private FlightPhase phase;
     private Runway assignedRunway;
+    private FuelManager fuelManager;
 
-    private Plane(String flightNumber, FlightPhase flightPhase, Navigator navigator) {
+    private Plane(String flightNumber, FlightPhase flightPhase, Navigator navigator, FuelManager fuelManager) {
         this.flightNumber = flightNumber;
         this.phase = flightPhase;
         this.navigator = navigator;
         this.isDestroyed = false;
         this.landed = false;
         this.assignedRunway = null;
+        this.fuelManager = fuelManager;
     }
 
-    public static Plane createPlane(String flightNumber, Navigator navigator) {
+    public static Plane createPlane(String flightNumber, Navigator navigator, FuelManager fuelManager) {
         return new Plane(
                 flightNumber,
                 DESCENDING,
-                navigator
+                navigator,
+                fuelManager
         );
     }
 
     public void descend() {
         navigator.move();
+        fuelManager.burnFuel();
 
         if (navigator.isAtLastWaypoint()) {
             changePhase(HOLDING);
@@ -60,6 +64,7 @@ public class Plane implements Serializable {
     public void hold() {
         changePhase(HOLDING);
         navigator.move();
+        fuelManager.burnFuel();
 
         if (navigator.isAtLastWaypoint()) {
             navigator.setCurrentIndex(0);
@@ -69,6 +74,7 @@ public class Plane implements Serializable {
     public void land(Runway runway, Coordinates landingPoint) {
         assignedRunway = runway;
         navigator.move();
+        fuelManager.burnFuel();
 
         if (navigator.isAtLastWaypoint()) {
             navigator.setCoordinates(landingPoint);
@@ -94,7 +100,7 @@ public class Plane implements Serializable {
     }
 
     public void setFuelLevel(double fuelLevel) {
-        navigator.getFuelManager().setFuelLevel(fuelLevel);
+        fuelManager.setFuelLevel(fuelLevel);
     }
 
     public void setCoordinates(Coordinates coordinates) {
@@ -102,11 +108,11 @@ public class Plane implements Serializable {
     }
 
     public boolean isOutOfFuel() {
-        return navigator.getFuelManager().isOutOfFuel();
+        return fuelManager.isOutOfFuel();
     }
 
     public double getFuelLevel() {
-        return navigator.getFuelManager().getFuelLevel();
+        return fuelManager.getFuelLevel();
     }
 
     public Coordinates getCoordinates() {

@@ -22,12 +22,10 @@ public class Navigator {
     private Coordinates coordinates;
     private int currentIndex;
 
-    private FuelManager fuelManager;
     private boolean isFirstMove;
 
-    public Navigator(List<Coordinates> waypoints, FuelManager fuelManager) {
+    public Navigator(List<Coordinates> waypoints) {
         this.waypoints = waypoints;
-        this.fuelManager = fuelManager;
         this.isFirstMove = true;
 
         List<Coordinates> waypointsToSpawn = this.waypoints.stream()
@@ -44,7 +42,6 @@ public class Navigator {
             updateLocation(waypoints.get(currentIndex));
             currentIndex++;
         }
-        fuelManager.burnFuel();
     }
 
     public boolean isAtLastWaypoint() {
