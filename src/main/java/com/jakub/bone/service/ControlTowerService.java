@@ -79,6 +79,14 @@ public class ControlTowerService {
         return plane.getCoordinates().getAltitude() == HOLDING_ENTRY_ALTITUDE;
     }
 
+    public boolean isPlanePresent(String flightNumber) {
+        return planes.stream()
+                .filter(plane -> flightNumber.equals(plane.getFlightNumber()))
+                .findFirst()
+                .map(plane -> !plane.isDestroyed() && !plane.isLanded())
+                .isPresent();
+    }
+
     public boolean hasLandedOnRunway(Plane plane, Runway runway) {
         boolean hasLanded = plane.getCoordinates().equals(runway.getLandingPoint());
         if (hasLanded) {
@@ -102,6 +110,15 @@ public class ControlTowerService {
             }
             return flightNumbers;
         });
+    }
+
+    public List<PlaneCoordinates> getPlaneCoordinates() {
+        return planes.stream()
+                .map(plane -> new PlaneCoordinates(
+                        plane.getFlightNumber(),
+                        plane.getCoordinates(),
+                        plane.getPhase() == Plane.FlightPhase.LANDING))
+                .toList();
     }
 
     // Helper methods for locks management

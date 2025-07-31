@@ -1,6 +1,6 @@
 package unit_tests.flight;
 
-import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.shared.Coordinates;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import com.jakub.bone.domain.plane.Plane;

@@ -5,7 +5,7 @@ import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.shared.Coordinates;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.jakub.bone.application;
 
-import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;

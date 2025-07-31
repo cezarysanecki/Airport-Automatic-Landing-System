@@ -1,6 +1,6 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;

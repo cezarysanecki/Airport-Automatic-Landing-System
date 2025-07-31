@@ -1,4 +1,4 @@
-package com.jakub.bone.domain.airport;
+package com.jakub.bone.shared;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,8 @@
 package com.jakub.bone.ui.model;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-import com.jakub.bone.domain.airport.Coordinates;
-import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.service.PlaneCoordinates;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;
@@ -19,17 +19,18 @@ import lombok.Getter;
 
 @Getter
 public class PlaneModel {
-    private final Plane plane;
+
+    private final PlaneCoordinates planeCoordinates;
     private final Group planeGroup;
     private MeshView[] meshViews;
     private Text label;
 
-    public PlaneModel(Plane plane) {
-        this.plane = plane;
+    public PlaneModel(PlaneCoordinates planeCoordinates) {
+        this.planeCoordinates = planeCoordinates;
         this.planeGroup = new Group();
         loadPlaneModel();
         createLabel();
-        updatePosition(plane.getCoordinates());
+        updatePosition(planeCoordinates.coordinates());
     }
 
     public void loadPlaneModel() {
@@ -44,7 +45,7 @@ public class PlaneModel {
         this.label = new Text();
         this.label.setFont(new Font(100));
         this.label.setFill(Color.WHITE);
-        this.label.setText(plane.getFlightNumber());
+        this.label.setText(planeCoordinates.flightNumber());
     }
 
     private void updatePosition(Coordinates coordinates) {

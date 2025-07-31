@@ -1,6 +1,6 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import lombok.extern.log4j.Log4j2;

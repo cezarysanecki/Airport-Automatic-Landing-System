@@ -2,7 +2,7 @@ package unit_tests.flight;
 
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.domain.airport.Coordinates;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;

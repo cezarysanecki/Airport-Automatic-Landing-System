@@ -1,9 +1,9 @@
 package com.jakub.bone.ui;
 
 import com.jakub.bone.config.Constant;
-import com.jakub.bone.domain.airport.Coordinates;
-import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlaneCoordinates;
 import com.jakub.bone.ui.model.PlaneModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,8 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 
 @Log4j2
 class SceneUpdater {
@@ -40,9 +38,9 @@ class SceneUpdater {
     }
 
     private void updateAirspace() {
-        List<Plane> planes = controller.getPlanes();
+        List<PlaneCoordinates> planesCoordinates = controller.getPlaneCoordinates();
 
-        for (Plane plane : planes) {
+        for (PlaneCoordinates planeCoordinates : planesCoordinates) {
             if (isFirstPlane) {
                 try {
                     Thread.sleep(Constant.SCENE_UPDATE_DELAY);
@@ -53,18 +51,18 @@ class SceneUpdater {
                 isFirstPlane = false;
             }
             PlaneModel planeModel;
-            if (!planesMap.containsKey(plane.getFlightNumber())) {
-                planeModel = new PlaneModel(plane);
-                planesMap.put(plane.getFlightNumber(), planeModel);
+            if (!planesMap.containsKey(planeCoordinates.flightNumber())) {
+                planeModel = new PlaneModel(planeCoordinates);
+                planesMap.put(planeCoordinates.flightNumber(), planeModel);
                 root.getChildren().addAll(planeModel.getPlaneGroup(), planeModel.getLabel());
             }
 
-            planeModel = planesMap.get(plane.getFlightNumber());
-            if (plane.getPhase().equals(LANDING)) {
+            planeModel = planesMap.get(planeCoordinates.flightNumber());
+            if (planeCoordinates.landing()) {
                 planeModel.setPlaneModelColor(Color.YELLOW);
             }
 
-            Coordinates nextWaypoint = plane.getCoordinates();
+            Coordinates nextWaypoint = planeCoordinates.coordinates();
             planeModel.animateMovement(nextWaypoint);
         }
         cleanupScene();
@@ -72,9 +70,9 @@ class SceneUpdater {
 
     private void cleanupScene() {
         for (String flightNumber : planesMap.keySet()) {
-            Plane plane = controller.getPlaneByFlightNumber(flightNumber);
             PlaneModel planeModel = planesMap.get(flightNumber);
-            if (plane == null || plane.isDestroyed() || plane.isLanded()) {
+            boolean isPresent = controller.isPlanePresent(flightNumber);
+            if (!isPresent) {
                 root.getChildren().removeAll(planeModel.getPlaneGroup(), planeModel.getLabel());
             }
         }
