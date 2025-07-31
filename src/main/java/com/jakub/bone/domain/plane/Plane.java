@@ -19,30 +19,6 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 @Setter
 public class Plane implements Serializable {
 
-    public boolean isOutOfFuel() {
-        return navigator.getFuelManager().isOutOfFuel();
-    }
-
-    public double getFuelLevel() {
-        return navigator.getFuelManager().getFuelLevel();
-    }
-
-    public void setFuelLevel(double fuelLevel) {
-        navigator.getFuelManager().setFuelLevel(fuelLevel);
-    }
-
-    public Coordinates getCoordinates() {
-        return navigator.getCoordinates();
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        navigator.setCoordinates(coordinates);
-    }
-
-    public List<Coordinates> getRiskZoneWaypoints() {
-        return navigator.getRiskZoneWaypoints();
-    }
-
     public enum FlightPhase {
         DESCENDING, HOLDING, LANDING
     }
@@ -107,5 +83,29 @@ public class Plane implements Serializable {
 
     public void destroyPlane() {
         this.isDestroyed = true;
+    }
+
+    public void setFuelLevel(double fuelLevel) {
+        navigator.getFuelManager().setFuelLevel(fuelLevel);
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        navigator.setCoordinates(coordinates);
+    }
+
+    public boolean isOutOfFuel() {
+        return navigator.getFuelManager().isOutOfFuel();
+    }
+
+    public double getFuelLevel() {
+        return navigator.getFuelManager().getFuelLevel();
+    }
+
+    public Coordinates getCoordinates() {
+        return navigator.getCoordinates();
+    }
+
+    public List<Coordinates> getRiskZoneWaypoints() {
+        return navigator.getRiskZoneWaypoints();
     }
 }
