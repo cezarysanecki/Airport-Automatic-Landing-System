@@ -31,8 +31,9 @@ public class Plane implements Serializable {
     private FlightPhase phase;
     private Runway assignedRunway;
     private FuelManager fuelManager;
+    private Waypoints waypoints;
 
-    private Plane(String flightNumber, FlightPhase flightPhase, Navigator navigator, FuelManager fuelManager) {
+    private Plane(String flightNumber, FlightPhase flightPhase, Navigator navigator, FuelManager fuelManager, Waypoints waypoints) {
         this.flightNumber = flightNumber;
         this.phase = flightPhase;
         this.navigator = navigator;
@@ -40,14 +41,16 @@ public class Plane implements Serializable {
         this.landed = false;
         this.assignedRunway = null;
         this.fuelManager = fuelManager;
+        this.waypoints = waypoints;
     }
 
-    public static Plane createPlane(String flightNumber, Navigator navigator, FuelManager fuelManager) {
+    public static Plane createPlane(String flightNumber, Navigator navigator, FuelManager fuelManager, Waypoints waypoints) {
         return new Plane(
                 flightNumber,
                 DESCENDING,
                 navigator,
-                fuelManager
+                fuelManager,
+                waypoints
         );
     }
 
