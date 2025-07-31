@@ -5,6 +5,8 @@ import com.jakub.bone.shared.Coordinates;
 import java.util.List;
 import java.util.Random;
 
+import static com.jakub.bone.config.Constant.UPDATE_DELAY;
+
 public class Waypoints {
 
     private static final Random RANDOM = new Random();
@@ -30,6 +32,11 @@ public class Waypoints {
     }
 
     public Coordinates next() {
+        try {
+            Thread.sleep(UPDATE_DELAY);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
         if (currentIndex < coordinates.size()) {
             currentIndex++;
             return coordinates.get(currentIndex - 1);
