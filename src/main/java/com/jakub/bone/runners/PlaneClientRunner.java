@@ -1,10 +1,10 @@
 package com.jakub.bone.runners;
 
+import com.jakub.bone.client.PlaneClient;
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
-import com.jakub.bone.client.PlaneClient;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.ExecutorService;
@@ -20,7 +20,7 @@ public class PlaneClientRunner {
         try (ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_CLIENTS)) {
             for (int i = 0; i < NUMBER_OF_CLIENTS; i++) {
 
-                Plane plane = new Plane(PlaneNumberFactory.generateFlightNumber().value());
+                Plane plane = Plane.descendingPlane(PlaneNumberFactory.generateFlightNumber().value());
 
                 PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT, plane);
                 try {

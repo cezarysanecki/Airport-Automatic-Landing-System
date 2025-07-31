@@ -8,6 +8,7 @@ import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,6 +21,7 @@ import java.net.ServerSocket;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -79,7 +81,7 @@ class ClientServerConnectionTest {
         // Wait for the server to start
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
         new Thread(planeClient).start();
 
         // Wait for the client to connect
@@ -93,13 +95,13 @@ class ClientServerConnectionTest {
     void testConnectionWithMultipleClients() {
         waitForUpdate();
 
-        PlaneClient planeClient1 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
+        PlaneClient planeClient1 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
         new Thread(planeClient1).start();
 
         // Wait for the first client to connect
         waitForUpdate();
 
-        PlaneClient planeClient2 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
+        PlaneClient planeClient2 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
         new Thread(planeClient2).start();
 
         // Wait for the second client to connect
@@ -114,7 +116,7 @@ class ClientServerConnectionTest {
     void testClientRegistration() {
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
         new Thread(planeClient).start();
 
         waitForUpdate();
@@ -130,11 +132,11 @@ class ClientServerConnectionTest {
 
         // Fill the list with 100 planes
         for(int i = 0; i < 100; i++){
-            Plane plane = new Plane("TEST_PLANE");
+            Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
             server.getControlTowerService().getPlanes().add(plane);
         }
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
         new Thread(planeClient).start();
 
         waitForUpdate();

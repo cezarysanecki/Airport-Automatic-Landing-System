@@ -60,7 +60,7 @@ class FlightPhaseTest {
     @DisplayName("Should test flight phase set as DESCENDING after plane spawn")
     void testPhaseSettingToDescending() throws IOException, ClassNotFoundException {
         // Plane spawns at a certain altitude
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         Coordinates descentPoint = new Coordinates(0, 0, 3000);
 
         phaseCoordinator.processFlightPhase(plane, descentPoint, null);
@@ -72,7 +72,7 @@ class FlightPhaseTest {
     @DisplayName("Should test flight phase switch to holding")
     void testPhaseSwitchToHolding() throws IOException, ClassNotFoundException {
         // Plane has reached the end of its descent waypoints
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane.getNavigator().setCurrentIndex(WaypointGenerator.getDescentWaypoints().size());
         plane.descend();
 
@@ -87,7 +87,7 @@ class FlightPhaseTest {
     @DisplayName("Should test flight phase switch to LANDING when plane is at corridor entry point")
     void testPhaseSwitchToLandingAtCorridorEntryPoint() throws IOException, ClassNotFoundException {
         // Plane is currently in the holding pattern
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane.getNavigator().setWaypoints(WaypointGenerator.getHoldingPatternWaypoints());
         plane.setPhase(HOLDING);
 
@@ -102,7 +102,7 @@ class FlightPhaseTest {
     @DisplayName("Should test correct plane marking as landed after landing process")
     void testMarkingAsLanded() {
         // Plane is at the runway landing point
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane.getNavigator().setCoordinates(runway1.getLandingPoint());
 
         assertTrue(controlTower.hasLandedOnRunway(plane, runway1), "TEST_PLANE should be marked as landed");
@@ -112,7 +112,7 @@ class FlightPhaseTest {
     @DisplayName("Should test runway release after crossing final approach point")
     void testRunwayReleaseAfterCrossFinalApproach() {
         // Plane is exactly at final approach coordinates
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane.getNavigator().setCoordinates(FINAL_APPROACH_CORRIDOR_1);
 
         // Initially mark runway as unavailable

@@ -6,6 +6,7 @@ import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import static com.jakub.bone.config.Constant.Corridor.FINAL_APPROACH_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -76,7 +78,7 @@ class RunwayTest {
     @Test
     @DisplayName("Runway is released when a plane crosses final approach point")
     void testReleaseRunwayIfPlaneIsAtFinalAtApproach() {
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane.getNavigator().setCoordinates(FINAL_APPROACH_CORRIDOR_1);
 
         controlTower.releaseRunwayIfPlaneAtFinalApproach(plane, runway1);

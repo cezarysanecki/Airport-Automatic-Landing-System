@@ -4,6 +4,7 @@ import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
+import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +44,7 @@ class ControlTowerTest {
     void testRegisterPlane(){
         // Prepare a list of 10 planes
         for (int i = 0; i < 10; i++){
-            incomingPlanes.add(new Plane("TEST_PLANE"));
+            incomingPlanes.add(new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING));
         }
 
         // Register each plane
@@ -62,7 +64,7 @@ class ControlTowerTest {
         void testIsSpaceFull(){
         // Prepare a list of 110 planes
         for (int i = 0; i < 110; i++) {
-            incomingPlanes.add(new Plane("TEST_PLANE"));
+            incomingPlanes.add(new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING));
         }
 
         // Register each plane
@@ -78,13 +80,13 @@ class ControlTowerTest {
     @DisplayName("Should detect when an incoming plane is within the collision risk zone")
     void testIfPlaneAtCollisionRiskZone() {
         // Register the first plane
-        Plane plane1 = new Plane("TEST_PLANE_1");
+        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         controlTower.registerPlane(plane1);
 
         // Retrieve its current index and shift the second plane's index by +1
         int referenceIndex = plane1.getNavigator().getCurrentIndex();
 
-        Plane plane2 = new Plane("TEST_PLANE_2");
+        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane2.getNavigator().setCurrentIndex(referenceIndex + 1);
 
         assertTrue(controlTower.isAtCollisionRiskZone(plane2),
@@ -95,7 +97,7 @@ class ControlTowerTest {
     @DisplayName("Should remove plane from airspace correctly")
     void testRemovePlaneFromSpace(){
         // Register plane
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         controlTower.registerPlane(plane);
 
         // Remove plane

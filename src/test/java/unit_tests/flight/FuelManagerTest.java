@@ -1,17 +1,19 @@
 package unit_tests.flight;
 
 import com.jakub.bone.config.Constant;
+import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import com.jakub.bone.domain.plane.Plane;
 
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FuelManagerTest {
     @Test
     @DisplayName("Fuel level should decrease by the consumption rate after burnFuel() call")
     void testBurnFuel() {
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
 
         // Capture the plane's current consumption rate
         double consumption = Constant.CONSUMPTION_PER_SECOND;

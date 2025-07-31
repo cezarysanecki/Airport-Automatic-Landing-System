@@ -5,6 +5,7 @@ import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.client.PlaneClient;
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.utils.WaypointGenerator;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -12,6 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 
 /*
  * Continuously spawns PlaneClient instances every 5 seconds,
@@ -35,7 +38,7 @@ public class ClientTest {
 
         while (true) {
             try {
-                PlaneClient client = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value()));
+                PlaneClient client = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
                 executorService.execute(client);
 
                 try {

@@ -7,6 +7,7 @@ import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +47,7 @@ class DatabaseOperationTest {
     @Test
     @DisplayName("Plane registration should be saved to the database")
     void testPlaneRegisterToDatabase() throws SQLException {
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
 
         // Registration should trigger a DB operation
         controlTower.registerPlane(plane);
@@ -57,7 +59,7 @@ class DatabaseOperationTest {
     @DisplayName("Landing should be saved to the database")
     void testLandingRegisterToDatabase() throws SQLException {
         Airport airport = new Airport();
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
 
         // Place the plane on the runway's landing point
         plane.getNavigator().setCoordinates(runway1.getLandingPoint());
@@ -70,8 +72,8 @@ class DatabaseOperationTest {
     @Test
     @DisplayName("Collision should be saved to the database")
     void testCollisionRegisterToDatabase() throws SQLException {
-        Plane plane1 = new Plane("TEST_PLANE_1");
-        Plane plane2 = new Plane("TEST_PLANE_2");
+        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.getDescentWaypoints(), DESCENDING);
 
         // Both planes share the same location => collision scenario
         plane1.getNavigator().setCoordinates(ENTRY_POINT_CORRIDOR_1);

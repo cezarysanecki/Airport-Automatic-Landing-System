@@ -1,17 +1,19 @@
 package unit_tests.flight;
 
 import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import com.jakub.bone.domain.plane.Plane;
 
+import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoordinatesTest {
     @Test
     @DisplayName("Plane should update its location correctly")
     void testUpdateLocation() {
-        Plane plane = new Plane("TEST_PLANE");
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         Coordinates initCoordinates = new Coordinates(1000, 1000, 1000);
         Coordinates newCoordinates = new Coordinates(5000, 5000, 5000);
 
@@ -29,10 +31,10 @@ class CoordinatesTest {
     @DisplayName("Location equals() should distinguish different coordinates")
     void testEqualLocationIdentification(){
         // Two planes with different locations
-        Plane plane1 = new Plane("TEST_PLANE_1");
+        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane1.getNavigator().setCoordinates(new Coordinates(1000, 1000, 1000));
 
-        Plane plane2 = new Plane("TEST_PLANE_2");
+        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane1.getNavigator().setCoordinates(new Coordinates(5000, 5000, 5000));
         // Compare the locations
         boolean isLocationEqual = plane1.getNavigator()

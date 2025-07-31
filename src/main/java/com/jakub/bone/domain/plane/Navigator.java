@@ -1,7 +1,6 @@
 package com.jakub.bone.domain.plane;
 
 import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -26,8 +25,8 @@ public class Navigator {
     private FuelManager fuelManager;
     private boolean isFirstMove;
 
-    public Navigator() {
-        this.waypoints = WaypointGenerator.getDescentWaypoints();
+    public Navigator(List<Coordinates> waypoints) {
+        this.waypoints = waypoints;
         this.fuelManager = new FuelManager();
         this.isFirstMove = true;
         spawnPlane();
