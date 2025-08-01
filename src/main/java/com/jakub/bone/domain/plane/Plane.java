@@ -73,21 +73,21 @@ public class Plane implements Serializable {
         }
     }
 
-    public void land(Runway runway, Coordinates landingPoint) {
-        assignedRunway = runway;
+    public void land() {
         currentCoordinates = waypoints.next();
         fuelManager.burnFuel();
 
         if (waypoints.isLastWaypoint()) {
-            this.currentCoordinates = landingPoint;
+            this.currentCoordinates = assignedRunway.getLandingPoint();
             landed = true;
         }
     }
 
-    public void setLandingPhase(List<Coordinates> landingWaypoints) {
+    public void setLandingPhase(List<Coordinates> landingWaypoints, Runway runway) {
         changePhase(LANDING);
 
         this.waypoints = Waypoints.first(landingWaypoints);
+        this.assignedRunway = runway;
     }
 
     public void changePhase(FlightPhase newPhase) {
