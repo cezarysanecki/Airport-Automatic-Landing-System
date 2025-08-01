@@ -35,7 +35,6 @@ public class PlaneClient implements Runnable {
         ThreadContext.put("type", "Client");
         try {
             socketClient.startConnection();
-            log.info("PlaneClient [{}]: connected to server", plane.getFlightNumber());
 
             ObjectInputStream in = socketClient.getIn();
             ObjectOutputStream out = socketClient.getOut();

@@ -46,6 +46,8 @@ public class PlaneHandler extends Thread {
     @Override
     public void run() {
         ThreadContext.put("type", "Server");
+        log.info("Server started: {}", clientSocket.toString());
+
         ObjectInputStream in = null;
         ObjectOutputStream out = null;
 

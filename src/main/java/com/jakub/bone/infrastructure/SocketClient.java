@@ -31,7 +31,7 @@ public class SocketClient {
             this.socket = new Socket(ip, port);
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.in = new ObjectInputStream(socket.getInputStream());
-            log.debug("Connection established successfully");
+            log.info("Connection established successfully, {}", socket.toString());
         } catch (IOException ex) {
             log.error("Failed to connect to server at {}:{} - {}", ip, port, ex.getMessage(), ex);
         }
