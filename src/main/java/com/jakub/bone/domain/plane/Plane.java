@@ -59,7 +59,7 @@ public class Plane implements Serializable {
 
         if (waypoints.isLastWaypoint()) {
             changePhase(HOLDING);
-            this.waypoints = Waypoints.first(WaypointGenerator.getHoldingPatternWaypoints());
+            this.waypoints = Waypoints.atFirst(WaypointGenerator.getHoldingPatternWaypoints());
         }
     }
 
@@ -86,7 +86,7 @@ public class Plane implements Serializable {
     public void setLandingPhase(List<Coordinates> landingWaypoints, Runway runway) {
         changePhase(LANDING);
 
-        this.waypoints = Waypoints.first(landingWaypoints);
+        this.waypoints = Waypoints.atFirst(landingWaypoints);
         this.assignedRunway = runway;
     }
 

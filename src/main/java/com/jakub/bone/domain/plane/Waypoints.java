@@ -19,7 +19,7 @@ public class Waypoints {
         this.currentIndex = currentIndex;
     }
 
-    public static Waypoints first(List<Coordinates> coordinates) {
+    public static Waypoints atFirst(List<Coordinates> coordinates) {
         return new Waypoints(coordinates, 0);
     }
 
