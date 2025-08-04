@@ -49,7 +49,7 @@ public class PlanesRadar {
     public boolean isAtCollisionRiskZone(Plane plane) {
         return executeWithLock(() -> planes.stream()
                 .anyMatch(otherPlane ->
-                        new CircleArea(plane.getCoordinates(), 10)
+                        new CircleArea(plane.getCoordinates(), 100)
                                 .within(otherPlane.getCoordinates())
                 )
         );
