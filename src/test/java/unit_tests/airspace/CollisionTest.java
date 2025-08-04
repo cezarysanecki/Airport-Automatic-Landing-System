@@ -1,7 +1,7 @@
 package unit_tests.airspace;
 
 import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
@@ -31,7 +31,7 @@ class CollisionTest {
     @Mock
     CollisionRepository mockCollisionRepository;
     @InjectMocks
-    ControlTowerService controlTower;
+    PlanesRadar controlTower;
     CollisionService collisionDetector;
 
     @BeforeEach

@@ -2,7 +2,7 @@ package com.jakub.bone.ui;
 
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.service.PlaneCoordinates;
 import com.jakub.bone.ui.model.PlaneModel;
 import javafx.animation.KeyFrame;
@@ -20,11 +20,11 @@ import java.util.Map;
 class SceneUpdater {
 
     private final Group root;
-    private final ControlTowerService controller;
+    private final PlanesRadar controller;
     private final Map<String, PlaneModel> planesMap;
     private boolean isFirstPlane;
 
-    SceneUpdater(Group root, ControlTowerService controller) {
+    SceneUpdater(Group root, PlanesRadar controller) {
         this.root = root;
         this.controller = controller;
         this.planesMap = new HashMap<>();

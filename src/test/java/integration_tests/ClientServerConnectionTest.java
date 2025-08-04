@@ -3,7 +3,7 @@ package integration_tests;
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
 import com.jakub.bone.client.PlaneClient;
 import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
@@ -34,7 +34,7 @@ class ClientServerConnectionTest {
     @Mock
     CollisionRepository mockCollisionRepository;
     @InjectMocks
-    ControlTowerService mockControlTower;
+    PlanesRadar mockControlTower;
     AirportServer server;
 
     @BeforeEach
@@ -47,7 +47,7 @@ class ClientServerConnectionTest {
             new Thread(() -> {
                 try {
                     final AirportDatabase database = new AirportDatabase(DriverManager.getConnection(AirportDatabase.URL, AirportDatabase.USER, AirportDatabase.PASSWORD));
-                    this.server = new AirportServer(database, new ControlTowerService(database));
+                    this.server = new AirportServer(database, new PlanesRadar(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
                     this.server.startServer(new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()), new Messenger());

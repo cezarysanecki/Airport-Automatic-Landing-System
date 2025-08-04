@@ -3,7 +3,7 @@ package com.jakub.bone.api.monitoring;
 import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.runners.AirportServerFactory;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.service.PlaneCoordinates;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,7 @@ import java.util.Map;
 public class PlanesAirportServlet extends HttpServlet {
 
     private PlaneRepository planeRepository;
-    private ControlTowerService controlTowerService;
+    private PlanesRadar planesRadar;
 
     @Override
     public void init() throws ServletException {
@@ -28,7 +28,7 @@ public class PlanesAirportServlet extends HttpServlet {
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
         this.planeRepository = airportServerFactory.planeRepository;
-        this.controlTowerService = airportServerFactory.controlTowerService;
+        this.planesRadar = airportServerFactory.planesRadar;
     }
 
     @Override
@@ -37,11 +37,11 @@ public class PlanesAirportServlet extends HttpServlet {
             String path = request.getPathInfo();
             switch (path) {
                 case "/count" -> {
-                    int planesCount = controlTowerService.countPlanes();
+                    int planesCount = planesRadar.countPlanes();
                     JsonSender.responseWithJson(response, Map.of("count", planesCount));
                 }
                 case "/flightNumbers" -> {
-                    List<String> flightNumbers = controlTowerService.getAllFlightNumbers();
+                    List<String> flightNumbers = planesRadar.getAllFlightNumbers();
                     JsonSender.responseWithJson(response, Map.of("flight numbers", flightNumbers));
                 }
                 case "/landed" -> {
@@ -50,7 +50,7 @@ public class PlanesAirportServlet extends HttpServlet {
                 }
                 default -> {
                     String flightNumber = path.substring(1);
-                    PlaneCoordinates planeCoordinates = controlTowerService.getPlaneByFlightNumber(flightNumber);
+                    PlaneCoordinates planeCoordinates = planesRadar.getPlaneByFlightNumber(flightNumber);
 
                     if (planeCoordinates == null) {
                         JsonSender.responseWithJson(response, Map.of("message", "plane not found"));

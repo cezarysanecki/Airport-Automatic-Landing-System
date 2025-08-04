@@ -22,12 +22,12 @@ import static com.jakub.bone.config.Constant.CLIENT_SPAWN_DELAY;
 public class AirportStateService {
 
     private final AirportServer airportServer;
-    private final ControlTowerService controlTowerService;
+    private final PlanesRadar planesRadar;
     private final CollisionRepository collisionRepository;
 
-    public AirportStateService(AirportServer airportServer, ControlTowerService controlTowerService, CollisionRepository collisionRepository) {
+    public AirportStateService(AirportServer airportServer, PlanesRadar planesRadar, CollisionRepository collisionRepository) {
         this.airportServer = airportServer;
-        this.controlTowerService = controlTowerService;
+        this.planesRadar = planesRadar;
         this.collisionRepository = collisionRepository;
     }
 
@@ -37,7 +37,7 @@ public class AirportStateService {
         }
 
         Thread serverThread = new Thread(() -> {
-            CollisionService collisionService = new CollisionService(controlTowerService, collisionRepository);
+            CollisionService collisionService = new CollisionService(planesRadar, collisionRepository);
             collisionService.start();
 
             try {

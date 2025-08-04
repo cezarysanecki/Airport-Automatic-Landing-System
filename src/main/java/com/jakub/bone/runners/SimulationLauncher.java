@@ -4,7 +4,7 @@ import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.service.AirportStateService;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.ui.SceneRenderer;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -32,10 +32,10 @@ public class SimulationLauncher extends Application {
 
         AirportServer airportServer = airportServerFactory.airportServer;
         CollisionRepository collisionRepository = airportServerFactory.collisionRepository;
-        ControlTowerService controlTowerService = airportServerFactory.controlTowerService;
+        PlanesRadar planesRadar = airportServerFactory.planesRadar;
 
-        this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
-        this.visualization = new SceneRenderer(controlTowerService);
+        this.airportStateService = new AirportStateService(airportServer, planesRadar, collisionRepository);
+        this.visualization = new SceneRenderer(planesRadar);
 
         ApiServerRunner.run(connection, server);
     }

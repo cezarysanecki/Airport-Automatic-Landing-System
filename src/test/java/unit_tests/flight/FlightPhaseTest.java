@@ -6,7 +6,7 @@ import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.utils.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
@@ -42,7 +42,7 @@ class FlightPhaseTest {
     @Mock
     CollisionRepository mockCollisionRepository;
     @InjectMocks
-    ControlTowerService controlTower;
+    PlanesRadar controlTower;
     FlightPhaseService phaseCoordinator;
     Airport airport;
     Messenger messenger;

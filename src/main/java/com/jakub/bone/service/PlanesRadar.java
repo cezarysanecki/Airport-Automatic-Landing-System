@@ -16,11 +16,12 @@ import static com.jakub.bone.config.Constant.HOLDING_ENTRY_ALTITUDE;
 import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 
 @Log4j2
-public class ControlTowerService {
+public class PlanesRadar {
+
+    private final Lock lock = new ReentrantLock();
 
     @Getter
     private final List<Plane> planes = new CopyOnWriteArrayList<>();
-    private final Lock lock = new ReentrantLock();
 
     public void registerPlane(Plane plane) {
         executeWithLock(() -> {

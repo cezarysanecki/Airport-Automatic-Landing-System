@@ -6,7 +6,7 @@ import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.service.AirportStateService;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -31,10 +31,10 @@ public class StartAirportServlet extends HttpServlet {
 
         this.airportServer = airportServerFactory.airportServer;
 
-        ControlTowerService controlTowerService = airportServerFactory.controlTowerService;
+        PlanesRadar planesRadar = airportServerFactory.planesRadar;
         CollisionRepository collisionRepository = airportServerFactory.collisionRepository;
 
-        this.airportStateService = new AirportStateService(airportServer, controlTowerService, collisionRepository);
+        this.airportStateService = new AirportStateService(airportServer, planesRadar, collisionRepository);
     }
 
     @Override

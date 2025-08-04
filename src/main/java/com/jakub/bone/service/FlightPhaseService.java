@@ -23,11 +23,11 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 @Log4j2
 public class FlightPhaseService {
 
-    private final ControlTowerService controlTowerService;
+    private final PlanesRadar planesRadar;
     private Runway availableRunway;
 
-    public FlightPhaseService(ControlTowerService controlTower) {
-        this.controlTowerService = controlTower;
+    public FlightPhaseService(PlanesRadar controlTower) {
+        this.planesRadar = controlTower;
     }
 
     public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException {
@@ -41,7 +41,7 @@ public class FlightPhaseService {
     }
 
     private void handleDescent(Plane plane, ObjectOutputStream out) throws IOException {
-        if (controlTowerService.isPlaneApproachingHoldingAltitude(plane)) {
+        if (planesRadar.isPlaneApproachingHoldingAltitude(plane)) {
             Messenger.send(out, DESCENT);
             plane.changePhase(HOLDING);
         } else {
@@ -54,8 +54,8 @@ public class FlightPhaseService {
         Runway runway = getRunwayIfPlaneAtCorridor(plane);
         availableRunway = runway;
 
-        if (runway != null && controlTowerService.isRunwayAvailable(runway)) {
-            controlTowerService.assignRunway(runway);
+        if (runway != null && planesRadar.isRunwayAvailable(runway)) {
+            planesRadar.assignRunway(runway);
             plane.changePhase(LANDING);
             Messenger.send(out, LAND);
             Messenger.send(out, runway);
@@ -77,12 +77,12 @@ public class FlightPhaseService {
 
             waitForUpdate(LANDING_CHECK_DELAY);
 
-            controlTowerService.removePlaneFromSpace(plane.getFlightNumber());
+            planesRadar.removePlaneFromSpace(plane.getFlightNumber());
             log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
             return;
         }
         if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
-            controlTowerService.releaseRunway(availableRunway);
+            planesRadar.releaseRunway(availableRunway);
         }
     }
 

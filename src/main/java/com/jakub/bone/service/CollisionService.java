@@ -13,11 +13,11 @@ import static com.jakub.bone.config.Constant.HORIZONTAL_COLLISION_DISTANCE;
 @Log4j2
 public class CollisionService extends Thread {
 
-    private final ControlTowerService controlTowerService;
+    private final PlanesRadar planesRadar;
     private final CollisionRepository collisionRepository;
 
-    public CollisionService(ControlTowerService controlTowerService, CollisionRepository collisionRepository) {
-        this.controlTowerService = controlTowerService;
+    public CollisionService(PlanesRadar planesRadar, CollisionRepository collisionRepository) {
+        this.planesRadar = planesRadar;
         this.collisionRepository = collisionRepository;
     }
 
@@ -38,10 +38,10 @@ public class CollisionService extends Thread {
     }
 
     public void detectCollision() {
-        for (int i = 0; i < controlTowerService.getPlanes().size(); i++) {
-            Plane plane1 = controlTowerService.getPlanes().get(i);
-            for (int j = i + 1; j < controlTowerService.getPlanes().size(); j++) {
-                Plane plane2 = controlTowerService.getPlanes().get(j);
+        for (int i = 0; i < planesRadar.getPlanes().size(); i++) {
+            Plane plane1 = planesRadar.getPlanes().get(i);
+            for (int j = i + 1; j < planesRadar.getPlanes().size(); j++) {
+                Plane plane2 = planesRadar.getPlanes().get(j);
                 if (arePlanesToClose(plane1.getCoordinates(), plane2.getCoordinates())) {
                     handleCollision(plane1, plane2);
                 }

@@ -5,7 +5,7 @@ import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ class RunwayTest {
     @Mock
     CollisionRepository mockCollisionRepository;
     @InjectMocks
-    ControlTowerService controlTower;
+    PlanesRadar controlTower;
     Airport airport;
 
     @BeforeEach

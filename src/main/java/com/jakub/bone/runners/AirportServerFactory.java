@@ -3,7 +3,7 @@ package com.jakub.bone.runners;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class AirportServerFactory {
 
     public final AirportServer airportServer;
-    public final ControlTowerService controlTowerService;
+    public final PlanesRadar planesRadar;
     public final CollisionRepository collisionRepository;
     public final PlaneRepository planeRepository;
 
@@ -20,8 +20,8 @@ public class AirportServerFactory {
 
         this.collisionRepository = database.getCollisionRepository();
         this.planeRepository = database.getPlaneRepository();
-        this.controlTowerService = new ControlTowerService();
-        this.airportServer = new AirportServer(controlTowerService);
+        this.planesRadar = new PlanesRadar();
+        this.airportServer = new AirportServer(planesRadar);
     }
 
 }

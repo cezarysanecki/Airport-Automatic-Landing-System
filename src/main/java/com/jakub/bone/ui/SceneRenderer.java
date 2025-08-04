@@ -1,7 +1,7 @@
 package com.jakub.bone.ui;
 
 import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.ui.model.AirspaceModel;
 import com.jakub.bone.ui.model.RunwayModel;
 import com.jakub.bone.ui.model.TerminalModel;
@@ -14,9 +14,9 @@ public class SceneRenderer extends Application {
 
     private final SmartGroup group;
     private final Scene scene;
-    private final ControlTowerService controller;
+    private final PlanesRadar controller;
 
-    public SceneRenderer(ControlTowerService controller) {
+    public SceneRenderer(PlanesRadar controller) {
         this.group = new SmartGroup(0.5, 0.5, 0.5);
         this.scene = new Scene(group, 800, 600, Color.BLACK);
         this.controller = controller;

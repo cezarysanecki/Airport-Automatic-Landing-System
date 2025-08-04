@@ -4,7 +4,7 @@ import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.service.FlightPhaseService;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +21,7 @@ import java.time.Instant;
 @Log4j2
 public class AirportServer {
 
-    private final ControlTowerService controlTowerService;
+    private final PlanesRadar planesRadar;
 
     @Getter
     private boolean running;
@@ -31,9 +31,9 @@ public class AirportServer {
     private Instant startTime;
 
     public AirportServer(
-            ControlTowerService controlTowerService
+            PlanesRadar planesRadar
     ) throws SQLException {
-        this.controlTowerService = controlTowerService;
+        this.planesRadar = planesRadar;
 
         this.running = false;
         this.paused = false;
@@ -60,10 +60,10 @@ public class AirportServer {
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                 running = true;
 
-                FlightPhaseService flightPhaseService = new FlightPhaseService(controlTowerService);
+                FlightPhaseService flightPhaseService = new FlightPhaseService(planesRadar);
                 PlaneHandler planeHandler = new PlaneHandler(
                         serverSocket,
-                        controlTowerService,
+                        planesRadar,
                         flightPhaseService
                 );
 
@@ -98,7 +98,7 @@ public class AirportServer {
 
             try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
                 CollisionService collisionService = new CollisionService(
-                        airportServerFactory.controlTowerService,
+                        airportServerFactory.planesRadar,
                         airportServerFactory.collisionRepository
                 );
                 collisionService.start();
