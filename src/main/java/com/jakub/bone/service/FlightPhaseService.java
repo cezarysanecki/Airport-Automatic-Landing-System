@@ -87,9 +87,9 @@ public class FlightPhaseService {
     }
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
-        if (plane.getCoordinates().equals(ENTRY_POINT_CORRIDOR_1)) {
+        if (plane.hasReached(ENTRY_POINT_CORRIDOR_1)) {
             return Airport.runway1;
-        } else if (plane.getCoordinates().equals(ENTRY_POINT_CORRIDOR_2)) {
+        } else if (plane.hasReached(ENTRY_POINT_CORRIDOR_2)) {
             return Airport.runway2;
         }
         return null;
