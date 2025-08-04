@@ -15,11 +15,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
+import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.FULL;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.RISK_ZONE;
-import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
-import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 
 @Log4j2
 public class PlaneHandlerServer extends Thread {
@@ -107,7 +107,6 @@ public class PlaneHandlerServer extends Thread {
     private void managePlane(Plane plane, ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         while (true) {
             double fuelLevel = Messenger.handleResponseFuelLevel(in);
-            plane.setFuelLevel(fuelLevel);
 
             if (fuelLevel <= 0) {
                 handleOutOfFuel(plane);

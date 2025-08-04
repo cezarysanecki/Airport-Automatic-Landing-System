@@ -107,10 +107,6 @@ public class Plane implements Serializable {
         this.isDestroyed = true;
     }
 
-    public void setFuelLevel(double fuelLevel) {
-        fuelManager.setFuelLevel(fuelLevel);
-    }
-
     public void setCoordinates(Coordinates coordinates) {
         this.currentCoordinates = coordinates;
     }
