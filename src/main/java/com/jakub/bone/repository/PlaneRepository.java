@@ -26,13 +26,6 @@ public class PlaneRepository {
                 .execute();
     }
 
-    public int countFlyingPlanes() {
-        return CONTEXT.fetchCount(
-                PLANES
-                        .where(PLANES.LANDING_TIME.isNull())
-        );
-    }
-
     public void updateLandingTime(String flightNumber, LocalDateTime landingTime) {
         CONTEXT.update(PLANES)
                 .set(PLANES.LANDING_TIME, landingTime)

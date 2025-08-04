@@ -64,7 +64,7 @@ class DatabaseOperationTest {
         // Place the plane on the runway's landing point
         plane.getNavigator().setCoordinates(runway1.getLandingPoint());
         // Inform control tower that plane has landed
-        controlTower.hasLandedOnRunway(plane, runway1);
+        plane.hasLandedOnRunway(runway1);
 
         verify(mockPlaneRepository, times(1)).updateLandingTime(plane.getFlightNumber(), LocalDateTime.now());
     }

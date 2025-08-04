@@ -17,11 +17,10 @@ public class AirportServerFactory {
 
     public AirportServerFactory(Connection dbConnection) throws SQLException {
         AirportDatabase database = new AirportDatabase(dbConnection);
-        PlaneRepository planeRepository = database.getPlaneRepository();
 
         this.collisionRepository = database.getCollisionRepository();
         this.planeRepository = database.getPlaneRepository();
-        this.controlTowerService = new ControlTowerService(planeRepository);
+        this.controlTowerService = new ControlTowerService();
         this.airportServer = new AirportServer(controlTowerService);
     }
 

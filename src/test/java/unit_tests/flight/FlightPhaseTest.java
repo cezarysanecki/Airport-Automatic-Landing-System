@@ -105,7 +105,7 @@ class FlightPhaseTest {
         Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
         plane.getNavigator().setCoordinates(runway1.getLandingPoint());
 
-        assertTrue(controlTower.hasLandedOnRunway(plane, runway1), "TEST_PLANE should be marked as landed");
+        assertTrue(plane.hasLandedOnRunway(runway1), "TEST_PLANE should be marked as landed");
     }
 
     @Test

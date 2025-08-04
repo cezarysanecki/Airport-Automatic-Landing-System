@@ -19,6 +19,10 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 @Setter
 public class Plane implements Serializable {
 
+    public boolean hasLandedOnRunway(Runway runway) {
+        return getCoordinates().equals(runway.getLandingPoint());
+    }
+
     public enum FlightPhase {
         DESCENDING, HOLDING, LANDING
     }

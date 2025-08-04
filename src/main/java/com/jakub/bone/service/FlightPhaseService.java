@@ -72,7 +72,7 @@ public class FlightPhaseService {
             return;
         }
 
-        if (controlTowerService.hasLandedOnRunway(plane, availableRunway)) {
+        if (plane.hasLandedOnRunway(availableRunway)) {
             plane.setLanded(true);
 
             waitForUpdate(LANDING_CHECK_DELAY);
