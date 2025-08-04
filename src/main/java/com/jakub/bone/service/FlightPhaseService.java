@@ -30,7 +30,7 @@ public class FlightPhaseService {
         this.controlTowerService = controlTower;
     }
 
-    public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException {
         plane.setCoordinates(coordinates);
         switch (plane.getPhase()) {
             case DESCENDING -> handleDescent(plane, out);
