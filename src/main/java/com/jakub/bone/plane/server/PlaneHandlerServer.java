@@ -1,8 +1,7 @@
-package com.jakub.bone.application;
+package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.service.FlightPhaseService;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
@@ -16,31 +15,31 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.COLLISION;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.FULL;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.RISK_ZONE;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.FULL;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.RISK_ZONE;
 import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
 import static com.jakub.bone.config.Constant.UPDATE_DELAY;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 
 @Log4j2
-public class PlaneHandler extends Thread {
+public class PlaneHandlerServer extends Thread {
+
     public enum AirportInstruction {
         DESCENT, HOLD_PATTERN, LAND, FULL, COLLISION, RISK_ZONE
     }
 
     private final Socket clientSocket;
     private final PlanesRadar planesRadar;
-    private final FlightPhaseService flightPhaseService;
+    private final PlanePhaseProcessorServer planePhaseProcessorServer;
 
-    public PlaneHandler(
+    public PlaneHandlerServer(
             ServerSocket serverSocket,
             PlanesRadar planesRadar,
-            FlightPhaseService flightPhaseService
+            PlanePhaseProcessorServer planePhaseProcessorServer
     ) throws IOException {
         this.clientSocket = serverSocket.accept();
         this.planesRadar = planesRadar;
-        this.flightPhaseService = flightPhaseService;
+        this.planePhaseProcessorServer = planePhaseProcessorServer;
     }
 
     @Override
@@ -117,7 +116,7 @@ public class PlaneHandler extends Thread {
 
             Coordinates coordinates = Messenger.handleResponseCoordinates(in);
             plane.setCoordinates(coordinates);
-            flightPhaseService.processFlightPhase(plane, out);
+            planePhaseProcessorServer.processFlightPhase(plane, out);
 
             if (plane.isDestroyed()) {
                 handleCollision(plane, out);

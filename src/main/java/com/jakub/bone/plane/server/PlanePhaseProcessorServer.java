@@ -1,17 +1,18 @@
-package com.jakub.bone.service;
+package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.DESCENT;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.HOLD_PATTERN;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_2;
 import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
@@ -20,12 +21,12 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 
 @Log4j2
-public class FlightPhaseService {
+public class PlanePhaseProcessorServer {
 
     private final PlanesRadar planesRadar;
     private Runway availableRunway;
 
-    public FlightPhaseService(PlanesRadar controlTower) {
+    public PlanePhaseProcessorServer(PlanesRadar controlTower) {
         this.planesRadar = controlTower;
     }
 

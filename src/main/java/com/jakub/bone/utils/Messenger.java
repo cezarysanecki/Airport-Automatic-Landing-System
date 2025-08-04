@@ -1,7 +1,7 @@
 package com.jakub.bone.utils;
 
 import com.google.gson.Gson;
-import com.jakub.bone.application.PlaneHandler.AirportInstruction;
+import com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;

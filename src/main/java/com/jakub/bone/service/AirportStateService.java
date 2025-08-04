@@ -1,12 +1,11 @@
 package com.jakub.bone.service;
 
-import com.jakub.bone.client.PlaneClient;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneFactory;
+import com.jakub.bone.plane.client.PlaneClient;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
-import lombok.Getter;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,7 +17,6 @@ import static com.jakub.bone.config.Constant.CLIENT_SPAWN_DELAY;
  * Initializes of PlaneClient instances to simulate air traffic
  * Spawns multiple client instances at defined intervals
  */
-@Getter
 public class AirportStateService {
 
     private final AirportServer airportServer;

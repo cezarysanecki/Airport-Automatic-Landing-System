@@ -1,6 +1,6 @@
 package com.jakub.bone.runners;
 
-import com.jakub.bone.client.PlaneClient;
+import com.jakub.bone.plane.client.PlaneClient;
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.domain.plane.Plane;

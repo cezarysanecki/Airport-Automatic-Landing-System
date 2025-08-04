@@ -1,7 +1,7 @@
 package integration_tests;
 
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
-import com.jakub.bone.client.PlaneClient;
+import com.jakub.bone.plane.client.PlaneClient;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;

@@ -7,7 +7,7 @@ import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.service.FlightPhaseService;
+import com.jakub.bone.plane.server.PlanePhaseProcessorServer;
 import com.jakub.bone.utils.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ class FlightPhaseTest {
     CollisionRepository mockCollisionRepository;
     @InjectMocks
     PlanesRadar controlTower;
-    FlightPhaseService phaseCoordinator;
+    PlanePhaseProcessorServer phaseCoordinator;
     Airport airport;
     Messenger messenger;
 
@@ -53,7 +53,7 @@ class FlightPhaseTest {
         when(mockDatabase.getPlaneRepository()).thenReturn(mockPlaneRepository);
         when(mockDatabase.getCollisionRepository()).thenReturn(mockCollisionRepository);
         this.messenger = mock(Messenger.class);
-        this.phaseCoordinator = new FlightPhaseService(controlTower, messenger);
+        this.phaseCoordinator = new PlanePhaseProcessorServer(controlTower, messenger);
     }
 
     @Test

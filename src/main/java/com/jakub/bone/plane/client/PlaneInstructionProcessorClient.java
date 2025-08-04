@@ -1,6 +1,6 @@
-package com.jakub.bone.client;
+package com.jakub.bone.plane.client;
 
-import com.jakub.bone.application.PlaneHandler;
+import com.jakub.bone.plane.server.PlaneHandlerServer;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;
@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.COLLISION;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.DESCENT;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.HOLD_PATTERN;
-import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 
 @Log4j2
 @Getter
@@ -41,7 +41,7 @@ public class PlaneInstructionProcessorClient {
     }
 
     public void processInstruction() throws IOException, ClassNotFoundException {
-        PlaneHandler.AirportInstruction airportInstruction = Messenger.handleResponseAirportInstruction(in);
+        PlaneHandlerServer.AirportInstruction airportInstruction = Messenger.handleResponseAirportInstruction(in);
 
         switch (airportInstruction) {
             case DESCENT -> handleDescent();

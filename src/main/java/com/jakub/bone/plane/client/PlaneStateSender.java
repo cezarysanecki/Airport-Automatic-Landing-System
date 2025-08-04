@@ -1,4 +1,4 @@
-package com.jakub.bone.client;
+package com.jakub.bone.plane.client;
 
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.utils.Messenger;

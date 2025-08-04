@@ -1,11 +1,11 @@
 package com.jakub.bone.runners;
 
-import com.jakub.bone.application.PlaneHandler;
+import com.jakub.bone.plane.server.PlaneHandlerServer;
 import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.service.FlightPhaseService;
+import com.jakub.bone.plane.server.PlanePhaseProcessorServer;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
@@ -60,14 +60,14 @@ public class AirportServer {
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                 running = true;
 
-                FlightPhaseService flightPhaseService = new FlightPhaseService(planesRadar);
-                PlaneHandler planeHandler = new PlaneHandler(
+                PlanePhaseProcessorServer planePhaseProcessorServer = new PlanePhaseProcessorServer(planesRadar);
+                PlaneHandlerServer planeHandlerServer = new PlaneHandlerServer(
                         serverSocket,
                         planesRadar,
-                        flightPhaseService
+                        planePhaseProcessorServer
                 );
 
-                planeHandler.start();
+                planeHandlerServer.start();
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
