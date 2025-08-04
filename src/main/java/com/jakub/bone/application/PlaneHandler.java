@@ -1,9 +1,9 @@
 package com.jakub.bone.application;
 
-import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.service.ControlTowerService;
 import com.jakub.bone.service.FlightPhaseService;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
@@ -136,7 +136,7 @@ public class PlaneHandler extends Thread {
         if (plane.getAssignedRunway() != null) {
             controlTowerService.releaseRunway(plane.getAssignedRunway());
         }
-        controlTowerService.getPlanes().remove(plane);
+        controlTowerService.removePlaneFromSpace(plane.getFlightNumber());
         Messenger.send(out, COLLISION);
 
         try {
@@ -149,7 +149,7 @@ public class PlaneHandler extends Thread {
 
     private void handleOutOfFuel(Plane plane) {
         plane.destroyPlane();
-        controlTowerService.removePlaneFromSpace(plane);
+        controlTowerService.removePlaneFromSpace(plane.getFlightNumber());
         log.info("Plane [{}]: out of fuel. Disappeared from the radar", plane.getFlightNumber());
     }
 

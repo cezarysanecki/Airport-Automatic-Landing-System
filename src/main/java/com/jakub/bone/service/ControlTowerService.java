@@ -64,8 +64,8 @@ public class ControlTowerService {
         }
     }
 
-    public void removePlaneFromSpace(Plane plane) {
-        executeWithLock(() -> planes.remove(plane));
+    public void removePlaneFromSpace(String flightNumber) {
+        executeWithLock(() -> planes.removeIf(p -> p.getFlightNumber().equals(flightNumber)));
     }
 
     public boolean isPlaneApproachingHoldingAltitude(Plane plane) {

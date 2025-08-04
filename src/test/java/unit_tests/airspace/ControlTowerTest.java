@@ -101,7 +101,7 @@ class ControlTowerTest {
         controlTower.registerPlane(plane);
 
         // Remove plane
-        controlTower.removePlaneFromSpace(plane);
+        controlTower.removePlaneFromSpace(plane.getFlightNumber());
 
         assertFalse(controlTower.getPlanes().contains(plane),
                 "TEST_PLANE should be removed from airspace");

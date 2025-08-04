@@ -77,7 +77,7 @@ public class FlightPhaseService {
 
             waitForUpdate(LANDING_CHECK_DELAY);
 
-            controlTowerService.removePlaneFromSpace(plane);
+            controlTowerService.removePlaneFromSpace(plane.getFlightNumber());
             log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
             return;
         }
