@@ -131,7 +131,4 @@ public class Plane implements Serializable {
         return currentCoordinates;
     }
 
-    public List<Coordinates> getRiskZoneWaypoints() {
-        return waypoints.getNearestWaypointsTo(3);
-    }
 }

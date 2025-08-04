@@ -2,6 +2,7 @@ package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.shared.CircleArea;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -47,7 +48,11 @@ public class PlanesRadar {
 
     public boolean isAtCollisionRiskZone(Plane plane) {
         return executeWithLock(() -> planes.stream()
-                .anyMatch(otherPlane -> plane.getRiskZoneWaypoints().contains(otherPlane.getCoordinates())));
+                .anyMatch(otherPlane ->
+                        new CircleArea(plane.getCoordinates(), 10)
+                                .within(otherPlane.getCoordinates())
+                )
+        );
     }
 
     public boolean isRunwayAvailable(Runway runway) {
