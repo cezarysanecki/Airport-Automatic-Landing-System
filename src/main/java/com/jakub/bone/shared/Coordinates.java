@@ -41,4 +41,15 @@ public final class Coordinates implements Serializable {
     public String toString() {
         return "(" + x + ", " + y + ", " + altitude + ")";
     }
+
+    public double horizontalDistance(Coordinates loc2) {
+        return Math.sqrt(
+                Math.pow(getX() - loc2.getX(), 2) +
+                        Math.pow(getY() - loc2.getY(), 2)
+        );
+    }
+
+    public int verticalDistance(Coordinates loc2) {
+        return Math.abs(getAltitude() - loc2.getAltitude());
+    }
 }

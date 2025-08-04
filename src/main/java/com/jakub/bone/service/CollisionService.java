@@ -67,11 +67,9 @@ public class CollisionService extends Thread {
      * it is considered a potential collision risk
      */
     private boolean arePlanesToClose(Coordinates loc1, Coordinates loc2) {
-        double horizontalDistance = Math.sqrt(
-                Math.pow(loc1.getX() - loc2.getX(), 2) +
-                        Math.pow(loc1.getY() - loc2.getY(), 2)
-        );
-        double altDiff = Math.abs(loc1.getAltitude() - loc2.getAltitude());
+        double horizontalDistance = loc1.horizontalDistance(loc2);
+        double altDiff = loc1.verticalDistance(loc2);
         return horizontalDistance <= HORIZONTAL_COLLISION_DISTANCE && altDiff <= ALTITUDE_COLLISION_DISTANCE;
     }
+
 }
