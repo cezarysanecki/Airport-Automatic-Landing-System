@@ -58,12 +58,6 @@ public class ControlTowerService {
         executeWithLock(() -> runway.setAvailable(true));
     }
 
-    public void releaseRunwayIfPlaneAtFinalApproach(Plane plane, Runway runway) {
-        if (plane.hasReached(runway.getCorridor().getFinalApproachPoint())) {
-            releaseRunway(runway);
-        }
-    }
-
     public void removePlaneFromSpace(String flightNumber) {
         executeWithLock(() -> planes.removeIf(p -> p.getFlightNumber().equals(flightNumber)));
     }

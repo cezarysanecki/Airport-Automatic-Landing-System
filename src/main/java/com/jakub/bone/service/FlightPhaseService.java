@@ -81,7 +81,9 @@ public class FlightPhaseService {
             log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
             return;
         }
-        controlTowerService.releaseRunwayIfPlaneAtFinalApproach(plane, availableRunway);
+        if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
+            controlTowerService.releaseRunway(availableRunway);
+        }
     }
 
     private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
