@@ -2,7 +2,7 @@ package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.shared.CircleArea;
+import com.jakub.bone.shared.CollisionAreaDetector;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -49,8 +49,7 @@ public class PlanesRadar {
     public boolean isAtCollisionRiskZone(Plane plane) {
         return executeWithLock(() -> planes.stream()
                 .anyMatch(otherPlane ->
-                        new CircleArea(plane.getCoordinates(), 100)
-                                .within(otherPlane.getCoordinates())
+                        CollisionAreaDetector.areClose(plane.getCoordinates(), otherPlane.getCoordinates())
                 )
         );
     }

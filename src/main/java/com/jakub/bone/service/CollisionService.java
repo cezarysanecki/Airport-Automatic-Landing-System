@@ -2,8 +2,7 @@ package com.jakub.bone.service;
 
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.CollisionRepository;
-import com.jakub.bone.shared.CircleArea;
-import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.shared.CollisionAreaDetector;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
@@ -41,7 +40,7 @@ public class CollisionService extends Thread {
             Plane plane1 = planesRadar.getPlanes().get(i);
             for (int j = i + 1; j < planesRadar.getPlanes().size(); j++) {
                 Plane plane2 = planesRadar.getPlanes().get(j);
-                if (arePlanesToClose(plane1.getCoordinates(), plane2.getCoordinates())) {
+                if (CollisionAreaDetector.areClose(plane1.getCoordinates(), plane2.getCoordinates())) {
                     handleCollision(plane1, plane2);
                 }
             }
@@ -54,11 +53,6 @@ public class CollisionService extends Thread {
         plane1.destroyPlane();
         plane2.destroyPlane();
         log.info("Collision detected between Plane [{}] and Plane [{}]", plane1.getFlightNumber(), plane2.getFlightNumber());
-    }
-
-    private boolean arePlanesToClose(Coordinates loc1, Coordinates loc2) {
-        return new CircleArea(loc1, 100)
-                .within(loc2);
     }
 
 }
