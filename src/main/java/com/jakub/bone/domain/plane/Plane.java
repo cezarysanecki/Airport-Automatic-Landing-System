@@ -20,11 +20,10 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 @Setter
 public class Plane implements Serializable {
 
-
-
     public enum FlightPhase {
         DESCENDING, HOLDING, LANDING;
     }
+
     @Getter
     private String flightNumber;
 
@@ -35,6 +34,7 @@ public class Plane implements Serializable {
     private FuelManager fuelManager;
     private Waypoints waypoints;
     private Coordinates currentCoordinates;
+
     private Plane(String flightNumber, FlightPhase flightPhase, FuelManager fuelManager, Waypoints waypoints) {
         this.flightNumber = flightNumber;
         this.phase = flightPhase;

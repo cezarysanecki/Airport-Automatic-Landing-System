@@ -106,8 +106,6 @@ public class PlaneHandler extends Thread {
     }
 
     private void managePlane(Plane plane, ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        plane.setPhase(DESCENDING);
-
         while (true) {
             double fuelLevel = Messenger.handleResponseFuelLevel(in);
             plane.setFuelLevel(fuelLevel);

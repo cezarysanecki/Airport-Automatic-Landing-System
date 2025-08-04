@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,10 +19,12 @@ import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 @Log4j2
 public class PlanesRadar {
 
-    private final Lock lock = new ReentrantLock();
+    private final Lock planesLock = new ReentrantLock();
+    private final Lock runwaysLock = new ReentrantLock();
 
     @Getter
     private final List<Plane> planes = new CopyOnWriteArrayList<>();
+    private final Map<Runway, Plane> runwayAssignment = new ConcurrentHashMap<>();
 
     public void registerPlane(Plane plane) {
         executeWithLock(() -> {
@@ -103,20 +107,20 @@ public class PlanesRadar {
 
     // Helper methods for locks management
     private <T> T executeWithLock(Supplier<T> action) {
-        lock.lock();
+        planesLock.lock();
         try {
             return action.get();
         } finally {
-            lock.unlock();
+            planesLock.unlock();
         }
     }
 
     private void executeWithLock(Runnable action) {
-        lock.lock();
+        planesLock.lock();
         try {
             action.run();
         } finally {
-            lock.unlock();
+            planesLock.unlock();
         }
     }
 }
