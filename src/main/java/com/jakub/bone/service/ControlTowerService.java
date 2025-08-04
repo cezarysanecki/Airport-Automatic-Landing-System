@@ -59,7 +59,7 @@ public class ControlTowerService {
     }
 
     public void releaseRunwayIfPlaneAtFinalApproach(Plane plane, Runway runway) {
-        if (plane.getCoordinates().equals(runway.getCorridor().getFinalApproachPoint())) {
+        if (plane.hasReached(runway.getCorridor().getFinalApproachPoint())) {
             releaseRunway(runway);
         }
     }

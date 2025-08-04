@@ -1,9 +1,9 @@
 package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
 
@@ -72,7 +72,7 @@ public class FlightPhaseService {
             return;
         }
 
-        if (plane.hasLandedOnRunway(availableRunway)) {
+        if (plane.hasReached(availableRunway.getLandingPoint())) {
             plane.setLanded(true);
 
             waitForUpdate(LANDING_CHECK_DELAY);

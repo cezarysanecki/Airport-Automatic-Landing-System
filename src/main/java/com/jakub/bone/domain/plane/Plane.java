@@ -19,10 +19,6 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 @Setter
 public class Plane implements Serializable {
 
-    public boolean hasLandedOnRunway(Runway runway) {
-        return getCoordinates().equals(runway.getLandingPoint());
-    }
-
     public enum FlightPhase {
         DESCENDING, HOLDING, LANDING
     }
@@ -55,6 +51,10 @@ public class Plane implements Serializable {
                 fuelManager,
                 waypoints
         );
+    }
+
+    public boolean hasReached(Coordinates finalApproachPoint) {
+        return currentCoordinates.equals(finalApproachPoint);
     }
 
     public void descend() {
