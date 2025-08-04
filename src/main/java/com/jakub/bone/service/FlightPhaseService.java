@@ -41,7 +41,7 @@ public class FlightPhaseService {
     }
 
     private void handleDescent(Plane plane, ObjectOutputStream out) throws IOException {
-        if (planesRadar.isPlaneApproachingHoldingAltitude(plane)) {
+        if (plane.isPlaneApproachingHoldingAltitude()) {
             Messenger.send(out, DESCENT);
             plane.changePhase(HOLDING);
         } else {

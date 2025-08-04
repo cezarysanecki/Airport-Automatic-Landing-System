@@ -12,7 +12,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
-import static com.jakub.bone.config.Constant.HOLDING_ENTRY_ALTITUDE;
 import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 
 @Log4j2
@@ -61,10 +60,6 @@ public class PlanesRadar {
 
     public void removePlaneFromSpace(String flightNumber) {
         executeWithLock(() -> planes.removeIf(p -> p.getFlightNumber().equals(flightNumber)));
-    }
-
-    public boolean isPlaneApproachingHoldingAltitude(Plane plane) {
-        return plane.getCoordinates().getAltitude() == HOLDING_ENTRY_ALTITUDE;
     }
 
     public boolean isPlanePresent(String flightNumber) {

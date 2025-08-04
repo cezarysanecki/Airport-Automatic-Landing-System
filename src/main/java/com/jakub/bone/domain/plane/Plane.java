@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.jakub.bone.config.Constant.HOLDING_ENTRY_ALTITUDE;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
@@ -19,12 +20,14 @@ import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
 @Setter
 public class Plane implements Serializable {
 
-    public enum FlightPhase {
-        DESCENDING, HOLDING, LANDING
-    }
 
+
+    public enum FlightPhase {
+        DESCENDING, HOLDING, LANDING;
+    }
     @Getter
     private String flightNumber;
+
     private boolean landed;
     private boolean isDestroyed;
     private FlightPhase phase;
@@ -32,7 +35,6 @@ public class Plane implements Serializable {
     private FuelManager fuelManager;
     private Waypoints waypoints;
     private Coordinates currentCoordinates;
-
     private Plane(String flightNumber, FlightPhase flightPhase, FuelManager fuelManager, Waypoints waypoints) {
         this.flightNumber = flightNumber;
         this.phase = flightPhase;
@@ -115,6 +117,10 @@ public class Plane implements Serializable {
 
     public boolean isOutOfFuel() {
         return fuelManager.isOutOfFuel();
+    }
+
+    public boolean isPlaneApproachingHoldingAltitude() {
+        return currentCoordinates.getAltitude() == HOLDING_ENTRY_ALTITUDE;
     }
 
     public double getFuelLevel() {
