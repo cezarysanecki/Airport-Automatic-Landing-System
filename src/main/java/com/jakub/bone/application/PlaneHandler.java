@@ -31,16 +31,16 @@ public class PlaneHandler extends Thread {
 
     private final Socket clientSocket;
     private final ControlTowerService controlTowerService;
-    private final FlightPhaseService phaseCoordinator;
+    private final FlightPhaseService flightPhaseService;
 
     public PlaneHandler(
             ServerSocket serverSocket,
             ControlTowerService controlTowerService,
-            FlightPhaseService phaseCoordinator
+            FlightPhaseService flightPhaseService
     ) throws IOException {
         this.clientSocket = serverSocket.accept();
         this.controlTowerService = controlTowerService;
-        this.phaseCoordinator = phaseCoordinator;
+        this.flightPhaseService = flightPhaseService;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class PlaneHandler extends Thread {
             }
 
             Coordinates coordinates = Messenger.handleResponseCoordinates(in);
-            phaseCoordinator.processFlightPhase(plane, coordinates, out);
+            flightPhaseService.processFlightPhase(plane, coordinates, out);
 
             if (plane.isDestroyed()) {
                 handleCollision(plane, out);

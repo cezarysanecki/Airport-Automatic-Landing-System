@@ -39,21 +39,21 @@ public class PlaneClient implements Runnable {
             ObjectInputStream in = socketClient.getIn();
             ObjectOutputStream out = socketClient.getOut();
 
-            PlaneCommunicationService communicationService = new PlaneCommunicationService(out);
-            PlaneInstructionHandler instructionHandler = new PlaneInstructionHandler(plane, in, out);
+            PlaneCommunicationService planeCommunicationService = new PlaneCommunicationService(out);
+            PlaneInstructionHandler planeInstructionHandler = new PlaneInstructionHandler(plane, in, out);
 
             Messenger.send(out, plane);
             out.flush();
 
-            while (!instructionHandler.isProcessCompleted()) {
-                communicationService.update(plane);
+            while (!planeInstructionHandler.isProcessCompleted()) {
+                planeCommunicationService.update(plane);
                 if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                     log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                     break;
                 }
 
-                PlaneHandler.AirportInstruction instruction = Messenger.handleResponseAirportInstruction(in);
-                instructionHandler.processInstruction(instruction);
+                PlaneHandler.AirportInstruction airportInstruction = Messenger.handleResponseAirportInstruction(in);
+                planeInstructionHandler.processInstruction(airportInstruction);
 
                 if (plane.isDestroyed()) {
                     log.info("Plane [{}]: has destroyed", plane.getFlightNumber());

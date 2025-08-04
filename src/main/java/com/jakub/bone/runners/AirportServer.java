@@ -60,11 +60,11 @@ public class AirportServer {
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
                 running = true;
 
-                FlightPhaseService phaseCoordinator = new FlightPhaseService(controlTowerService);
+                FlightPhaseService flightPhaseService = new FlightPhaseService(controlTowerService);
                 PlaneHandler planeHandler = new PlaneHandler(
                         serverSocket,
                         controlTowerService,
-                        phaseCoordinator
+                        flightPhaseService
                 );
 
                 planeHandler.start();
