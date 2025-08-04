@@ -1,10 +1,10 @@
 package com.jakub.bone.api.monitoring;
 
 import com.jakub.bone.api.JsonSender;
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.service.ControlTowerService;
+import com.jakub.bone.service.PlaneCoordinates;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -50,12 +50,12 @@ public class PlanesAirportServlet extends HttpServlet {
                 }
                 default -> {
                     String flightNumber = path.substring(1);
-                    Plane plane = controlTowerService.getPlaneByFlightNumber(flightNumber);
+                    PlaneCoordinates planeCoordinates = controlTowerService.getPlaneByFlightNumber(flightNumber);
 
-                    if (plane == null) {
+                    if (planeCoordinates == null) {
                         JsonSender.responseWithJson(response, Map.of("message", "plane not found"));
                     } else {
-                        JsonSender.responseWithJson(response, PlanesMapper.toMap(plane));
+                        JsonSender.responseWithJson(response, PlanesMapper.toMap(planeCoordinates));
                     }
                 }
             }

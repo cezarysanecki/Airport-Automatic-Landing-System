@@ -74,10 +74,15 @@ public class ControlTowerService {
                 .isPresent();
     }
 
-    public Plane getPlaneByFlightNumber(String flightNumber) {
+    public PlaneCoordinates getPlaneByFlightNumber(String flightNumber) {
         return executeWithLock(() -> planes.stream()
                 .filter(plane -> flightNumber.equals(plane.getFlightNumber()))
                 .findFirst()
+                .map(plane -> new PlaneCoordinates(
+                        plane.getFlightNumber(),
+                        plane.getCoordinates(),
+                        plane.getPhase() == Plane.FlightPhase.LANDING
+                ))
                 .orElse(null));
     }
 
