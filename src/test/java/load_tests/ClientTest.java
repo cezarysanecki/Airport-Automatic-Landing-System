@@ -38,7 +38,7 @@ public class ClientTest {
 
         while (true) {
             try {
-                PlaneClient client = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
+                PlaneClient client = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
                 executorService.execute(client);
 
                 try {

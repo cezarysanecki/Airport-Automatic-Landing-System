@@ -78,7 +78,7 @@ class RunwayTest {
     @Test
     @DisplayName("Runway is released when a plane crosses final approach point")
     void testReleaseRunwayIfPlaneIsAtFinalAtApproach() {
-        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         plane.getNavigator().setCoordinates(FINAL_APPROACH_CORRIDOR_1);
 
         controlTower.releaseRunwayIfPlaneAtFinalApproach(plane, runway1);

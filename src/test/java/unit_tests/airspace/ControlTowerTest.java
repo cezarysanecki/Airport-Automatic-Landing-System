@@ -44,7 +44,7 @@ class ControlTowerTest {
     void testRegisterPlane(){
         // Prepare a list of 10 planes
         for (int i = 0; i < 10; i++){
-            incomingPlanes.add(new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING));
+            incomingPlanes.add(new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         }
 
         // Register each plane
@@ -64,7 +64,7 @@ class ControlTowerTest {
         void testIsSpaceFull(){
         // Prepare a list of 110 planes
         for (int i = 0; i < 110; i++) {
-            incomingPlanes.add(new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING));
+            incomingPlanes.add(new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         }
 
         // Register each plane
@@ -80,13 +80,13 @@ class ControlTowerTest {
     @DisplayName("Should detect when an incoming plane is within the collision risk zone")
     void testIfPlaneAtCollisionRiskZone() {
         // Register the first plane
-        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         controlTower.registerPlane(plane1);
 
         // Retrieve its current index and shift the second plane's index by +1
         int referenceIndex = plane1.getNavigator().getCurrentIndex();
 
-        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         plane2.getNavigator().setCurrentIndex(referenceIndex + 1);
 
         assertTrue(controlTower.isAtCollisionRiskZone(plane2),
@@ -97,7 +97,7 @@ class ControlTowerTest {
     @DisplayName("Should remove plane from airspace correctly")
     void testRemovePlaneFromSpace(){
         // Register plane
-        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         controlTower.registerPlane(plane);
 
         // Remove plane

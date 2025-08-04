@@ -65,7 +65,7 @@ public class Plane implements Serializable {
 
         if (waypoints.isLastWaypoint()) {
             changePhase(HOLDING);
-            this.waypoints = Waypoints.atFirst(WaypointGenerator.getHoldingPatternWaypoints());
+            this.waypoints = Waypoints.atFirst(WaypointGenerator.prepareHoldingWaypoints());
         }
     }
 

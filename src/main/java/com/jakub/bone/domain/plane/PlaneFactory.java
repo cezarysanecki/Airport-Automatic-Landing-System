@@ -9,7 +9,7 @@ public class PlaneFactory {
 
     public static Plane createPlane() {
         String flightNumber = PlaneNumberFactory.generateFlightNumber().value();
-        List<Coordinates> descentWaypoints = WaypointGenerator.getDescentWaypoints();
+        List<Coordinates> descentWaypoints = WaypointGenerator.prepareDescendingWaypoints();
         Waypoints waypoints = Waypoints.random(descentWaypoints);
         return Plane.createPlane(flightNumber, new FuelManager(), waypoints);
     }

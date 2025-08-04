@@ -54,7 +54,7 @@ public class PlaneInstructionHandler {
 
     private void handleLanding() throws IOException, ClassNotFoundException {
         Runway runway = Messenger.handleResponseRunway(in);
-        plane.setLandingPhase(WaypointGenerator.getLandingWaypoints(runway), runway);
+        plane.setLandingPhase(WaypointGenerator.prepareLandingWaypointsFor(runway), runway);
 
         log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());
         while (!isProcessCompleted) {

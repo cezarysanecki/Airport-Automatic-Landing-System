@@ -1,7 +1,7 @@
 package com.jakub.bone.utils;
 
-import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.domain.airport.Runway;
+import com.jakub.bone.shared.Coordinates;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class WaypointGenerator {
 
     private static final double ALTITUDE_DECREASE = (double) (MAX_ALTITUDE - HOLDING_ALTITUDE) / TOTAL_WAYPOINTS;
 
-    public static List<Coordinates> getDescentWaypoints() {
+    public static List<Coordinates> prepareDescendingWaypoints() {
         List<Coordinates> waypoints = new ArrayList<>();
 
         // Each 80 points for one lap of circle
@@ -42,7 +42,7 @@ public class WaypointGenerator {
         return waypoints;
     }
 
-    public static List<Coordinates> getHoldingPatternWaypoints() {
+    public static List<Coordinates> prepareHoldingWaypoints() {
         List<Coordinates> waypoints = new ArrayList<>();
         int step = 500; // Distance between waypoints in holding pattern way
 
@@ -81,27 +81,7 @@ public class WaypointGenerator {
         return waypoints;
     }
 
-    private static List<Coordinates> generateArc(int centerX, int centerY, int radius, double startAngle, double endAngle, int altitude, int altitudeDecrement) {
-        List<Coordinates> arcPoints = new ArrayList<>();
-        int waypointsOnArc = 4;
-        double angleStep = (endAngle - startAngle) / (waypointsOnArc - 1);
-
-        for (int i = 0; i < waypointsOnArc; i++) {
-            // Calculate the angle in radians for the current waypoint
-            // startAngle is the initial angle of the arc, and angleStep defines the angular increment between points
-            double angle = Math.toRadians(startAngle + i * angleStep);
-            // Compute the X and Y coordinate using the formula for a point's position on a circle
-            // centerX is the circle's center along the X-axis
-            // centerY is the circle's center along the Y-axis
-            int x = (int) (centerX + radius * Math.cos(angle));
-            int y = (int) (centerY + radius * Math.sin(angle));
-            arcPoints.add(new Coordinates(x, y, altitude));
-            altitude -= altitudeDecrement;
-        }
-        return arcPoints;
-    }
-
-    public static List<Coordinates> getLandingWaypoints(Runway runway) {
+    public static List<Coordinates> prepareLandingWaypointsFor(Runway runway) {
         int landingWaypoints = 10;
         int altitude = HOLDING_ALTITUDE;
         int altitudeDecrement = altitude / landingWaypoints;
@@ -127,6 +107,26 @@ public class WaypointGenerator {
             waypoints.add(new Coordinates(x, runway.getLandingPoint().getY(), altitude));
         }
         return waypoints;
+    }
+
+    private static List<Coordinates> generateArc(int centerX, int centerY, int radius, double startAngle, double endAngle, int altitude, int altitudeDecrement) {
+        List<Coordinates> arcPoints = new ArrayList<>();
+        int waypointsOnArc = 4;
+        double angleStep = (endAngle - startAngle) / (waypointsOnArc - 1);
+
+        for (int i = 0; i < waypointsOnArc; i++) {
+            // Calculate the angle in radians for the current waypoint
+            // startAngle is the initial angle of the arc, and angleStep defines the angular increment between points
+            double angle = Math.toRadians(startAngle + i * angleStep);
+            // Compute the X and Y coordinate using the formula for a point's position on a circle
+            // centerX is the circle's center along the X-axis
+            // centerY is the circle's center along the Y-axis
+            int x = (int) (centerX + radius * Math.cos(angle));
+            int y = (int) (centerY + radius * Math.sin(angle));
+            arcPoints.add(new Coordinates(x, y, altitude));
+            altitude -= altitudeDecrement;
+        }
+        return arcPoints;
     }
 }
 

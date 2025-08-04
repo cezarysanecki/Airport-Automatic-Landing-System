@@ -13,7 +13,7 @@ class CoordinatesTest {
     @Test
     @DisplayName("Plane should update its location correctly")
     void testUpdateLocation() {
-        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         Coordinates initCoordinates = new Coordinates(1000, 1000, 1000);
         Coordinates newCoordinates = new Coordinates(5000, 5000, 5000);
 
@@ -31,10 +31,10 @@ class CoordinatesTest {
     @DisplayName("Location equals() should distinguish different coordinates")
     void testEqualLocationIdentification(){
         // Two planes with different locations
-        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         plane1.getNavigator().setCoordinates(new Coordinates(1000, 1000, 1000));
 
-        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         plane1.getNavigator().setCoordinates(new Coordinates(5000, 5000, 5000));
         // Compare the locations
         boolean isLocationEqual = plane1.getNavigator()

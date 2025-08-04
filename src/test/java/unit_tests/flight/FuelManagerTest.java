@@ -13,7 +13,7 @@ class FuelManagerTest {
     @Test
     @DisplayName("Fuel level should decrease by the consumption rate after burnFuel() call")
     void testBurnFuel() {
-        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
 
         // Capture the plane's current consumption rate
         double consumption = Constant.CONSUMPTION_PER_SECOND;

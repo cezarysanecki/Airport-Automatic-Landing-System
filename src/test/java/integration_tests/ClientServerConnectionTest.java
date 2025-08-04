@@ -81,7 +81,7 @@ class ClientServerConnectionTest {
         // Wait for the server to start
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         new Thread(planeClient).start();
 
         // Wait for the client to connect
@@ -95,13 +95,13 @@ class ClientServerConnectionTest {
     void testConnectionWithMultipleClients() {
         waitForUpdate();
 
-        PlaneClient planeClient1 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
+        PlaneClient planeClient1 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         new Thread(planeClient1).start();
 
         // Wait for the first client to connect
         waitForUpdate();
 
-        PlaneClient planeClient2 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
+        PlaneClient planeClient2 = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         new Thread(planeClient2).start();
 
         // Wait for the second client to connect
@@ -116,7 +116,7 @@ class ClientServerConnectionTest {
     void testClientRegistration() {
         waitForUpdate();
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         new Thread(planeClient).start();
 
         waitForUpdate();
@@ -132,11 +132,11 @@ class ClientServerConnectionTest {
 
         // Fill the list with 100 planes
         for(int i = 0; i < 100; i++){
-            Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+            Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
             server.getControlTowerService().getPlanes().add(plane);
         }
 
-        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.getDescentWaypoints(), DESCENDING));
+        PlaneClient planeClient = new PlaneClient("localhost", 5000, new Messenger(), new Plane(PlaneNumberFactory.generateFlightNumber().value(), WaypointGenerator.prepareDescendingWaypoints(), DESCENDING));
         new Thread(planeClient).start();
 
         waitForUpdate();

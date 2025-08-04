@@ -47,7 +47,7 @@ class DatabaseOperationTest {
     @Test
     @DisplayName("Plane registration should be saved to the database")
     void testPlaneRegisterToDatabase() throws SQLException {
-        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
 
         // Registration should trigger a DB operation
         controlTower.registerPlane(plane);
@@ -59,7 +59,7 @@ class DatabaseOperationTest {
     @DisplayName("Landing should be saved to the database")
     void testLandingRegisterToDatabase() throws SQLException {
         Airport airport = new Airport();
-        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane("TEST_PLANE", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
 
         // Place the plane on the runway's landing point
         plane.getNavigator().setCoordinates(runway1.getLandingPoint());
@@ -72,8 +72,8 @@ class DatabaseOperationTest {
     @Test
     @DisplayName("Collision should be saved to the database")
     void testCollisionRegisterToDatabase() throws SQLException {
-        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.getDescentWaypoints(), DESCENDING);
-        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane1 = new Plane("TEST_PLANE_1", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
+        Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
 
         // Both planes share the same location => collision scenario
         plane1.getNavigator().setCoordinates(ENTRY_POINT_CORRIDOR_1);

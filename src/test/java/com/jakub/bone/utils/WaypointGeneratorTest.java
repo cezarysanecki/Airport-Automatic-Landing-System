@@ -11,7 +11,7 @@ class WaypointGeneratorTest {
 
     @Test
     void generate_specified_number_of_descent_waypoints() {
-        List<Coordinates> descentWaypoints = WaypointGenerator.getDescentWaypoints();
+        List<Coordinates> descentWaypoints = WaypointGenerator.prepareDescendingWaypoints();
 
         assertEquals(320, descentWaypoints.size());
     }

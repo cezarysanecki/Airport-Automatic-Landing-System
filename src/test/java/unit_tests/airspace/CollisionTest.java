@@ -44,7 +44,7 @@ class CollisionTest {
 
     //Helper method to create a plane, set its location, and register
     Plane createAndRegisterPlane(String name, int x, int y, int altitude) {
-        Plane plane = new Plane(name, WaypointGenerator.getDescentWaypoints(), DESCENDING);
+        Plane plane = new Plane(name, WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         plane.getNavigator().setCoordinates(new Coordinates(x, y, altitude));
         controlTower.registerPlane(plane);
         return plane;
