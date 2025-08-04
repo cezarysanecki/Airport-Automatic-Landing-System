@@ -116,7 +116,8 @@ public class PlaneHandler extends Thread {
             }
 
             Coordinates coordinates = Messenger.handleResponseCoordinates(in);
-            flightPhaseService.processFlightPhase(plane, coordinates, out);
+            plane.setCoordinates(coordinates);
+            flightPhaseService.processFlightPhase(plane, out);
 
             if (plane.isDestroyed()) {
                 handleCollision(plane, out);

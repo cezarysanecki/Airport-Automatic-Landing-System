@@ -3,7 +3,6 @@ package com.jakub.bone.service;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.Messenger;
 import lombok.extern.log4j.Log4j2;
 
@@ -30,8 +29,7 @@ public class FlightPhaseService {
         this.planesRadar = controlTower;
     }
 
-    public void processFlightPhase(Plane plane, Coordinates coordinates, ObjectOutputStream out) throws IOException {
-        plane.setCoordinates(coordinates);
+    public void processFlightPhase(Plane plane, ObjectOutputStream out) throws IOException {
         switch (plane.getPhase()) {
             case DESCENDING -> handleDescent(plane, out);
             case HOLDING -> handleHolding(plane, out);
