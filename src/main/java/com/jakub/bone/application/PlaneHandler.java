@@ -76,7 +76,12 @@ public class PlaneHandler extends Thread {
             return;
         }
 
-        waitForUpdate(UPDATE_DELAY);
+        try {
+            Thread.sleep(UPDATE_DELAY);
+        } catch (InterruptedException ex) {
+            log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
+            Thread.currentThread().interrupt();
+        }
 
         if (controlTowerService.isAtCollisionRiskZone(plane)) {
             Messenger.send(out, RISK_ZONE);
@@ -134,22 +139,18 @@ public class PlaneHandler extends Thread {
         controlTowerService.getPlanes().remove(plane);
         Messenger.send(out, COLLISION);
 
-        waitForUpdate(AFTER_COLLISION_DELAY);
+        try {
+            Thread.sleep(AFTER_COLLISION_DELAY);
+        } catch (InterruptedException ex) {
+            log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
+            Thread.currentThread().interrupt();
+        }
     }
 
     private void handleOutOfFuel(Plane plane) {
         plane.destroyPlane();
         controlTowerService.removePlaneFromSpace(plane);
         log.info("Plane [{}]: out of fuel. Disappeared from the radar", plane.getFlightNumber());
-    }
-
-    private void waitForUpdate(int interval) {
-        try {
-            Thread.sleep(interval);
-        } catch (InterruptedException ex) {
-            log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
-            Thread.currentThread().interrupt();
-        }
     }
 
     private void closeResources(AutoCloseable... resources) {
