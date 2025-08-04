@@ -1,6 +1,5 @@
 package com.jakub.bone.client;
 
-import com.jakub.bone.application.PlaneHandler;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.infrastructure.SocketClient;
 import com.jakub.bone.utils.Messenger;
@@ -39,21 +38,20 @@ public class PlaneClient implements Runnable {
             ObjectInputStream in = socketClient.getIn();
             ObjectOutputStream out = socketClient.getOut();
 
-            PlaneCommunicationService planeCommunicationService = new PlaneCommunicationService(out);
-            PlaneInstructionHandler planeInstructionHandler = new PlaneInstructionHandler(plane, in, out);
+            PlaneStateSender planeStateSender = new PlaneStateSender(out);
+            PlaneInstructionProcessorClient planeInstructionProcessorClient = new PlaneInstructionProcessorClient(plane, in, out);
 
             Messenger.send(out, plane);
             out.flush();
 
-            while (!planeInstructionHandler.isProcessCompleted()) {
-                planeCommunicationService.update(plane);
+            while (!planeInstructionProcessorClient.isProcessCompleted()) {
+                planeStateSender.update(plane);
                 if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                     log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                     break;
                 }
 
-                PlaneHandler.AirportInstruction airportInstruction = Messenger.handleResponseAirportInstruction(in);
-                planeInstructionHandler.processInstruction(airportInstruction);
+                planeInstructionProcessorClient.processInstruction();
 
                 if (plane.isDestroyed()) {
                     log.info("Plane [{}]: has destroyed", plane.getFlightNumber());

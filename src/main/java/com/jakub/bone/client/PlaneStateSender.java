@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 @Log4j2
-public class PlaneCommunicationService {
+public class PlaneStateSender {
 
     private final ObjectOutputStream out;
 
-    public PlaneCommunicationService(ObjectOutputStream out) {
+    public PlaneStateSender(ObjectOutputStream out) {
         this.out = out;
     }
 

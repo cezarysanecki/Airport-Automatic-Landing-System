@@ -19,36 +19,38 @@ import static com.jakub.bone.application.PlaneHandler.AirportInstruction.LAND;
 
 @Log4j2
 @Getter
-public class PlaneInstructionHandler {
+public class PlaneInstructionProcessorClient {
 
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
 
     private final Plane plane;
-    private final PlaneCommunicationService communicationService;
+    private final PlaneStateSender planeStateSender;
 
     private boolean isProcessCompleted;
     private boolean descentLogged;
     private boolean holdPatternLogged;
 
-    public PlaneInstructionHandler(Plane plane, ObjectInputStream in, ObjectOutputStream out) {
+    public PlaneInstructionProcessorClient(Plane plane, ObjectInputStream in, ObjectOutputStream out) {
         this.plane = plane;
         this.in = in;
         this.out = out;
-        this.communicationService = new PlaneCommunicationService(out);
+        this.planeStateSender = new PlaneStateSender(out);
         this.descentLogged = false;
         this.holdPatternLogged = false;
     }
 
-    public void processInstruction(PlaneHandler.AirportInstruction instruction) throws IOException, ClassNotFoundException {
-        switch (instruction) {
+    public void processInstruction() throws IOException, ClassNotFoundException {
+        PlaneHandler.AirportInstruction airportInstruction = Messenger.handleResponseAirportInstruction(in);
+
+        switch (airportInstruction) {
             case DESCENT -> handleDescent();
             case HOLD_PATTERN -> handleHoldPattern();
             case LAND -> handleLanding();
             case COLLISION -> handleCollision();
             case FULL -> abortProcess("No capacity in the airspace");
             case RISK_ZONE -> abortProcess("Initial location occupied");
-            default -> log.warn("Plane [{}]: Unknown instruction: {}", plane.getFlightNumber(), instruction);
+            default -> log.warn("Plane [{}]: Unknown instruction: {}", plane.getFlightNumber(), airportInstruction);
         }
     }
 
@@ -60,7 +62,7 @@ public class PlaneInstructionHandler {
         while (!isProcessCompleted) {
             plane.land();
 
-            communicationService.update(plane);
+            planeStateSender.update(plane);
             if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                 log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                 break;
