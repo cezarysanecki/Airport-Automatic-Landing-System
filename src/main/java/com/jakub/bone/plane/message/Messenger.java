@@ -1,27 +1,14 @@
 package com.jakub.bone.plane.message;
 
 import com.google.gson.Gson;
-import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
-import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
-import com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction;
-import com.jakub.bone.shared.Coordinates;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class Messenger {
+class Messenger {
 
     private static final Gson GSON = new Gson();
-
-    public static void send(ObjectOutputStream out, AirportInstruction message) throws IOException {
-        sendGeneric(out, message);
-    }
-
-    public static AirportInstruction handleResponseAirportInstruction(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        return handleResponse(in, AirportInstruction.class);
-    }
 
     static void sendGeneric(ObjectOutputStream out, Object message) throws IOException {
         if (message instanceof Integer) {

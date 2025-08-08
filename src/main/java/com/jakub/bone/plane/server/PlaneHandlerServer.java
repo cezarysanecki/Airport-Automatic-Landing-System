@@ -1,7 +1,6 @@
 package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.plane.message.Messenger;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
 import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
@@ -20,9 +19,6 @@ import java.net.SocketException;
 
 import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
 import static com.jakub.bone.config.Constant.UPDATE_DELAY;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.FULL;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.RISK_ZONE;
 
 @Log4j2
 public class PlaneHandlerServer extends Thread {
@@ -87,7 +83,7 @@ public class PlaneHandlerServer extends Thread {
         }
 
         if (planesRadar.isAtCollisionRiskZone(plane)) {
-            Messenger.send(out, RISK_ZONE);
+            PlaneServerMessanger.sendRiskZoneCommand(out);
             log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
             return;
         }
@@ -101,7 +97,7 @@ public class PlaneHandlerServer extends Thread {
 
     private boolean canRegisterPlane(ObjectOutputStream out, String flightNumber) throws IOException {
         if (planesRadar.isSpaceFull()) {
-            Messenger.send(out, FULL);
+            PlaneServerMessanger.sendFullCommand(out);
             log.info("Plane [{}]: no capacity in airspace", flightNumber);
             return false;
         }
@@ -139,7 +135,7 @@ public class PlaneHandlerServer extends Thread {
             planesRadar.releaseRunway(plane.getAssignedRunway());
         }
         planesRadar.removePlaneFromSpace(plane.getFlightNumber());
-        Messenger.send(out, COLLISION);
+        PlaneServerMessanger.sendCollisionCommand(out);
 
         try {
             Thread.sleep(AFTER_COLLISION_DELAY);

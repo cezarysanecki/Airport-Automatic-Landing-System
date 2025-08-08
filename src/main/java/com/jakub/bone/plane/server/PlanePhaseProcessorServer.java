@@ -3,7 +3,6 @@ package com.jakub.bone.plane.server;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.plane.message.Messenger;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.service.PlanesRadar;
@@ -18,8 +17,6 @@ import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 
 @Log4j2
@@ -43,10 +40,10 @@ public class PlanePhaseProcessorServer {
 
     private void handleDescent(Plane plane, ObjectOutputStream out) throws IOException {
         if (plane.isPlaneApproachingHoldingAltitude()) {
-            Messenger.send(out, DESCENT);
+            PlaneServerMessanger.sendDescentCommand(out);
             plane.changePhase(HOLDING);
         } else {
-            Messenger.send(out, DESCENT);
+            PlaneServerMessanger.sendDescentCommand(out);
             plane.changePhase(DESCENDING);
         }
     }
@@ -58,11 +55,11 @@ public class PlanePhaseProcessorServer {
         if (runway != null && planesRadar.isRunwayAvailable(runway)) {
             planesRadar.assignRunway(runway);
             plane.changePhase(LANDING);
-            Messenger.send(out, LAND);
-            PlaneServerMessanger.send(out, new AssignRunwayMessage(runway));
+            PlaneServerMessanger.sendLandCommand(out);
+            PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(runway));
             log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
         } else {
-            Messenger.send(out, HOLD_PATTERN);
+            PlaneServerMessanger.sendHoldPatternCommand(out);
             plane.changePhase(HOLDING);
         }
     }
