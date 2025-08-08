@@ -3,22 +3,24 @@ package com.jakub.bone.plane.server;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.plane.message.Messenger;
+import com.jakub.bone.plane.message.PlaneServerMessanger;
+import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
+import com.jakub.bone.service.PlanesRadar;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_2;
 import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 
 @Log4j2
 public class PlanePhaseProcessorServer {
@@ -57,7 +59,7 @@ public class PlanePhaseProcessorServer {
             planesRadar.assignRunway(runway);
             plane.changePhase(LANDING);
             Messenger.send(out, LAND);
-            Messenger.send(out, runway);
+            PlaneServerMessanger.send(out, new AssignRunwayMessage(runway));
             log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
         } else {
             Messenger.send(out, HOLD_PATTERN);

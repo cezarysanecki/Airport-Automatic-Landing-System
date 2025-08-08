@@ -1,4 +1,4 @@
-package com.jakub.bone.plane.message;
+package com.jakub.bone.plane.message.structures;
 
 import com.jakub.bone.domain.plane.Plane;
 

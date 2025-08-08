@@ -1,8 +1,8 @@
 package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.plane.message.PlaneHandlerMessanger;
-import com.jakub.bone.plane.message.RegisterPlaneMessage;
+import com.jakub.bone.plane.message.PlaneServerMessanger;
+import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
 import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.plane.message.Messenger;
@@ -71,7 +71,7 @@ public class PlaneHandlerServer extends Thread {
     }
 
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        RegisterPlaneMessage message = PlaneHandlerMessanger.handleResponsePlane(in);
+        RegisterPlaneMessage message = PlaneServerMessanger.handleResponsePlane(in);
         Plane plane = message.plane;
 
         if (!canRegisterPlane(out, plane.getFlightNumber())) {

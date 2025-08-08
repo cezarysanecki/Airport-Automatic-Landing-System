@@ -1,5 +1,7 @@
 package com.jakub.bone.plane.client;
 
+import com.jakub.bone.plane.message.PlaneClientMessanger;
+import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.plane.server.PlaneHandlerServer;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
@@ -55,7 +57,9 @@ public class PlaneInstructionProcessorClient {
     }
 
     private void handleLanding() throws IOException, ClassNotFoundException {
-        Runway runway = Messenger.handleResponseRunway(in);
+        AssignRunwayMessage message = PlaneClientMessanger.handleResponseRunway(in);
+        Runway runway = message.runway;
+
         plane.setLandingPhase(WaypointGenerator.prepareLandingWaypointsFor(runway), runway);
 
         log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());

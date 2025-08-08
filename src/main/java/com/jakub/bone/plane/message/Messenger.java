@@ -2,6 +2,7 @@ package com.jakub.bone.plane.message;
 
 import com.google.gson.Gson;
 import com.jakub.bone.domain.airport.Runway;
+import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction;
 import com.jakub.bone.shared.Coordinates;
 
@@ -17,10 +18,6 @@ public class Messenger {
         sendGeneric(out, message);
     }
 
-    public static void send(ObjectOutputStream out, Runway message) throws IOException {
-        sendGeneric(out, message);
-    }
-
     public static void send(ObjectOutputStream out, Coordinates message) throws IOException {
         sendGeneric(out, message);
     }
@@ -31,10 +28,6 @@ public class Messenger {
 
     public static AirportInstruction handleResponseAirportInstruction(ObjectInputStream in) throws IOException, ClassNotFoundException {
         return handleResponse(in, AirportInstruction.class);
-    }
-
-    public static Runway handleResponseRunway(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        return handleResponse(in, Runway.class);
     }
 
     public static Coordinates handleResponseCoordinates(ObjectInputStream in) throws IOException, ClassNotFoundException {
