@@ -4,7 +4,7 @@ import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.runners.AirportServer;
 import com.jakub.bone.service.CollisionService;
 import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.plane.message.Messenger;
 
 import java.io.IOException;
 import java.net.ServerSocket;

@@ -1,10 +1,9 @@
-package com.jakub.bone.utils;
+package com.jakub.bone.plane.message;
 
 import com.google.gson.Gson;
+import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction;
 import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.plane.Plane;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,10 +22,6 @@ public class Messenger {
     }
 
     public static void send(ObjectOutputStream out, Coordinates message) throws IOException {
-        sendGeneric(out, message);
-    }
-
-    public static void send(ObjectOutputStream out, Plane message) throws IOException {
         sendGeneric(out, message);
     }
 
@@ -50,11 +45,7 @@ public class Messenger {
         return handleResponse(in, Double.class);
     }
 
-    public static Plane handleResponsePlane(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        return handleResponse(in, Plane.class);
-    }
-
-    private static void sendGeneric(ObjectOutputStream out, Object message) throws IOException {
+    static void sendGeneric(ObjectOutputStream out, Object message) throws IOException {
         if (message instanceof Integer) {
             // Send the enum as a plain string
             out.writeObject(((Integer) message).toString());
@@ -66,7 +57,7 @@ public class Messenger {
         out.flush();
     }
 
-    private static <T> T handleResponse(ObjectInputStream in, Class<T> type) throws IOException, ClassNotFoundException {
+    static <T> T handleResponse(ObjectInputStream in, Class<T> type) throws IOException, ClassNotFoundException {
         String json = (String) in.readObject();
         return GSON.fromJson(json, type);
     }

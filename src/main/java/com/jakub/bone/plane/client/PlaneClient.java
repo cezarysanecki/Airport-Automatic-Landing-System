@@ -2,7 +2,9 @@ package com.jakub.bone.plane.client;
 
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.infrastructure.SocketClient;
-import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.plane.message.PlaneClientMessanger;
+import com.jakub.bone.plane.message.RegisterPlaneMessage;
+import com.jakub.bone.plane.message.Messenger;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
@@ -41,7 +43,7 @@ public class PlaneClient implements Runnable {
             PlaneStateSender planeStateSender = new PlaneStateSender(out);
             PlaneInstructionProcessorClient planeInstructionProcessorClient = new PlaneInstructionProcessorClient(plane, in, out);
 
-            Messenger.send(out, plane);
+            PlaneClientMessanger.send(out, new RegisterPlaneMessage(plane));
             out.flush();
 
             while (!planeInstructionProcessorClient.isProcessCompleted()) {

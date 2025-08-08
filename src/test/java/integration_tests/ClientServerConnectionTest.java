@@ -7,7 +7,7 @@ import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.plane.message.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;

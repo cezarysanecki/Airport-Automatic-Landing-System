@@ -3,7 +3,7 @@ package com.jakub.bone.plane.client;
 import com.jakub.bone.plane.server.PlaneHandlerServer;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.plane.message.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;

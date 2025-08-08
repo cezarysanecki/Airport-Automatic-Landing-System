@@ -8,7 +8,7 @@ import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.plane.server.PlanePhaseProcessorServer;
-import com.jakub.bone.utils.Messenger;
+import com.jakub.bone.plane.message.Messenger;
 import com.jakub.bone.utils.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
