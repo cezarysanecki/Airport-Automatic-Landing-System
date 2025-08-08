@@ -6,6 +6,8 @@ import com.jakub.bone.shared.CollisionAreaDetector;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
+import java.util.List;
+
 import static com.jakub.bone.config.Constant.COLLISION_CHECK_DELAY;
 
 @Log4j2
@@ -36,12 +38,16 @@ public class CollisionService extends Thread {
     }
 
     public void detectCollision() {
-        for (int i = 0; i < planesRadar.getPlanes().size(); i++) {
-            Plane plane1 = planesRadar.getPlanes().get(i);
-            for (int j = i + 1; j < planesRadar.getPlanes().size(); j++) {
-                Plane plane2 = planesRadar.getPlanes().get(j);
-                if (CollisionAreaDetector.areClose(plane1.getCoordinates(), plane2.getCoordinates())) {
-                    handleCollision(plane1, plane2);
+        List<Plane> planes = planesRadar.getPlanes();
+
+        for (Plane plane : planes) {
+            for (Plane otherPlane : planes) {
+                if (plane.equals(otherPlane)) {
+                    continue;
+                }
+
+                if (CollisionAreaDetector.areClose(plane.getCoordinates(), otherPlane.getCoordinates())) {
+                    handleCollision(plane, otherPlane);
                 }
             }
         }
