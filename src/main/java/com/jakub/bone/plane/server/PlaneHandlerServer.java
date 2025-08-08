@@ -1,11 +1,12 @@
 package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.plane.message.Messenger;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
+import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
 import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.plane.message.Messenger;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
@@ -71,7 +72,7 @@ public class PlaneHandlerServer extends Thread {
     }
 
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
-        RegisterPlaneMessage message = PlaneServerMessanger.handleResponsePlane(in);
+        RegisterPlaneMessage message = PlaneServerMessanger.handleRegisterPlaneMessage(in);
         Plane plane = message.plane;
 
         if (!canRegisterPlane(out, plane.getFlightNumber())) {
@@ -109,14 +110,15 @@ public class PlaneHandlerServer extends Thread {
 
     private void managePlane(Plane plane, ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         while (true) {
-            double fuelLevel = Messenger.handleResponseFuelLevel(in);
+            UpdatePlaneStateMessage message = PlaneServerMessanger.handleUpdatePlaneStateMessage(in);
+            Double fuelLevel = message.fuelLevel;
+            Coordinates coordinates = message.coordinates;
 
             if (fuelLevel <= 0) {
                 handleOutOfFuel(plane);
                 return;
             }
 
-            Coordinates coordinates = Messenger.handleResponseCoordinates(in);
             plane.setCoordinates(coordinates);
             planePhaseProcessorServer.processFlightPhase(plane, out);
 

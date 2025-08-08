@@ -1,7 +1,8 @@
 package com.jakub.bone.plane.client;
 
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.plane.message.Messenger;
+import com.jakub.bone.plane.message.PlaneClientMessanger;
+import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -17,13 +18,8 @@ public class PlaneStateSender {
     }
 
     public void update(Plane plane) throws IOException {
-        Messenger.send(out, plane.getFuelLevel());
+        PlaneClientMessanger.send(out, new UpdatePlaneStateMessage(plane.getCoordinates(), plane.getFuelLevel()));
         out.flush();
-
-        if (plane.getCoordinates() != null) {
-            Messenger.send(out, plane.getCoordinates());
-            out.flush();
-        }
     }
 
 }

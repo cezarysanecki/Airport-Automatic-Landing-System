@@ -57,7 +57,7 @@ public class PlaneInstructionProcessorClient {
     }
 
     private void handleLanding() throws IOException, ClassNotFoundException {
-        AssignRunwayMessage message = PlaneClientMessanger.handleResponseRunway(in);
+        AssignRunwayMessage message = PlaneClientMessanger.handleAssignRunwayMessage(in);
         Runway runway = message.runway;
 
         plane.setLandingPhase(WaypointGenerator.prepareLandingWaypointsFor(runway), runway);
