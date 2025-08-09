@@ -11,15 +11,15 @@ public class ControlTower {
     private final Map<Runway, Plane> runwayAssignment = new ConcurrentHashMap<>();
 
     public boolean isRunwayAvailable(Runway runway) {
-        return runwayAssignment.get(runway) != null;
+        return runwayAssignment.get(runway) == null;
     }
 
-    public void assignRunway(Plane plane, Runway runway) {
+    public void assignRunway(Runway runway, Plane plane) {
         runwayAssignment.put(runway, plane);
     }
 
-    public void releaseRunway(Runway runway) {
-        runwayAssignment.remove(runway);
+    public void releaseRunway(Plane plane) {
+        runwayAssignment.entrySet().removeIf(entry -> entry.getValue().equals(plane));
     }
 
 }

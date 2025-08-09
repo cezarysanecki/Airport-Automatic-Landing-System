@@ -1,6 +1,5 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
@@ -30,7 +29,7 @@ public class Plane implements Serializable {
     private boolean landed;
     private boolean isDestroyed;
     private FlightPhase phase;
-    private Runway assignedRunway;
+    private Coordinates landingPoint;
     private FuelManager fuelManager;
     private Waypoints waypoints;
     private Coordinates currentCoordinates;
@@ -40,7 +39,7 @@ public class Plane implements Serializable {
         this.phase = flightPhase;
         this.isDestroyed = false;
         this.landed = false;
-        this.assignedRunway = null;
+        this.landingPoint = null;
         this.fuelManager = fuelManager;
         this.waypoints = waypoints;
         this.currentCoordinates = waypoints.next();
@@ -84,16 +83,16 @@ public class Plane implements Serializable {
         fuelManager.burnFuel();
 
         if (waypoints.isLastWaypoint()) {
-            this.currentCoordinates = assignedRunway.getLandingPoint();
+            currentCoordinates = landingPoint;
             landed = true;
         }
     }
 
-    public void setLandingPhase(List<Coordinates> landingWaypoints, Runway runway) {
+    public void setLandingPhase(List<Coordinates> landingWaypoints, Coordinates landingPoint) {
         changePhase(LANDING);
 
         this.waypoints = Waypoints.atFirst(landingWaypoints);
-        this.assignedRunway = runway;
+        this.landingPoint = landingPoint;
     }
 
     public void changePhase(FlightPhase newPhase) {

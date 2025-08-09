@@ -53,7 +53,7 @@ public class PlanePhaseProcessorServer {
         availableRunway = runway;
 
         if (runway != null && planesRadar.isRunwayAvailable(runway)) {
-            planesRadar.assignRunway(runway);
+            planesRadar.assignRunway(runway, plane);
             plane.changePhase(LANDING);
             PlaneServerMessanger.sendLandCommand(out);
             PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(runway));
@@ -80,7 +80,7 @@ public class PlanePhaseProcessorServer {
             return;
         }
         if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
-            planesRadar.releaseRunway(availableRunway);
+            planesRadar.releaseRunway(plane);
         }
     }
 

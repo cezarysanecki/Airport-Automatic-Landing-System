@@ -132,8 +132,8 @@ public class PlaneHandlerServer extends Thread {
     }
 
     private void handleCollision(Plane plane, ObjectOutputStream out) throws IOException {
-        if (plane.getAssignedRunway() != null) {
-            planesRadar.releaseRunway(plane.getAssignedRunway());
+        if (plane.getLandingPoint() != null) {
+            planesRadar.releaseRunway(plane);
         }
         planesRadar.removePlaneFromSpace(plane.getFlightNumber());
         PlaneServerMessanger.sendCollisionCommand(out);

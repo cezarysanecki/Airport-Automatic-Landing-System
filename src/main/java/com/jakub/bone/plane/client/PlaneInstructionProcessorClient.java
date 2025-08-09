@@ -59,7 +59,7 @@ public class PlaneInstructionProcessorClient {
         AssignRunwayMessage message = PlaneClientMessanger.handleAssignRunwayMessage(in);
         Runway runway = message.runway;
 
-        plane.setLandingPhase(WaypointGenerator.prepareLandingWaypointsFor(runway), runway);
+        plane.setLandingPhase(WaypointGenerator.prepareLandingWaypointsFor(runway), runway.getLandingPoint());
 
         log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());
         while (!isProcessCompleted) {

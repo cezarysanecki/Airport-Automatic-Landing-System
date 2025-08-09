@@ -15,6 +15,5 @@ public class Runway implements Serializable {
     private String id;
     private Coordinates landingPoint;
     private Corridor corridor;
-    private boolean available;
 
 }

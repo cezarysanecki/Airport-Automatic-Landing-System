@@ -9,12 +9,9 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
 import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 
@@ -22,6 +19,8 @@ import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 public class PlanesRadar {
 
     private final Lock planesLock = new ReentrantLock();
+
+    private final ControlTower controlTower = new ControlTower();
 
     @Getter
     private final List<ServerPlane> planes = new CopyOnWriteArrayList<>();
@@ -54,15 +53,15 @@ public class PlanesRadar {
     }
 
     public boolean isRunwayAvailable(Runway runway) {
-        return LockUtils.executeWithLock(planesLock, runway::isAvailable);
+        return controlTower.isRunwayAvailable(runway);
     }
 
-    public void assignRunway(Runway runway) {
-        LockUtils.executeWithLock(planesLock, () -> runway.setAvailable(false));
+    public void assignRunway(Runway runway, Plane plane) {
+        controlTower.assignRunway(runway, plane);
     }
 
-    public void releaseRunway(Runway runway) {
-        LockUtils.executeWithLock(planesLock, () -> runway.setAvailable(true));
+    public void releaseRunway(Plane plane) {
+        controlTower.releaseRunway(plane);
     }
 
     public void removePlaneFromSpace(String flightNumber) {
