@@ -3,7 +3,6 @@ package com.jakub.bone.plane.server;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.service.PlanesRadar;
@@ -50,18 +49,17 @@ public class PlanePhaseProcessorServer {
     }
 
     private void handleHolding(Plane plane, ObjectOutputStream out) throws IOException {
-        Runway runway = getRunwayIfPlaneAtCorridor(plane);
-        availableRunway = runway;
+        availableRunway = getRunwayIfPlaneAtCorridor(plane);
 
-        if (runway != null && planesRadar.isRunwayAvailable(runway)) {
-            planesRadar.assignRunway(runway, new PlaneNumber(plane.getFlightNumber()));
+        if (availableRunway != null && planesRadar.isRunwayAvailable(availableRunway)) {
+            planesRadar.assignRunway(availableRunway, plane.getPlaneNumber());
 
             plane.changePhase(LANDING);
 
             PlaneServerMessanger.sendLandCommand(out);
-            PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(runway));
+            PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(availableRunway));
 
-            log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
+            log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, availableRunway.getId());
         } else {
             plane.changePhase(HOLDING);
 
@@ -80,12 +78,12 @@ public class PlanePhaseProcessorServer {
 
             waitForUpdate(LANDING_CHECK_DELAY);
 
-            planesRadar.removePlaneFromSpace(new PlaneNumber(plane.getFlightNumber()));
+            planesRadar.removePlaneFromSpace(plane.getPlaneNumber());
             log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
             return;
         }
         if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
-            planesRadar.releaseRunway(new PlaneNumber(plane.getFlightNumber()));
+            planesRadar.releaseRunway(plane.getPlaneNumber());
         }
     }
 

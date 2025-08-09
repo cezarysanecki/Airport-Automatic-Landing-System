@@ -126,4 +126,8 @@ public class Plane implements Serializable {
         return currentCoordinates;
     }
 
+    public PlaneNumber getPlaneNumber() {
+        return new PlaneNumber(flightNumber);
+    }
+
 }
