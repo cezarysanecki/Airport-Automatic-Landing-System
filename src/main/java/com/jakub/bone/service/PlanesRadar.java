@@ -58,10 +58,14 @@ public class PlanesRadar {
 
     public void assignRunway(Runway runway, PlaneNumber planeNumber) {
         controlTower.assignRunway(runway, planeNumber);
+        log.info("Runway [{}] assigned to Plane [{}]", runway.getId(), planeNumber);
     }
 
     public void releaseRunway(PlaneNumber planeNumber) {
-        controlTower.releaseRunway(planeNumber);
+        boolean success = controlTower.releaseRunway(planeNumber);
+        if (success) {
+            log.info("Runway released for Plane [{}]", planeNumber);
+        }
     }
 
     public void removePlaneFromSpace(PlaneNumber planeNumber) {

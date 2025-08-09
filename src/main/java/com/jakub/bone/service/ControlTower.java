@@ -18,8 +18,8 @@ public class ControlTower {
         runwayAssignment.put(runway, planeNumber);
     }
 
-    public void releaseRunway(PlaneNumber planeNumber) {
-        runwayAssignment.entrySet().removeIf(entry -> entry.getValue().equals(planeNumber));
+    public boolean releaseRunway(PlaneNumber planeNumber) {
+        return runwayAssignment.entrySet().removeIf(entry -> entry.getValue().equals(planeNumber));
     }
 
 }

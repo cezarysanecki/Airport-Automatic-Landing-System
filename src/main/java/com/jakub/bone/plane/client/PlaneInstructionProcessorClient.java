@@ -16,7 +16,6 @@ import java.io.ObjectOutputStream;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 
 @Log4j2
 @Getter
@@ -60,8 +59,8 @@ public class PlaneInstructionProcessorClient {
         Runway runway = message.runway;
 
         plane.setLandingPhase(WaypointGenerator.prepareLandingWaypointsFor(runway), runway.getLandingPoint());
+        log.info("Plane [{}]: instructed to start landing on runway [{}]", plane.getFlightNumber(), runway.getId());
 
-        log.info("Plane [{}]: instructed to {} on runway {{}]", plane.getFlightNumber(), LAND, runway.getId());
         while (!isProcessCompleted) {
             plane.land();
 
