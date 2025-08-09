@@ -64,7 +64,7 @@ public class PlanesRadar {
     public void releaseRunway(PlaneNumber planeNumber) {
         boolean success = controlTower.releaseRunway(planeNumber);
         if (success) {
-            log.info("Runway released for Plane [{}]", planeNumber);
+            log.info("Runway released by plane [{}]", planeNumber);
         }
     }
 

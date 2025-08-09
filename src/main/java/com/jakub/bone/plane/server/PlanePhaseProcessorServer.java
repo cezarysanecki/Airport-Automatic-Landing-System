@@ -40,11 +40,13 @@ public class PlanePhaseProcessorServer {
 
     private void handleDescent(Plane plane, ObjectOutputStream out) throws IOException {
         if (plane.isPlaneApproachingHoldingAltitude()) {
-            PlaneServerMessanger.sendDescentCommand(out);
             plane.changePhase(HOLDING);
-        } else {
+
             PlaneServerMessanger.sendDescentCommand(out);
+        } else {
             plane.changePhase(DESCENDING);
+
+            PlaneServerMessanger.sendDescentCommand(out);
         }
     }
 
@@ -73,6 +75,12 @@ public class PlanePhaseProcessorServer {
             return;
         }
 
+        // Check if the plane has reached the final approach point to release the runway for other planes
+        if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
+            log.info("Plane [{}]: has reached final approach point [{}]", plane.getFlightNumber(), availableRunway.getId());
+            planesRadar.releaseRunway(plane.getPlaneNumber());
+        }
+
         if (plane.hasReached(availableRunway.getLandingPoint())) {
             plane.setLanded(true);
 
@@ -80,10 +88,6 @@ public class PlanePhaseProcessorServer {
 
             planesRadar.removePlaneFromSpace(plane.getPlaneNumber());
             log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
-            return;
-        }
-        if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
-            planesRadar.releaseRunway(plane.getPlaneNumber());
         }
     }
 
