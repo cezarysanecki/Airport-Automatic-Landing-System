@@ -5,6 +5,7 @@ import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
 import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
 import com.jakub.bone.service.PlanesRadar;
+import com.jakub.bone.service.ServerPlane;
 import com.jakub.bone.shared.Coordinates;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
@@ -82,7 +83,7 @@ public class PlaneHandlerServer extends Thread {
             Thread.currentThread().interrupt();
         }
 
-        if (planesRadar.isAtCollisionRiskZone(plane)) {
+        if (planesRadar.isAtCollisionRiskZone(new ServerPlane(plane))) {
             PlaneServerMessanger.sendRiskZoneCommand(out);
             log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
             return;

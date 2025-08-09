@@ -2,6 +2,7 @@ package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.shared.CollisionAreaDetector;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -24,29 +25,29 @@ public class PlanesRadar {
     private final Lock runwaysLock = new ReentrantLock();
 
     @Getter
-    private final List<Plane> planes = new CopyOnWriteArrayList<>();
+    private final List<ServerPlane> planes = new CopyOnWriteArrayList<>();
     private final Map<Runway, Plane> runwayAssignment = new ConcurrentHashMap<>();
 
     public void registerPlane(Plane plane) {
         executeWithLock(() -> {
-            planes.add(plane);
-            log.info("Plane registered in memory: {}", plane.getFlightNumber());
+            ServerPlane serverPlane = new ServerPlane(plane);
+
+            planes.add(serverPlane);
+
+            log.info("Plane registered in memory: {}", serverPlane.getFlightNumber());
         });
     }
 
     public int countPlanes() {
-        int countFlyingPlanes = (int) planes.stream()
-                .filter(plane -> !plane.isDestroyed() && !plane.isLanded())
-                .count();
-        log.info("Current planes count: {}", countFlyingPlanes);
-        return countFlyingPlanes;
+        log.info("Current planes count: {}", planes.size());
+        return planes.size();
     }
 
     public boolean isSpaceFull() {
         return executeWithLock(() -> planes.size() >= MAX_CAPACITY);
     }
 
-    public boolean isAtCollisionRiskZone(Plane plane) {
+    public boolean isAtCollisionRiskZone(ServerPlane plane) {
         return executeWithLock(() -> planes.stream()
                 .anyMatch(otherPlane ->
                         CollisionAreaDetector.areClose(plane.getCoordinates(), otherPlane.getCoordinates())
@@ -67,25 +68,26 @@ public class PlanesRadar {
     }
 
     public void removePlaneFromSpace(String flightNumber) {
-        executeWithLock(() -> planes.removeIf(p -> p.getFlightNumber().equals(flightNumber)));
+        PlaneNumber planeNumber = new PlaneNumber(flightNumber);
+        executeWithLock(() -> planes.removeIf(plane -> plane.getFlightNumber().equals(planeNumber)));
     }
 
     public boolean isPlanePresent(String flightNumber) {
+        PlaneNumber planeNumber = new PlaneNumber(flightNumber);
         return planes.stream()
-                .filter(plane -> flightNumber.equals(plane.getFlightNumber()))
-                .findFirst()
-                .map(plane -> !plane.isDestroyed() && !plane.isLanded())
-                .isPresent();
+                .anyMatch(plane -> plane.getFlightNumber().equals(planeNumber));
     }
 
     public PlaneCoordinates getPlaneByFlightNumber(String flightNumber) {
+        PlaneNumber planeNumber = new PlaneNumber(flightNumber);
+
         return executeWithLock(() -> planes.stream()
-                .filter(plane -> flightNumber.equals(plane.getFlightNumber()))
+                .filter(plane -> plane.getFlightNumber().equals(planeNumber))
                 .findFirst()
                 .map(plane -> new PlaneCoordinates(
-                        plane.getFlightNumber(),
+                        plane.getFlightNumber().value(),
                         plane.getCoordinates(),
-                        plane.getPhase() == Plane.FlightPhase.LANDING
+                        plane.isLanding()
                 ))
                 .orElse(null));
     }
@@ -93,8 +95,8 @@ public class PlanesRadar {
     public List<String> getAllFlightNumbers() {
         return executeWithLock(() -> {
             List<String> flightNumbers = new ArrayList<>();
-            for (Plane plane : planes) {
-                flightNumbers.add(plane.getFlightNumber());
+            for (ServerPlane plane : planes) {
+                flightNumbers.add(plane.getFlightNumber().value());
             }
             return flightNumbers;
         });
@@ -103,9 +105,9 @@ public class PlanesRadar {
     public List<PlaneCoordinates> getPlaneCoordinates() {
         return planes.stream()
                 .map(plane -> new PlaneCoordinates(
-                        plane.getFlightNumber(),
+                        plane.getFlightNumber().value(),
                         plane.getCoordinates(),
-                        plane.getPhase() == Plane.FlightPhase.LANDING))
+                        plane.isLanding()))
                 .toList();
     }
 

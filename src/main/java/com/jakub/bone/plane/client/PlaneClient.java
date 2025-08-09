@@ -46,7 +46,7 @@ public class PlaneClient implements Runnable {
             out.flush();
 
             while (!planeInstructionProcessorClient.isProcessCompleted()) {
-                planeStateSender.update(plane);
+                planeStateSender.update(plane.getCoordinates(), plane.getFuelLevel());
                 if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                     log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                     break;
