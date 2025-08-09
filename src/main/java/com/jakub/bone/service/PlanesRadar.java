@@ -56,28 +56,24 @@ public class PlanesRadar {
         return controlTower.isRunwayAvailable(runway);
     }
 
-    public void assignRunway(Runway runway, Plane plane) {
-        controlTower.assignRunway(runway, plane);
+    public void assignRunway(Runway runway, PlaneNumber planeNumber) {
+        controlTower.assignRunway(runway, planeNumber);
     }
 
-    public void releaseRunway(Plane plane) {
-        controlTower.releaseRunway(plane);
+    public void releaseRunway(PlaneNumber planeNumber) {
+        controlTower.releaseRunway(planeNumber);
     }
 
-    public void removePlaneFromSpace(String flightNumber) {
-        PlaneNumber planeNumber = new PlaneNumber(flightNumber);
+    public void removePlaneFromSpace(PlaneNumber planeNumber) {
         LockUtils.executeWithLock(planesLock, () -> planes.removeIf(plane -> plane.getFlightNumber().equals(planeNumber)));
     }
 
-    public boolean isPlanePresent(String flightNumber) {
-        PlaneNumber planeNumber = new PlaneNumber(flightNumber);
+    public boolean isPlanePresent(PlaneNumber planeNumber) {
         return planes.stream()
                 .anyMatch(plane -> plane.getFlightNumber().equals(planeNumber));
     }
 
-    public PlaneCoordinates getPlaneByFlightNumber(String flightNumber) {
-        PlaneNumber planeNumber = new PlaneNumber(flightNumber);
-
+    public PlaneCoordinates getPlaneByFlightNumber(PlaneNumber planeNumber) {
         return LockUtils.executeWithLock(planesLock, () -> planes.stream()
                 .filter(plane -> plane.getFlightNumber().equals(planeNumber))
                 .findFirst()

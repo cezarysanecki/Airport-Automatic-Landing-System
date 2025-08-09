@@ -1,6 +1,7 @@
 package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
 import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
@@ -116,9 +117,9 @@ public class PlaneHandlerServer extends Thread {
 
     private void handleCollision(Plane plane, ObjectOutputStream out) throws IOException {
         if (plane.getLandingPoint() != null) {
-            planesRadar.releaseRunway(plane);
+            planesRadar.releaseRunway(new PlaneNumber(plane.getFlightNumber()));
         }
-        planesRadar.removePlaneFromSpace(plane.getFlightNumber());
+        planesRadar.removePlaneFromSpace(new PlaneNumber(plane.getFlightNumber()));
         PlaneServerMessanger.sendCollisionCommand(out);
 
         try {
@@ -131,7 +132,7 @@ public class PlaneHandlerServer extends Thread {
 
     private void handleOutOfFuel(Plane plane) {
         plane.destroyPlane();
-        planesRadar.removePlaneFromSpace(plane.getFlightNumber());
+        planesRadar.removePlaneFromSpace(new PlaneNumber(plane.getFlightNumber()));
         log.info("Plane [{}]: out of fuel. Disappeared from the radar", plane.getFlightNumber());
     }
 

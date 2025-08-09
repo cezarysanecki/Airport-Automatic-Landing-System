@@ -1,6 +1,7 @@
 package com.jakub.bone.ui;
 
 import com.jakub.bone.config.Constant;
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.service.PlaneCoordinates;
@@ -71,7 +72,7 @@ class SceneUpdater {
     private void cleanupScene() {
         for (String flightNumber : planesMap.keySet()) {
             PlaneModel planeModel = planesMap.get(flightNumber);
-            boolean isPresent = controller.isPlanePresent(flightNumber);
+            boolean isPresent = controller.isPlanePresent(new PlaneNumber(flightNumber));
             if (!isPresent) {
                 root.getChildren().removeAll(planeModel.getPlaneGroup(), planeModel.getLabel());
             }

@@ -3,6 +3,7 @@ package unit_tests.airspace;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.service.PlanesRadar;
@@ -60,6 +61,7 @@ class RunwayTest {
     @DisplayName("Assigning a runway makes it unavailable")
     void testAssignRunwayMakesItOccupied() {
         // Once assigned, the runway is not available anymore
+        final PlaneNumber planeNumber = new PlaneNumber(plane.getFlightNumber());
         controlTower.assignRunway(runway1);
 
         assertFalse(runway1.isAvailable(),
@@ -70,7 +72,7 @@ class RunwayTest {
     @DisplayName("Releasing a runway makes it available again")
     void testReleaseRunway() {
         // Once released, the runway is available
-        controlTower.releaseRunway(runway1);
+        controlTower.releaseRunway(new PlaneNumber(runway1.getFlightNumber()));
 
         assertTrue(runway1.isAvailable(), "Runway should be available after being released");
     }

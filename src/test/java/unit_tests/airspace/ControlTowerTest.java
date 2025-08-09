@@ -1,5 +1,6 @@
 package unit_tests.airspace;
 
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
@@ -101,7 +102,7 @@ class ControlTowerTest {
         controlTower.registerPlane(plane);
 
         // Remove plane
-        controlTower.removePlaneFromSpace(plane.getFlightNumber());
+        controlTower.removePlaneFromSpace(new PlaneNumber(plane.getFlightNumber()));
 
         assertFalse(controlTower.getPlanes().contains(plane),
                 "TEST_PLANE should be removed from airspace");

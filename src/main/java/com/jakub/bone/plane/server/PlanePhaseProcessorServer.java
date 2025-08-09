@@ -3,6 +3,7 @@ package com.jakub.bone.plane.server;
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.service.PlanesRadar;
@@ -53,7 +54,7 @@ public class PlanePhaseProcessorServer {
         availableRunway = runway;
 
         if (runway != null && planesRadar.isRunwayAvailable(runway)) {
-            planesRadar.assignRunway(runway, plane);
+            planesRadar.assignRunway(runway, new PlaneNumber(plane.getFlightNumber()));
             plane.changePhase(LANDING);
             PlaneServerMessanger.sendLandCommand(out);
             PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(runway));
@@ -75,12 +76,12 @@ public class PlanePhaseProcessorServer {
 
             waitForUpdate(LANDING_CHECK_DELAY);
 
-            planesRadar.removePlaneFromSpace(plane.getFlightNumber());
+            planesRadar.removePlaneFromSpace(new PlaneNumber(plane.getFlightNumber()));
             log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
             return;
         }
         if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
-            planesRadar.releaseRunway(plane);
+            planesRadar.releaseRunway(new PlaneNumber(plane.getFlightNumber()));
         }
     }
 

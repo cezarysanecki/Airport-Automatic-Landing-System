@@ -1,6 +1,7 @@
 package com.jakub.bone.api.monitoring;
 
 import com.jakub.bone.api.JsonSender;
+import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.repository.PlaneRepository;
 import com.jakub.bone.runners.AirportServerFactory;
 import com.jakub.bone.service.PlanesRadar;
@@ -50,7 +51,7 @@ public class PlanesAirportServlet extends HttpServlet {
                 }
                 default -> {
                     String flightNumber = path.substring(1);
-                    PlaneCoordinates planeCoordinates = planesRadar.getPlaneByFlightNumber(flightNumber);
+                    PlaneCoordinates planeCoordinates = planesRadar.getPlaneByFlightNumber(new PlaneNumber(flightNumber));
 
                     if (planeCoordinates == null) {
                         JsonSender.responseWithJson(response, Map.of("message", "plane not found"));
