@@ -55,13 +55,17 @@ public class PlanePhaseProcessorServer {
 
         if (runway != null && planesRadar.isRunwayAvailable(runway)) {
             planesRadar.assignRunway(runway, new PlaneNumber(plane.getFlightNumber()));
+
             plane.changePhase(LANDING);
+
             PlaneServerMessanger.sendLandCommand(out);
             PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(runway));
+
             log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, runway.getId());
         } else {
-            PlaneServerMessanger.sendHoldPatternCommand(out);
             plane.changePhase(HOLDING);
+
+            PlaneServerMessanger.sendHoldPatternCommand(out);
         }
     }
 
