@@ -19,7 +19,6 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
-import static com.jakub.bone.config.Constant.UPDATE_DELAY;
 
 @Log4j2
 public class PlaneHandlerServer extends Thread {
@@ -84,21 +83,12 @@ public class PlaneHandlerServer extends Thread {
             return;
         }
 
-        try {
-            Thread.sleep(UPDATE_DELAY);
-        } catch (InterruptedException ex) {
-            log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
-            Thread.currentThread().interrupt();
-        }
-
         planesRadar.registerPlane(plane);
 
-        log.info("Plane [{}]: registered at {} ", plane.getFlightNumber(), plane.getCoordinates());
-
-        managePlane(plane, in, out);
+        runManagementLoop(plane, in, out);
     }
 
-    private void managePlane(Plane plane, ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    private void runManagementLoop(Plane plane, ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         while (true) {
             UpdatePlaneStateMessage message = PlaneServerMessanger.handleUpdatePlaneStateMessage(in);
             Double fuelLevel = message.fuelLevel;

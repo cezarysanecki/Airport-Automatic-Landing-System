@@ -31,7 +31,7 @@ public class PlanesRadar {
 
             planes.add(serverPlane);
 
-            log.info("Plane registered in memory: {}", serverPlane.getFlightNumber());
+            log.info("Plane [{}]: registered at {} ", plane.getFlightNumber(), plane.getCoordinates());
         });
     }
 
