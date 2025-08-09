@@ -44,12 +44,6 @@ public class Waypoints {
         throw new IndexOutOfBoundsException("No more waypoints available");
     }
 
-    public List<Coordinates> getNearestWaypointsTo(int range) {
-        int start = Math.max(0, currentIndex - range);
-        int end = Math.min(coordinates.size(), currentIndex + range);
-        return coordinates.subList(start, end);
-    }
-
     public boolean isLastWaypoint() {
         return currentIndex == coordinates.size();
     }
