@@ -22,14 +22,12 @@ import static com.jakub.bone.config.Constant.MAX_CAPACITY;
 public class PlanesRadar {
 
     private final Lock planesLock = new ReentrantLock();
-    private final Lock runwaysLock = new ReentrantLock();
 
     @Getter
     private final List<ServerPlane> planes = new CopyOnWriteArrayList<>();
-    private final Map<Runway, Plane> runwayAssignment = new ConcurrentHashMap<>();
 
     public void registerPlane(Plane plane) {
-        executeWithLock(() -> {
+        LockUtils.executeWithLock(planesLock, () -> {
             ServerPlane serverPlane = new ServerPlane(plane);
 
             planes.add(serverPlane);
@@ -44,11 +42,11 @@ public class PlanesRadar {
     }
 
     public boolean isSpaceFull() {
-        return executeWithLock(() -> planes.size() >= MAX_CAPACITY);
+        return LockUtils.executeWithLock(planesLock, () -> planes.size() >= MAX_CAPACITY);
     }
 
     public boolean isAtCollisionRiskZone(ServerPlane plane) {
-        return executeWithLock(() -> planes.stream()
+        return LockUtils.executeWithLock(planesLock, () -> planes.stream()
                 .anyMatch(otherPlane ->
                         CollisionAreaDetector.areClose(plane.getCoordinates(), otherPlane.getCoordinates())
                 )
@@ -56,20 +54,20 @@ public class PlanesRadar {
     }
 
     public boolean isRunwayAvailable(Runway runway) {
-        return executeWithLock(runway::isAvailable);
+        return LockUtils.executeWithLock(planesLock, runway::isAvailable);
     }
 
     public void assignRunway(Runway runway) {
-        executeWithLock(() -> runway.setAvailable(false));
+        LockUtils.executeWithLock(planesLock, () -> runway.setAvailable(false));
     }
 
     public void releaseRunway(Runway runway) {
-        executeWithLock(() -> runway.setAvailable(true));
+        LockUtils.executeWithLock(planesLock, () -> runway.setAvailable(true));
     }
 
     public void removePlaneFromSpace(String flightNumber) {
         PlaneNumber planeNumber = new PlaneNumber(flightNumber);
-        executeWithLock(() -> planes.removeIf(plane -> plane.getFlightNumber().equals(planeNumber)));
+        LockUtils.executeWithLock(planesLock, () -> planes.removeIf(plane -> plane.getFlightNumber().equals(planeNumber)));
     }
 
     public boolean isPlanePresent(String flightNumber) {
@@ -81,7 +79,7 @@ public class PlanesRadar {
     public PlaneCoordinates getPlaneByFlightNumber(String flightNumber) {
         PlaneNumber planeNumber = new PlaneNumber(flightNumber);
 
-        return executeWithLock(() -> planes.stream()
+        return LockUtils.executeWithLock(planesLock, () -> planes.stream()
                 .filter(plane -> plane.getFlightNumber().equals(planeNumber))
                 .findFirst()
                 .map(plane -> new PlaneCoordinates(
@@ -93,7 +91,7 @@ public class PlanesRadar {
     }
 
     public List<String> getAllFlightNumbers() {
-        return executeWithLock(() -> {
+        return LockUtils.executeWithLock(planesLock, () -> {
             List<String> flightNumbers = new ArrayList<>();
             for (ServerPlane plane : planes) {
                 flightNumbers.add(plane.getFlightNumber().value());
@@ -111,22 +109,4 @@ public class PlanesRadar {
                 .toList();
     }
 
-    // Helper methods for locks management
-    private <T> T executeWithLock(Supplier<T> action) {
-        planesLock.lock();
-        try {
-            return action.get();
-        } finally {
-            planesLock.unlock();
-        }
-    }
-
-    private void executeWithLock(Runnable action) {
-        planesLock.lock();
-        try {
-            action.run();
-        } finally {
-            planesLock.unlock();
-        }
-    }
 }
