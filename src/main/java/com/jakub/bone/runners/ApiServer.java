@@ -12,7 +12,8 @@ public class ApiServer {
         Server server = new Server(8080);
 
         try (Connection connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD)) {
-            ApiServerRunner.run(connection, server);
+            AirportServerFactory airportServerFactory = new AirportServerFactory(connection);
+            ApiServerRunner.run(server, airportServerFactory);
         } catch (Exception ex) {
             System.err.println("Failed to start API Server: " + ex.getMessage());
         } finally {

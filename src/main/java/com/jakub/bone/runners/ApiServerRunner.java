@@ -11,11 +11,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import java.sql.Connection;
-
 public class ApiServerRunner {
 
-    public static void run(Connection dbConnection, Server server) throws Exception {
+    public static void run(Server server, AirportServerFactory airportServerFactory) throws Exception {
         ServletContextHandler context = new ServletContextHandler();
 
         context.addServlet(new ServletHolder(new StartAirportServlet()), "/airport/start");
@@ -26,7 +24,7 @@ public class ApiServerRunner {
         context.addServlet(new ServletHolder(new PlanesAirportServlet()), "/airport/planes/*");
         context.addServlet(new ServletHolder(new CollisionsAirportServlet()), "/airport/collisions");
 
-        context.setAttribute("airportServerFactory", new AirportServerFactory(dbConnection));
+        context.setAttribute("airportServerFactory", airportServerFactory);
 
         server.setHandler(context);
 

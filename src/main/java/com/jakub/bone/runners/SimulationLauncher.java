@@ -37,7 +37,7 @@ public class SimulationLauncher extends Application {
         this.airportStateService = new AirportStateService(airportServer, planesRadar, collisionRepository);
         this.visualization = new SceneRenderer(planesRadar);
 
-        ApiServerRunner.run(connection, server);
+        ApiServerRunner.run(server, airportServerFactory);
     }
 
     @Override
