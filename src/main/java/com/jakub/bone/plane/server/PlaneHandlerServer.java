@@ -72,7 +72,15 @@ public class PlaneHandlerServer extends Thread {
         RegisterPlaneMessage message = PlaneServerMessanger.handleRegisterPlaneMessage(in);
         Plane plane = message.plane;
 
-        if (!canRegisterPlane(out, plane.getFlightNumber())) {
+        if (planesRadar.isSpaceFull()) {
+            PlaneServerMessanger.sendFullCommand(out);
+            log.info("Plane [{}]: no capacity in airspace", plane.getFlightNumber());
+            return;
+        }
+
+        if (planesRadar.isAtCollisionRiskZone(new ServerPlane(plane))) {
+            PlaneServerMessanger.sendRiskZoneCommand(out);
+            log.info("Plane [{}]: collision risk zone - redirect to other airport", plane.getFlightNumber());
             return;
         }
 
@@ -83,26 +91,11 @@ public class PlaneHandlerServer extends Thread {
             Thread.currentThread().interrupt();
         }
 
-        if (planesRadar.isAtCollisionRiskZone(new ServerPlane(plane))) {
-            PlaneServerMessanger.sendRiskZoneCommand(out);
-            log.info("Plane [{}]: initial location occupied. Redirecting", plane.getFlightNumber());
-            return;
-        }
-
         planesRadar.registerPlane(plane);
 
         log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getCoordinates().getX(), plane.getCoordinates().getY(), plane.getCoordinates().getAltitude());
 
         managePlane(plane, in, out);
-    }
-
-    private boolean canRegisterPlane(ObjectOutputStream out, String flightNumber) throws IOException {
-        if (planesRadar.isSpaceFull()) {
-            PlaneServerMessanger.sendFullCommand(out);
-            log.info("Plane [{}]: no capacity in airspace", flightNumber);
-            return false;
-        }
-        return true;
     }
 
     private void managePlane(Plane plane, ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
