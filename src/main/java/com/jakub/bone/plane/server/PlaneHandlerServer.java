@@ -93,7 +93,7 @@ public class PlaneHandlerServer extends Thread {
 
         planesRadar.registerPlane(plane);
 
-        log.info("Plane [{}]: registered at ({}, {}, {}) ", plane.getFlightNumber(), plane.getCoordinates().getX(), plane.getCoordinates().getY(), plane.getCoordinates().getAltitude());
+        log.info("Plane [{}]: registered at {} ", plane.getFlightNumber(), plane.getCoordinates());
 
         managePlane(plane, in, out);
     }
