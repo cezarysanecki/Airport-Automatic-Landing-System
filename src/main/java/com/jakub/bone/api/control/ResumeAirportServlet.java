@@ -1,7 +1,7 @@
 package com.jakub.bone.api.control;
 
 import com.jakub.bone.api.JsonSender;
-import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.airport.AirportMainServer;
 import com.jakub.bone.runners.AirportServerFactory;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -16,21 +16,21 @@ import java.util.Map;
 @WebServlet(urlPatterns = "/airport/resume")
 public class ResumeAirportServlet extends HttpServlet {
 
-    private AirportServer airportServer;
+    private AirportMainServer airportMainServer;
 
     @Override
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
-        this.airportServer = airportServerFactory.airportServer;
+        this.airportMainServer = airportServerFactory.airportMainServer;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            if (airportServer.isPaused()) {
-                airportServer.resumeServer();
+            if (airportMainServer.isPaused()) {
+                airportMainServer.resumeServer();
             }
         } catch (Exception ex) {
             JsonSender.responseWithJson(response, Map.of("error", "Failed to resume airport"));

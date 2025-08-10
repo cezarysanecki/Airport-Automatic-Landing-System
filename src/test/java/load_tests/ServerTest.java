@@ -1,10 +1,10 @@
 package load_tests;
 
 import com.jakub.bone.database.AirportDatabase;
-import com.jakub.bone.runners.AirportServer;
-import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.plane.message.Messenger;
+import com.jakub.bone.airport.AirportMainServer;
+import com.jakub.bone.airport.CollisionService;
+import com.jakub.bone.airport.PlanesRadar;
+import com.jakub.bone.infrastructure.Messenger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -22,10 +22,10 @@ public class ServerTest {
     static final Logger logger = Logger.getLogger(ClientTest.class.getName());
     public static void main(String[] args) throws IOException, SQLException {
 
-        AirportServer airportServer = null;
+        AirportMainServer airportMainServer = null;
         try {
             final AirportDatabase database = new AirportDatabase(DriverManager.getConnection(AirportDatabase.URL, AirportDatabase.USER, AirportDatabase.PASSWORD));
-            airportServer = new AirportServer(database, new PlanesRadar(database));
+            airportMainServer = new AirportMainServer(database, new PlanesRadar(database));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -42,7 +42,7 @@ public class ServerTest {
         }, 4200000);
 
         try {
-            airportServer.startServer(new ServerSocket(5000), new CollisionService(airportServer.getControlTowerService(), airportServer.getCollisionRepository()), new Messenger());
+            airportMainServer.startServer(new ServerSocket(5000), new CollisionService(airportMainServer.getControlTowerService(), airportMainServer.getCollisionRepository()), new Messenger());
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Failed to start the server:", ex.getMessage());
         }

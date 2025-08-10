@@ -2,13 +2,13 @@ package unit_tests.flight;
 
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.domain.Coordinates;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.plane.server.PlanePhaseProcessorServer;
-import com.jakub.bone.plane.message.Messenger;
-import com.jakub.bone.utils.WaypointGenerator;
+import com.jakub.bone.airport.PlanesRadar;
+import com.jakub.bone.airport.plane.PlanePhaseProcessorServer;
+import com.jakub.bone.infrastructure.Messenger;
+import com.jakub.bone.domain.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.jakub.bone.domain.airport;
 
-import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.domain.Coordinates;
 import lombok.Getter;
 
 import java.io.Serializable;

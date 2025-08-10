@@ -1,19 +1,19 @@
 package integration_tests;
 
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
-import com.jakub.bone.plane.client.PlaneClient;
-import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.PlanesRadar;
+import com.jakub.bone.plane.PlaneClient;
+import com.jakub.bone.airport.CollisionService;
+import com.jakub.bone.airport.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.plane.message.Messenger;
-import com.jakub.bone.utils.WaypointGenerator;
+import com.jakub.bone.infrastructure.Messenger;
+import com.jakub.bone.domain.WaypointGenerator;
 import org.junit.jupiter.api.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.airport.AirportMainServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -34,7 +34,7 @@ class ClientServerConnectionTest {
     CollisionRepository mockCollisionRepository;
     @InjectMocks
     PlanesRadar mockControlTower;
-    AirportServer server;
+    AirportMainServer server;
 
     @BeforeEach
     void setUp() throws IOException, SQLException {
@@ -46,7 +46,7 @@ class ClientServerConnectionTest {
             new Thread(() -> {
                 try {
                     final AirportDatabase database = new AirportDatabase(DriverManager.getConnection(AirportDatabase.URL, AirportDatabase.USER, AirportDatabase.PASSWORD));
-                    this.server = new AirportServer(database, new PlanesRadar(database));
+                    this.server = new AirportMainServer(database, new PlanesRadar(database));
                     this.server.setDatabase(mockDatabase);
                     this.server.setControlTowerService(mockControlTower);
                     this.server.startServer(new ServerSocket(5000), new CollisionService(this.server.getControlTowerService(), this.server.getCollisionRepository()), new Messenger());

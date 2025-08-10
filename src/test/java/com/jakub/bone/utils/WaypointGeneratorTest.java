@@ -1,6 +1,7 @@
 package com.jakub.bone.utils;
 
-import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.domain.Coordinates;
+import com.jakub.bone.domain.WaypointGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

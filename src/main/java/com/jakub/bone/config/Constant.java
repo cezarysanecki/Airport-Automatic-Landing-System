@@ -1,6 +1,6 @@
 package com.jakub.bone.config;
 
-import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.domain.Coordinates;
 
 public class Constant {
     // Runway properties

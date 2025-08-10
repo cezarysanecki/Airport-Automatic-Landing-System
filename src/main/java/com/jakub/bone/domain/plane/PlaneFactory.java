@@ -1,8 +1,8 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.plane.client.ClientPlane;
-import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.utils.WaypointGenerator;
+import com.jakub.bone.plane.model.ClientPlane;
+import com.jakub.bone.domain.Coordinates;
+import com.jakub.bone.domain.WaypointGenerator;
 
 import java.util.List;
 

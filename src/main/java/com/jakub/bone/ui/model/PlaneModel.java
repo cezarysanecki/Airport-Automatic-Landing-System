@@ -1,8 +1,8 @@
 package com.jakub.bone.ui.model;
 
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.service.PlaneCoordinates;
+import com.jakub.bone.domain.Coordinates;
+import com.jakub.bone.airport.dto.PlaneCoordinates;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.scene.Group;

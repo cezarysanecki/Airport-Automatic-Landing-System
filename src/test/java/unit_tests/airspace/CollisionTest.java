@@ -1,12 +1,12 @@
 package unit_tests.airspace;
 
-import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.PlanesRadar;
+import com.jakub.bone.airport.CollisionService;
+import com.jakub.bone.airport.PlanesRadar;
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;
-import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.utils.WaypointGenerator;
+import com.jakub.bone.domain.Coordinates;
+import com.jakub.bone.domain.WaypointGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

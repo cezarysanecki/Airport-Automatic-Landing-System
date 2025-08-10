@@ -2,7 +2,7 @@ package com.jakub.bone.runners;
 
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.config.ServerConstants;
-import com.jakub.bone.plane.client.PlaneClient;
+import com.jakub.bone.plane.PlaneClient;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.ExecutorService;

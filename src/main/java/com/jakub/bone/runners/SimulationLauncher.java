@@ -1,10 +1,11 @@
 package com.jakub.bone.runners;
 
+import com.jakub.bone.airport.AirportMainServer;
 import com.jakub.bone.config.DbConstants;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.repository.CollisionRepository;
-import com.jakub.bone.service.AirportStateService;
-import com.jakub.bone.service.PlanesRadar;
+import com.jakub.bone.airport.AirportStateService;
+import com.jakub.bone.airport.PlanesRadar;
 import com.jakub.bone.ui.SceneRenderer;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -30,11 +31,11 @@ public class SimulationLauncher extends Application {
         this.server = new Server(8080);
         AirportServerFactory airportServerFactory = new AirportServerFactory(connection);
 
-        AirportServer airportServer = airportServerFactory.airportServer;
+        AirportMainServer airportMainServer = airportServerFactory.airportMainServer;
         CollisionRepository collisionRepository = airportServerFactory.collisionRepository;
         PlanesRadar planesRadar = airportServerFactory.planesRadar;
 
-        this.airportStateService = new AirportStateService(airportServer, planesRadar, collisionRepository);
+        this.airportStateService = new AirportStateService(airportMainServer, planesRadar, collisionRepository);
         this.visualization = new SceneRenderer(planesRadar);
 
         ApiServerRunner.run(server, airportServerFactory);

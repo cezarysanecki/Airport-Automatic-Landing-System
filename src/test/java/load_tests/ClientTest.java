@@ -1,10 +1,10 @@
 package load_tests;
 
 import com.jakub.bone.domain.plane.PlaneNumberFactory;
-import com.jakub.bone.plane.client.PlaneClient;
+import com.jakub.bone.plane.PlaneClient;
 import com.jakub.bone.config.Constant;
-import com.jakub.bone.plane.message.Messenger;
-import com.jakub.bone.utils.WaypointGenerator;
+import com.jakub.bone.infrastructure.Messenger;
+import com.jakub.bone.domain.WaypointGenerator;
 
 import java.util.Timer;
 import java.util.TimerTask;

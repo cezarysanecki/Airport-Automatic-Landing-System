@@ -1,6 +1,6 @@
 package com.jakub.bone.api.monitoring;
 
-import com.jakub.bone.service.PlaneCoordinates;
+import com.jakub.bone.airport.dto.PlaneCoordinates;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

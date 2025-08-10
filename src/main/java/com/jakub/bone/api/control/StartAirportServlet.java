@@ -3,10 +3,10 @@ package com.jakub.bone.api.control;
 import com.jakub.bone.api.JsonSender;
 import com.jakub.bone.config.ServerConstants;
 import com.jakub.bone.repository.CollisionRepository;
-import com.jakub.bone.runners.AirportServer;
+import com.jakub.bone.airport.AirportMainServer;
 import com.jakub.bone.runners.AirportServerFactory;
-import com.jakub.bone.service.AirportStateService;
-import com.jakub.bone.service.PlanesRadar;
+import com.jakub.bone.airport.AirportStateService;
+import com.jakub.bone.airport.PlanesRadar;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,7 +21,7 @@ import java.util.Map;
 @WebServlet(urlPatterns = "/airport/start")
 public class StartAirportServlet extends HttpServlet {
 
-    private AirportServer airportServer;
+    private AirportMainServer airportMainServer;
     private AirportStateService airportStateService;
 
     @Override
@@ -29,18 +29,18 @@ public class StartAirportServlet extends HttpServlet {
         ServletContext servletContext = getServletContext();
         AirportServerFactory airportServerFactory = (AirportServerFactory) servletContext.getAttribute("airportServerFactory");
 
-        this.airportServer = airportServerFactory.airportServer;
+        this.airportMainServer = airportServerFactory.airportMainServer;
 
         PlanesRadar planesRadar = airportServerFactory.planesRadar;
         CollisionRepository collisionRepository = airportServerFactory.collisionRepository;
 
-        this.airportStateService = new AirportStateService(airportServer, planesRadar, collisionRepository);
+        this.airportStateService = new AirportStateService(airportMainServer, planesRadar, collisionRepository);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            if (airportServer.isRunning()) {
+            if (airportMainServer.isRunning()) {
                 JsonSender.responseWithJson(response, Map.of("message", "airport is already running"));
             } else {
                 try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {

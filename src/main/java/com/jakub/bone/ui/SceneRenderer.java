@@ -1,7 +1,7 @@
 package com.jakub.bone.ui;
 
 import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.service.PlanesRadar;
+import com.jakub.bone.airport.PlanesRadar;
 import com.jakub.bone.ui.model.AirspaceModel;
 import com.jakub.bone.ui.model.RunwayModel;
 import com.jakub.bone.ui.model.TerminalModel;

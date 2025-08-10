@@ -1,7 +1,7 @@
 package unit_tests.flight;
 
 import com.jakub.bone.config.Constant;
-import com.jakub.bone.utils.WaypointGenerator;
+import com.jakub.bone.domain.WaypointGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

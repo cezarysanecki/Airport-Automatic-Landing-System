@@ -1,0 +1,111 @@
+package com.jakub.bone.airport.plane;
+
+import com.jakub.bone.domain.airport.Airport;
+import com.jakub.bone.domain.airport.Runway;
+import com.jakub.bone.airport.plane.infrastructure.PlaneServerMessanger;
+import com.jakub.bone.airport.plane.infrastructure.AssignRunwayMessage;
+import com.jakub.bone.airport.plane.model.ServerPlane;
+import com.jakub.bone.airport.PlanesRadar;
+import lombok.extern.log4j.Log4j2;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
+import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_2;
+import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
+import static com.jakub.bone.airport.plane.model.AirportInstruction.LAND;
+
+@Log4j2
+public class PlanePhaseProcessorServer {
+
+    private final PlanesRadar planesRadar;
+    private Runway availableRunway;
+
+    public PlanePhaseProcessorServer(PlanesRadar controlTower) {
+        this.planesRadar = controlTower;
+    }
+
+    public void processFlightPhase(ServerPlane plane, ObjectOutputStream out) throws IOException {
+        switch (plane.getPhase()) {
+            case DESCENDING -> handleDescent(plane, out);
+            case HOLDING -> handleHolding(plane, out);
+            case LANDING -> handleLanding(plane);
+            default -> log.warn("Plane [{}]: unknown flight phase for {}", plane.getFlightNumber(), plane.getPhase());
+        }
+    }
+
+    private void handleDescent(ServerPlane plane, ObjectOutputStream out) throws IOException {
+        if (plane.isPlaneApproachingHoldingAltitude()) {
+            plane.changePhase(HOLDING);
+
+            PlaneServerMessanger.sendDescentCommand(out);
+        } else {
+            plane.changePhase(DESCENDING);
+
+            PlaneServerMessanger.sendDescentCommand(out);
+        }
+    }
+
+    private void handleHolding(ServerPlane plane, ObjectOutputStream out) throws IOException {
+        availableRunway = getRunwayIfPlaneAtCorridor(plane);
+
+        if (availableRunway != null && planesRadar.isRunwayAvailable(availableRunway)) {
+            planesRadar.assignRunway(availableRunway, plane.getPlaneNumber());
+
+            plane.changePhase(LANDING);
+
+            PlaneServerMessanger.sendLandCommand(out);
+            PlaneServerMessanger.sendAssignRunwayMessage(out, new AssignRunwayMessage(availableRunway));
+
+            log.info("Plane [{}]: instructed to {} on runway [{}]", plane.getFlightNumber(), LAND, availableRunway.getId());
+        } else {
+            plane.changePhase(HOLDING);
+
+            PlaneServerMessanger.sendHoldPatternCommand(out);
+        }
+    }
+
+    private void handleLanding(ServerPlane plane) {
+        if (availableRunway == null) {
+            log.warn("Plane [{}]: cannot proceed with landing, no available runway", plane.getFlightNumber());
+            return;
+        }
+
+        // Check if the plane has reached the final approach point to release the runway for other planes
+        if (plane.hasReached(availableRunway.getCorridor().getFinalApproachPoint())) {
+            log.info("Plane [{}]: has reached final approach point [{}]", plane.getFlightNumber(), availableRunway.getId());
+            planesRadar.releaseRunway(plane.getPlaneNumber());
+        }
+
+        if (plane.hasReached(availableRunway.getLandingPoint())) {
+            plane.setLanded(true);
+
+            waitForUpdate(LANDING_CHECK_DELAY);
+
+            planesRadar.removePlaneFromSpace(plane.getPlaneNumber());
+            log.info("Plane [{}]: successfully landed on runway [{}]", plane.getFlightNumber(), availableRunway.getId());
+        }
+    }
+
+    private Runway getRunwayIfPlaneAtCorridor(ServerPlane plane) {
+        if (plane.hasReached(ENTRY_POINT_CORRIDOR_1)) {
+            return Airport.runway1;
+        } else if (plane.hasReached(ENTRY_POINT_CORRIDOR_2)) {
+            return Airport.runway2;
+        }
+        return null;
+    }
+
+    private void waitForUpdate(int interval) {
+        try {
+            Thread.sleep(interval);
+        } catch (InterruptedException ex) {
+            log.error("Collision detection interrupted: {}", ex.getMessage(), ex);
+            Thread.currentThread().interrupt();
+        }
+    }
+}

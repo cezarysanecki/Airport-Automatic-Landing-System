@@ -1,6 +1,6 @@
 package com.jakub.bone.domain.plane;
 
-import com.jakub.bone.shared.Coordinates;
+import com.jakub.bone.domain.Coordinates;
 
 import java.util.List;
 import java.util.Random;

@@ -2,9 +2,9 @@ package com.jakub.bone.ui;
 
 import com.jakub.bone.config.Constant;
 import com.jakub.bone.domain.plane.PlaneNumber;
-import com.jakub.bone.shared.Coordinates;
-import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.service.PlaneCoordinates;
+import com.jakub.bone.domain.Coordinates;
+import com.jakub.bone.airport.PlanesRadar;
+import com.jakub.bone.airport.dto.PlaneCoordinates;
 import com.jakub.bone.ui.model.PlaneModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
