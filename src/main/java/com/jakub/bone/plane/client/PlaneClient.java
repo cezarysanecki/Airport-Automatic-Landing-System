@@ -4,6 +4,7 @@ import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.infrastructure.SocketClient;
 import com.jakub.bone.plane.message.PlaneClientMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
+import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
@@ -39,14 +40,14 @@ public class PlaneClient implements Runnable {
             ObjectInputStream in = socketClient.getIn();
             ObjectOutputStream out = socketClient.getOut();
 
-            PlaneStateSender planeStateSender = new PlaneStateSender(out);
             PlaneInstructionProcessorClient planeInstructionProcessorClient = new PlaneInstructionProcessorClient(plane, in, out);
 
             PlaneClientMessanger.send(out, new RegisterPlaneMessage(plane.getFlightNumber(), plane.isLanded(), plane.isDestroyed(), plane.getPhase(), plane.getLandingPoint(), plane.getCurrentCoordinates()));
             out.flush();
 
             while (!planeInstructionProcessorClient.isProcessCompleted()) {
-                planeStateSender.update(plane.getCoordinates(), plane.getFuelLevel());
+                PlaneClientMessanger.send(out, new UpdatePlaneStateMessage(plane.getCoordinates(), plane.getFuelLevel()));
+
                 if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                     log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                     break;

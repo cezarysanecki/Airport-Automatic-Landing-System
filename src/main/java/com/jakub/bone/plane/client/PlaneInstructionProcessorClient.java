@@ -1,9 +1,9 @@
 package com.jakub.bone.plane.client;
 
 import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.plane.message.PlaneClientMessanger;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
+import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
 import com.jakub.bone.plane.server.PlaneHandlerServer;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
@@ -25,7 +25,6 @@ public class PlaneInstructionProcessorClient {
     private final ObjectOutputStream out;
 
     private final ClientPlane plane;
-    private final PlaneStateSender planeStateSender;
 
     private boolean isProcessCompleted;
     private boolean descentLogged;
@@ -35,7 +34,6 @@ public class PlaneInstructionProcessorClient {
         this.plane = plane;
         this.in = in;
         this.out = out;
-        this.planeStateSender = new PlaneStateSender(out);
         this.descentLogged = false;
         this.holdPatternLogged = false;
     }
@@ -64,7 +62,8 @@ public class PlaneInstructionProcessorClient {
         while (!isProcessCompleted) {
             plane.land();
 
-            planeStateSender.update(plane.getCoordinates(), plane.getFuelLevel());
+            PlaneClientMessanger.send(out, new UpdatePlaneStateMessage(plane.getCoordinates(), plane.getFuelLevel()));
+
             if (plane.isOutOfFuel() || plane.getCoordinates() == null) {
                 log.error("Plane [{}]: lost communication due to fuel or location issues", plane.getFlightNumber());
                 break;
