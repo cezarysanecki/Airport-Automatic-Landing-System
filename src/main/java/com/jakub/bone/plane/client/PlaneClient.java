@@ -17,11 +17,11 @@ import java.io.ObjectOutputStream;
 public class PlaneClient implements Runnable {
 
     private final SocketClient socketClient;
-    private final Plane plane;
+    private final ClientPlane plane;
 
     public PlaneClient(String ip, int port, Plane plane) {
         this.socketClient = new SocketClient(ip, port);
-        this.plane = plane;
+        this.plane = new ClientPlane(plane);
 
         log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", this.plane.getFlightNumber(), ip, port);
     }

@@ -3,7 +3,6 @@ package com.jakub.bone.plane.client;
 import com.jakub.bone.domain.plane.FlightPhase;
 import com.jakub.bone.domain.plane.FuelManager;
 import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.domain.plane.Waypoints;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.WaypointGenerator;
@@ -14,7 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.jakub.bone.config.Constant.HOLDING_ENTRY_ALTITUDE;
 import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
 
@@ -43,10 +41,6 @@ public class ClientPlane implements Serializable {
         this.fuelManager = plane.getFuelManager();
         this.waypoints = plane.getWaypoints();
         this.currentCoordinates = plane.getCurrentCoordinates();
-    }
-
-    public boolean hasReached(Coordinates finalApproachPoint) {
-        return currentCoordinates.equals(finalApproachPoint);
     }
 
     public void descend() {
@@ -105,20 +99,12 @@ public class ClientPlane implements Serializable {
         return fuelManager.isOutOfFuel();
     }
 
-    public boolean isPlaneApproachingHoldingAltitude() {
-        return currentCoordinates.getAltitude() == HOLDING_ENTRY_ALTITUDE;
-    }
-
     public double getFuelLevel() {
         return fuelManager.getFuelLevel();
     }
 
     public Coordinates getCoordinates() {
         return currentCoordinates;
-    }
-
-    public PlaneNumber getPlaneNumber() {
-        return new PlaneNumber(flightNumber);
     }
 
 }

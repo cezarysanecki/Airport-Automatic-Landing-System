@@ -24,14 +24,14 @@ public class PlaneInstructionProcessorClient {
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
 
-    private final Plane plane;
+    private final ClientPlane plane;
     private final PlaneStateSender planeStateSender;
 
     private boolean isProcessCompleted;
     private boolean descentLogged;
     private boolean holdPatternLogged;
 
-    public PlaneInstructionProcessorClient(Plane plane, ObjectInputStream in, ObjectOutputStream out) {
+    public PlaneInstructionProcessorClient(ClientPlane plane, ObjectInputStream in, ObjectOutputStream out) {
         this.plane = plane;
         this.in = in;
         this.out = out;
