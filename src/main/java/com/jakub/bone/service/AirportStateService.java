@@ -1,8 +1,6 @@
 package com.jakub.bone.service;
 
 import com.jakub.bone.config.ServerConstants;
-import com.jakub.bone.domain.plane.Plane;
-import com.jakub.bone.domain.plane.PlaneFactory;
 import com.jakub.bone.plane.client.PlaneClient;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.runners.AirportServer;
@@ -48,8 +46,7 @@ public class AirportStateService {
 
         new Thread(() -> {
             for (int i = 0; i < 100; i++) {
-                Plane plane = PlaneFactory.createPlane();
-                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT, plane);
+                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT);
 
                 new Thread(client).start();
 

@@ -2,7 +2,6 @@ package unit_tests.airspace;
 
 import com.jakub.bone.database.AirportDatabase;
 import com.jakub.bone.domain.airport.Airport;
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.repository.PlaneRepository;

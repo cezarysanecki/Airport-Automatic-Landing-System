@@ -1,7 +1,6 @@
 package com.jakub.bone.plane.message.structures;
 
 import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.plane.Plane;
 
 public class AssignRunwayMessage {
 

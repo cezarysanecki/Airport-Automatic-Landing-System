@@ -1,7 +1,6 @@
 package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.plane.FlightPhase;
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.shared.Coordinates;
 import lombok.Getter;

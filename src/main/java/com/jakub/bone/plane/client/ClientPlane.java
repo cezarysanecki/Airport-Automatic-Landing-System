@@ -2,17 +2,16 @@ package com.jakub.bone.plane.client;
 
 import com.jakub.bone.domain.plane.FlightPhase;
 import com.jakub.bone.domain.plane.FuelManager;
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.Waypoints;
 import com.jakub.bone.shared.Coordinates;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.Serializable;
 import java.util.List;
 
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
 
@@ -30,15 +29,24 @@ public class ClientPlane implements Serializable {
     private Waypoints waypoints;
     private Coordinates currentCoordinates;
 
-    public ClientPlane(Plane plane) {
-        this.flightNumber = plane.getFlightNumber();
-        this.phase = plane.getPhase();
-        this.isDestroyed = plane.isDestroyed();
-        this.landed = plane.isLanded();
-        this.landingPoint = plane.getLandingPoint();
-        this.fuelManager = plane.getFuelManager();
-        this.waypoints = plane.getWaypoints();
-        this.currentCoordinates = plane.getCurrentCoordinates();
+    private ClientPlane(String flightNumber, FlightPhase flightPhase, FuelManager fuelManager, Waypoints waypoints) {
+        this.flightNumber = flightNumber;
+        this.phase = flightPhase;
+        this.isDestroyed = false;
+        this.landed = false;
+        this.landingPoint = null;
+        this.fuelManager = fuelManager;
+        this.waypoints = waypoints;
+        this.currentCoordinates = waypoints.next();
+    }
+
+    public static ClientPlane createPlane(String flightNumber, FuelManager fuelManager, Waypoints waypoints) {
+        return new ClientPlane(
+                flightNumber,
+                DESCENDING,
+                fuelManager,
+                waypoints
+        );
     }
 
     public void descend() {

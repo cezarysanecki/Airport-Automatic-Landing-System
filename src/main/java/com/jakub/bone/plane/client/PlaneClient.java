@@ -1,6 +1,6 @@
 package com.jakub.bone.plane.client;
 
-import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.PlaneFactory;
 import com.jakub.bone.infrastructure.SocketClient;
 import com.jakub.bone.plane.message.PlaneClientMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
@@ -20,9 +20,9 @@ public class PlaneClient implements Runnable {
     private final SocketClient socketClient;
     private final ClientPlane plane;
 
-    public PlaneClient(String ip, int port, Plane plane) {
+    public PlaneClient(String ip, int port) {
         this.socketClient = new SocketClient(ip, port);
-        this.plane = new ClientPlane(plane);
+        this.plane = PlaneFactory.createPlane();
 
         log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", this.plane.getFlightNumber(), ip, port);
     }

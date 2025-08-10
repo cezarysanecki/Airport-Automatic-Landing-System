@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.jakub.bone.domain.plane.Plane;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
