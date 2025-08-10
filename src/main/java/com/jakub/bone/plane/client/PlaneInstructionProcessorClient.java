@@ -4,7 +4,7 @@ import com.jakub.bone.domain.airport.Runway;
 import com.jakub.bone.plane.message.PlaneClientMessanger;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
-import com.jakub.bone.plane.server.PlaneHandlerServer;
+import com.jakub.bone.plane.server.AirportInstruction;
 import com.jakub.bone.utils.WaypointGenerator;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.plane.server.AirportInstruction.COLLISION;
+import static com.jakub.bone.plane.server.AirportInstruction.DESCENT;
+import static com.jakub.bone.plane.server.AirportInstruction.HOLD_PATTERN;
 
 @Log4j2
 @Getter
@@ -39,7 +39,7 @@ public class PlaneInstructionProcessorClient {
     }
 
     public void processInstruction() throws IOException, ClassNotFoundException {
-        PlaneHandlerServer.AirportInstruction airportInstruction = PlaneClientMessanger.handleResponseAirportInstruction(in);
+        AirportInstruction airportInstruction = PlaneClientMessanger.handleResponseAirportInstruction(in);
 
         switch (airportInstruction) {
             case DESCENT -> handleDescent();

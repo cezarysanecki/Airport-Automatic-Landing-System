@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.COLLISION;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.DESCENT;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.FULL;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.HOLD_PATTERN;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.RISK_ZONE;
+import static com.jakub.bone.plane.server.AirportInstruction.COLLISION;
+import static com.jakub.bone.plane.server.AirportInstruction.DESCENT;
+import static com.jakub.bone.plane.server.AirportInstruction.FULL;
+import static com.jakub.bone.plane.server.AirportInstruction.HOLD_PATTERN;
+import static com.jakub.bone.plane.server.AirportInstruction.LAND;
+import static com.jakub.bone.plane.server.AirportInstruction.RISK_ZONE;
 
 public class PlaneServerMessanger {
 

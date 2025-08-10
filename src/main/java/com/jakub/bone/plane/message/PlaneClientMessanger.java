@@ -3,7 +3,7 @@ package com.jakub.bone.plane.message;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
 import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
-import com.jakub.bone.plane.server.PlaneHandlerServer;
+import com.jakub.bone.plane.server.AirportInstruction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,7 +23,7 @@ public class PlaneClientMessanger {
         return Messenger.handleResponse(in, AssignRunwayMessage.class);
     }
 
-    public static PlaneHandlerServer.AirportInstruction handleResponseAirportInstruction(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        return Messenger.handleResponse(in, PlaneHandlerServer.AirportInstruction.class);
+    public static AirportInstruction handleResponseAirportInstruction(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        return Messenger.handleResponse(in, AirportInstruction.class);
     }
 }

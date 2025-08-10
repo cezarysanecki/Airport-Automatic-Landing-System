@@ -16,7 +16,7 @@ import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
 import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
 import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
-import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
+import static com.jakub.bone.plane.server.AirportInstruction.LAND;
 
 @Log4j2
 public class PlanePhaseProcessorServer {

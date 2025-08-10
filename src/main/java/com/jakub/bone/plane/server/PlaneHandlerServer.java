@@ -16,10 +16,6 @@ import java.net.SocketException;
 @Log4j2
 public class PlaneHandlerServer extends Thread {
 
-    public enum AirportInstruction {
-        DESCENT, HOLD_PATTERN, LAND, FULL, COLLISION, RISK_ZONE
-    }
-
     private final Socket clientSocket;
     private final PlanesRadar planesRadar;
     private final PlanePhaseProcessorServer planePhaseProcessorServer;
