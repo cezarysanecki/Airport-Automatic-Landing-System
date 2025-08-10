@@ -1,5 +1,6 @@
 package com.jakub.bone.service;
 
+import com.jakub.bone.domain.plane.FlightPhase;
 import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.shared.Coordinates;
@@ -13,7 +14,7 @@ public class ServerPlane {
     }
 
     public boolean isLanding() {
-        return plane.getPhase() == Plane.FlightPhase.LANDING;
+        return plane.getPhase() == FlightPhase.LANDING;
     }
 
     public Coordinates getCoordinates() {

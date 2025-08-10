@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

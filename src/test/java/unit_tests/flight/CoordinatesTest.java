@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import com.jakub.bone.domain.plane.Plane;
 
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoordinatesTest {

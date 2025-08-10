@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 

@@ -11,7 +11,7 @@ public class PlaneFactory {
         String flightNumber = PlaneNumberFactory.generateFlightNumber().value();
         List<Coordinates> descentWaypoints = WaypointGenerator.prepareDescendingWaypoints();
         Waypoints waypoints = Waypoints.random(descentWaypoints);
-        return Plane.createPlane(flightNumber, new FuelManager(), waypoints);
+        return Plane.createPlane(flightNumber, FuelManager.initialFuelLevel(), waypoints);
     }
 
 }

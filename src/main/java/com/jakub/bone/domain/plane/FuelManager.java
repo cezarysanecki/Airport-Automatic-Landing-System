@@ -1,19 +1,25 @@
 package com.jakub.bone.domain.plane;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import static com.jakub.bone.config.Constant.CONSUMPTION_PER_SECOND;
 import static com.jakub.bone.config.Constant.INITIAL_FUEL_LEVEL;
 
-@Getter
-@Setter
 public class FuelManager {
 
+    @Getter
     private double fuelLevel;
 
-    public FuelManager() {
-        this.fuelLevel = INITIAL_FUEL_LEVEL;
+    private FuelManager(double fuelLevel) {
+        this.fuelLevel = fuelLevel;
+    }
+
+    public static FuelManager initialFuelLevel() {
+        return new FuelManager(INITIAL_FUEL_LEVEL);
+    }
+
+    public FuelManager copy() {
+        return new FuelManager(fuelLevel);
     }
 
     public void burnFuel() {

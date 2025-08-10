@@ -21,7 +21,7 @@ import java.net.ServerSocket;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;

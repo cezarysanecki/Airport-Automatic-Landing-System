@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations;
 
 import static com.jakub.bone.config.Constant.Corridor.FINAL_APPROACH_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;

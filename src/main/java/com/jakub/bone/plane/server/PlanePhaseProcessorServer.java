@@ -14,9 +14,9 @@ import java.io.ObjectOutputStream;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_1;
 import static com.jakub.bone.config.Constant.Corridor.ENTRY_POINT_CORRIDOR_2;
 import static com.jakub.bone.config.Constant.LANDING_CHECK_DELAY;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
 import static com.jakub.bone.plane.server.PlaneHandlerServer.AirportInstruction.LAND;
 
 @Log4j2

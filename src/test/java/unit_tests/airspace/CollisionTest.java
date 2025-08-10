@@ -17,7 +17,7 @@ import com.jakub.bone.domain.plane.Plane;
 
 import java.sql.SQLException;
 
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

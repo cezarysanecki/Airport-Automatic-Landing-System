@@ -10,18 +10,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import static com.jakub.bone.config.Constant.HOLDING_ENTRY_ALTITUDE;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
 
 @Log4j2
 @Getter
 @Setter
 public class Plane implements Serializable {
-
-    public enum FlightPhase {
-        DESCENDING, HOLDING, LANDING;
-    }
 
     @Getter
     private String flightNumber;

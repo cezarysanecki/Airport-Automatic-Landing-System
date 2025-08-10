@@ -22,9 +22,9 @@ import java.sql.SQLException;
 
 import static com.jakub.bone.config.Constant.Corridor.FINAL_APPROACH_CORRIDOR_1;
 import static com.jakub.bone.domain.airport.Airport.runway1;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.DESCENDING;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.HOLDING;
-import static com.jakub.bone.domain.plane.Plane.FlightPhase.LANDING;
+import static com.jakub.bone.domain.plane.FlightPhase.DESCENDING;
+import static com.jakub.bone.domain.plane.FlightPhase.HOLDING;
+import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
