@@ -18,17 +18,15 @@ import static com.jakub.bone.domain.plane.FlightPhase.LANDING;
 
 @Log4j2
 @Getter
-@Setter
 public class ClientPlane implements Serializable {
 
-    @Getter
-    private String flightNumber;
+    private final String flightNumber;
+    private final FuelManager fuelManager;
 
     private boolean landed;
     private boolean isDestroyed;
     private FlightPhase phase;
     private Coordinates landingPoint;
-    private FuelManager fuelManager;
     private Waypoints waypoints;
     private Coordinates currentCoordinates;
 
