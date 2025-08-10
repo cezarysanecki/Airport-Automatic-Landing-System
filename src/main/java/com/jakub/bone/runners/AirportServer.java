@@ -1,38 +1,27 @@
 package com.jakub.bone.runners;
 
 import com.jakub.bone.plane.server.PlaneHandlerServer;
-import com.jakub.bone.config.DbConstants;
-import com.jakub.bone.config.ServerConstants;
-import com.jakub.bone.service.CollisionService;
-import com.jakub.bone.service.PlanesRadar;
 import com.jakub.bone.plane.server.PlanePhaseProcessorServer;
-import lombok.Getter;
+import com.jakub.bone.service.PlanesRadar;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 @Log4j2
 public class AirportServer {
 
     private final PlanesRadar planesRadar;
 
-    @Getter
     private boolean running;
-    @Getter
     private boolean paused;
-    @Getter
     private Instant startTime;
 
-    public AirportServer(
-            PlanesRadar planesRadar
-    ) throws SQLException {
+    public AirportServer(PlanesRadar planesRadar) {
         this.planesRadar = planesRadar;
 
         this.running = false;
@@ -44,21 +33,17 @@ public class AirportServer {
         running = true;
 
         try {
-            this.startTime = Instant.now();
             log.info("Server started");
+            startTime = Instant.now();
 
-
-            log.info("Collision detector started");
-
-            while (true) {
+            while (running) {
                 if (paused) {
-                    Thread.sleep(2000);
                     log.info("Airport paused. Waiting...");
+                    Thread.sleep(2000);
                     continue;
                 }
 
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
-                running = true;
 
                 PlanePhaseProcessorServer planePhaseProcessorServer = new PlanePhaseProcessorServer(planesRadar);
                 PlaneHandlerServer planeHandlerServer = new PlaneHandlerServer(
@@ -81,31 +66,24 @@ public class AirportServer {
     }
 
     public void pauseServer() {
-        this.paused = true;
+        paused = true;
     }
 
     public void resumeServer() {
-        this.paused = false;
+        paused = false;
     }
 
-    public Duration getUptime() {
-        return Duration.between(startTime, Instant.now());
+    public boolean isRunning() {
+        return running;
     }
 
-    public static void main(String[] args) throws IOException, SQLException {
-        try (Connection connection = DriverManager.getConnection(DbConstants.URL, DbConstants.USER, DbConstants.PASSWORD)) {
-            AirportServerFactory airportServerFactory = new AirportServerFactory(connection);
-
-            try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
-                CollisionService collisionService = new CollisionService(
-                        airportServerFactory.planesRadar,
-                        airportServerFactory.collisionRepository
-                );
-                collisionService.start();
-
-                airportServerFactory.airportServer.startServer(serverSocket);
-            }
-
-        }
+    public boolean isPaused() {
+        return paused;
     }
+
+    public Optional<Duration> getUptime() {
+        return Optional.ofNullable(startTime)
+                .map(s -> Duration.between(s, Instant.now()));
+    }
+
 }

@@ -29,16 +29,25 @@ public class UptimeAirportServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            if (airportServer.getStartTime() == null) {
-                JsonSender.responseWithJson(response, Map.of("message", "airport is not running"));
-                return;
-            }
+            airportServer.getUptime()
+                    .ifPresentOrElse(uptime -> {
+                                long hours = uptime.toHours();
+                                long minutes = uptime.toMinutes() % 60;
+                                long seconds = uptime.getSeconds() % 60;
 
-            long hours = airportServer.getUptime().toHours();
-            long minutes = airportServer.getUptime().toMinutes() % 60;
-            long seconds = airportServer.getUptime().getSeconds() % 60;
-
-            JsonSender.responseWithJson(response, Map.of("message", String.format("%02d:%02d:%02d", hours, minutes, seconds)));
+                                try {
+                                    JsonSender.responseWithJson(response, Map.of("message", String.format("%02d:%02d:%02d", hours, minutes, seconds)));
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            },
+                            () -> {
+                                try {
+                                    JsonSender.responseWithJson(response, Map.of("message", "airport is not running"));
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
         } catch (Exception ex) {
             JsonSender.responseWithJson(response, Map.of("error", "Failed to retrieve uptime"));
             System.err.println("Error retrieving update data: " + ex.getMessage());
