@@ -1,9 +1,11 @@
 package com.jakub.bone.service;
 
 import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.plane.Plane;
+import com.jakub.bone.domain.plane.FlightPhase;
 import com.jakub.bone.domain.plane.PlaneNumber;
+import com.jakub.bone.plane.server.ServerPlane;
 import com.jakub.bone.shared.CollisionAreaDetector;
+import com.jakub.bone.shared.Coordinates;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -25,11 +27,9 @@ public class PlanesRadar {
     @Getter
     private final List<ServerPlane> planes = new CopyOnWriteArrayList<>();
 
-    public void registerPlane(Plane plane) {
+    public void registerPlane(ServerPlane plane) {
         LockUtils.executeWithLock(planesLock, () -> {
-            ServerPlane serverPlane = new ServerPlane(plane);
-
-            planes.add(serverPlane);
+            planes.add(plane);
 
             log.info("Plane [{}]: registered at {} ", plane.getFlightNumber(), plane.getCoordinates());
         });
@@ -44,10 +44,10 @@ public class PlanesRadar {
         return LockUtils.executeWithLock(planesLock, () -> planes.size() >= MAX_CAPACITY);
     }
 
-    public boolean isAtCollisionRiskZone(ServerPlane plane) {
+    public boolean isAtCollisionRiskZone(Coordinates coordinates) {
         return LockUtils.executeWithLock(planesLock, () -> planes.stream()
                 .anyMatch(otherPlane ->
-                        CollisionAreaDetector.areClose(plane.getCoordinates(), otherPlane.getCoordinates())
+                        CollisionAreaDetector.areClose(coordinates, otherPlane.getCoordinates())
                 )
         );
     }
@@ -69,22 +69,22 @@ public class PlanesRadar {
     }
 
     public void removePlaneFromSpace(PlaneNumber planeNumber) {
-        LockUtils.executeWithLock(planesLock, () -> planes.removeIf(plane -> plane.getFlightNumber().equals(planeNumber)));
+        LockUtils.executeWithLock(planesLock, () -> planes.removeIf(plane -> plane.getFlightNumber().equals(planeNumber.value())));
     }
 
     public boolean isPlanePresent(PlaneNumber planeNumber) {
         return planes.stream()
-                .anyMatch(plane -> plane.getFlightNumber().equals(planeNumber));
+                .anyMatch(plane -> plane.getFlightNumber().equals(planeNumber.value()));
     }
 
     public PlaneCoordinates getPlaneByFlightNumber(PlaneNumber planeNumber) {
         return LockUtils.executeWithLock(planesLock, () -> planes.stream()
-                .filter(plane -> plane.getFlightNumber().equals(planeNumber))
+                .filter(plane -> plane.getFlightNumber().equals(planeNumber.value()))
                 .findFirst()
                 .map(plane -> new PlaneCoordinates(
-                        plane.getFlightNumber().value(),
+                        plane.getFlightNumber(),
                         plane.getCoordinates(),
-                        plane.isLanding()
+                        plane.getPhase() == FlightPhase.LANDING
                 ))
                 .orElse(null));
     }
@@ -93,7 +93,7 @@ public class PlanesRadar {
         return LockUtils.executeWithLock(planesLock, () -> {
             List<String> flightNumbers = new ArrayList<>();
             for (ServerPlane plane : planes) {
-                flightNumbers.add(plane.getFlightNumber().value());
+                flightNumbers.add(plane.getFlightNumber());
             }
             return flightNumbers;
         });
@@ -102,9 +102,9 @@ public class PlanesRadar {
     public List<PlaneCoordinates> getPlaneCoordinates() {
         return planes.stream()
                 .map(plane -> new PlaneCoordinates(
-                        plane.getFlightNumber().value(),
+                        plane.getFlightNumber(),
                         plane.getCoordinates(),
-                        plane.isLanding()))
+                        plane.getPhase() == FlightPhase.LANDING))
                 .toList();
     }
 

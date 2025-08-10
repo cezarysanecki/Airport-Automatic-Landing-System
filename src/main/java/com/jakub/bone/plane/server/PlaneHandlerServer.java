@@ -1,10 +1,8 @@
 package com.jakub.bone.plane.server;
 
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.RegisterPlaneMessage;
 import com.jakub.bone.service.PlanesRadar;
-import com.jakub.bone.service.ServerPlane;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
 
@@ -65,7 +63,7 @@ public class PlaneHandlerServer extends Thread {
 
     private void handleClient(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
         RegisterPlaneMessage message = PlaneServerMessanger.handleRegisterPlaneMessage(in);
-        Plane plane = message.plane;
+        ServerPlane plane = new ServerPlane(message.flightNumber, message.landed, message.isDestroyed, message.phase, message.landingPoint, message.currentCoordinates);
 
         if (planesRadar.isSpaceFull()) {
             PlaneServerMessanger.sendFullCommand(out);
@@ -73,7 +71,7 @@ public class PlaneHandlerServer extends Thread {
             return;
         }
 
-        if (planesRadar.isAtCollisionRiskZone(new ServerPlane(plane))) {
+        if (planesRadar.isAtCollisionRiskZone(plane.getCoordinates())) {
             PlaneServerMessanger.sendRiskZoneCommand(out);
             log.info("Plane [{}]: collision risk zone - redirect to other airport", plane.getFlightNumber());
             return;

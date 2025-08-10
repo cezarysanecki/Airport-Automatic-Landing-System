@@ -42,7 +42,7 @@ public class PlaneClient implements Runnable {
             PlaneStateSender planeStateSender = new PlaneStateSender(out);
             PlaneInstructionProcessorClient planeInstructionProcessorClient = new PlaneInstructionProcessorClient(plane, in, out);
 
-            PlaneClientMessanger.send(out, new RegisterPlaneMessage(plane));
+            PlaneClientMessanger.send(out, new RegisterPlaneMessage(plane.getFlightNumber(), plane.isLanded(), plane.isDestroyed(), plane.getPhase(), plane.getLandingPoint(), plane.getCurrentCoordinates()));
             out.flush();
 
             while (!planeInstructionProcessorClient.isProcessCompleted()) {

@@ -1,5 +1,6 @@
 package com.jakub.bone.service;
 
+import com.jakub.bone.plane.server.ServerPlane;
 import com.jakub.bone.repository.CollisionRepository;
 import com.jakub.bone.shared.CollisionAreaDetector;
 import lombok.extern.log4j.Log4j2;
@@ -53,10 +54,10 @@ public class CollisionService extends Thread {
     }
 
     private void handleCollision(ServerPlane plane1, ServerPlane plane2) {
-        String[] collidedIDs = {plane1.getFlightNumber().value(), plane2.getFlightNumber().value()};
+        String[] collidedIDs = {plane1.getFlightNumber(), plane2.getFlightNumber()};
         collisionRepository.registerCollisionToDB(collidedIDs);
-        plane1.plane.destroyPlane();
-        plane2.plane.destroyPlane();
+        plane1.destroyPlane();
+        plane2.destroyPlane();
         log.info("Collision detected between Plane [{}] and Plane [{}]", plane1.getFlightNumber(), plane2.getFlightNumber());
     }
 

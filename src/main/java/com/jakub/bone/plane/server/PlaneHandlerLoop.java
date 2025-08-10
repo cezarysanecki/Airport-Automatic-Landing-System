@@ -1,6 +1,5 @@
 package com.jakub.bone.plane.server;
 
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.domain.plane.PlaneNumber;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.UpdatePlaneStateMessage;
@@ -17,14 +16,14 @@ import static com.jakub.bone.config.Constant.AFTER_COLLISION_DELAY;
 @Log4j2
 public class PlaneHandlerLoop {
 
-    private final Plane plane;
+    private final ServerPlane plane;
     private final ObjectInputStream in;
     private final ObjectOutputStream out;
 
     private final PlanePhaseProcessorServer planePhaseProcessorServer;
     private final PlanesRadar planesRadar;
 
-    public PlaneHandlerLoop(Plane plane, ObjectInputStream in, ObjectOutputStream out, PlanePhaseProcessorServer planePhaseProcessorServer, PlanesRadar planesRadar) {
+    public PlaneHandlerLoop(ServerPlane plane, ObjectInputStream in, ObjectOutputStream out, PlanePhaseProcessorServer planePhaseProcessorServer, PlanesRadar planesRadar) {
         this.plane = plane;
         this.in = in;
         this.out = out;
@@ -47,7 +46,7 @@ public class PlaneHandlerLoop {
             planePhaseProcessorServer.processFlightPhase(plane, out);
 
             if (plane.isDestroyed()) {
-                handleCollision(plane, out);
+                handleCollision(out);
                 return;
             }
 
@@ -58,7 +57,7 @@ public class PlaneHandlerLoop {
         }
     }
 
-    private void handleCollision(Plane plane, ObjectOutputStream out) throws IOException {
+    private void handleCollision(ObjectOutputStream out) throws IOException {
         if (plane.getLandingPoint() != null) {
             planesRadar.releaseRunway(new PlaneNumber(plane.getFlightNumber()));
         }
@@ -73,23 +72,12 @@ public class PlaneHandlerLoop {
         }
     }
 
-    private void handleOutOfFuel(Plane plane) {
+    private void handleOutOfFuel(ServerPlane plane) {
         plane.destroyPlane();
         planesRadar.removePlaneFromSpace(new PlaneNumber(plane.getFlightNumber()));
         log.info("Plane [{}]: out of fuel. Disappeared from the radar", plane.getFlightNumber());
     }
 
-    private void closeResources(AutoCloseable... resources) {
-        for (AutoCloseable resource : resources) {
-            if (resource != null) {
-                try {
-                    resource.close();
-                } catch (Exception ex) {
-                    log.error("Failed to close resource: {}", ex.getMessage(), ex);
-                }
-            }
-        }
-    }
 }
 
 

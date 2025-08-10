@@ -2,7 +2,6 @@ package com.jakub.bone.plane.server;
 
 import com.jakub.bone.domain.airport.Airport;
 import com.jakub.bone.domain.airport.Runway;
-import com.jakub.bone.domain.plane.Plane;
 import com.jakub.bone.plane.message.PlaneServerMessanger;
 import com.jakub.bone.plane.message.structures.AssignRunwayMessage;
 import com.jakub.bone.service.PlanesRadar;
@@ -29,7 +28,7 @@ public class PlanePhaseProcessorServer {
         this.planesRadar = controlTower;
     }
 
-    public void processFlightPhase(Plane plane, ObjectOutputStream out) throws IOException {
+    public void processFlightPhase(ServerPlane plane, ObjectOutputStream out) throws IOException {
         switch (plane.getPhase()) {
             case DESCENDING -> handleDescent(plane, out);
             case HOLDING -> handleHolding(plane, out);
@@ -38,7 +37,7 @@ public class PlanePhaseProcessorServer {
         }
     }
 
-    private void handleDescent(Plane plane, ObjectOutputStream out) throws IOException {
+    private void handleDescent(ServerPlane plane, ObjectOutputStream out) throws IOException {
         if (plane.isPlaneApproachingHoldingAltitude()) {
             plane.changePhase(HOLDING);
 
@@ -50,7 +49,7 @@ public class PlanePhaseProcessorServer {
         }
     }
 
-    private void handleHolding(Plane plane, ObjectOutputStream out) throws IOException {
+    private void handleHolding(ServerPlane plane, ObjectOutputStream out) throws IOException {
         availableRunway = getRunwayIfPlaneAtCorridor(plane);
 
         if (availableRunway != null && planesRadar.isRunwayAvailable(availableRunway)) {
@@ -69,7 +68,7 @@ public class PlanePhaseProcessorServer {
         }
     }
 
-    private void handleLanding(Plane plane) {
+    private void handleLanding(ServerPlane plane) {
         if (availableRunway == null) {
             log.warn("Plane [{}]: cannot proceed with landing, no available runway", plane.getFlightNumber());
             return;
@@ -91,7 +90,7 @@ public class PlanePhaseProcessorServer {
         }
     }
 
-    private Runway getRunwayIfPlaneAtCorridor(Plane plane) {
+    private Runway getRunwayIfPlaneAtCorridor(ServerPlane plane) {
         if (plane.hasReached(ENTRY_POINT_CORRIDOR_1)) {
             return Airport.runway1;
         } else if (plane.hasReached(ENTRY_POINT_CORRIDOR_2)) {

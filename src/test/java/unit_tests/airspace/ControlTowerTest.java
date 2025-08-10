@@ -90,7 +90,7 @@ class ControlTowerTest {
         Plane plane2 = new Plane("TEST_PLANE_2", WaypointGenerator.prepareDescendingWaypoints(), DESCENDING);
         plane2.getNavigator().setCurrentIndex(referenceIndex + 1);
 
-        assertTrue(controlTower.isAtCollisionRiskZone(plane2),
+        assertTrue(controlTower.isAtCollisionRiskZone(plane2.getCoordinates()),
                 "Plane2 should be recognized as within collision risk zone relative to Plane1");
     }
 
