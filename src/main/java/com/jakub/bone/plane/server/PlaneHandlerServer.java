@@ -10,7 +10,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -26,11 +25,11 @@ public class PlaneHandlerServer extends Thread {
     private final PlanePhaseProcessorServer planePhaseProcessorServer;
 
     public PlaneHandlerServer(
-            ServerSocket serverSocket,
+            Socket clientSocket,
             PlanesRadar planesRadar,
             PlanePhaseProcessorServer planePhaseProcessorServer
-    ) throws IOException {
-        this.clientSocket = serverSocket.accept();
+    ) {
+        this.clientSocket = clientSocket;
         this.planesRadar = planesRadar;
         this.planePhaseProcessorServer = planePhaseProcessorServer;
     }

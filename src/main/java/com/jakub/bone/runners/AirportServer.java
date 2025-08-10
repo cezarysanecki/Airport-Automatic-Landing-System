@@ -8,6 +8,7 @@ import org.apache.logging.log4j.ThreadContext;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -33,21 +34,23 @@ public class AirportServer {
         running = true;
 
         try {
-            log.info("Server started");
+            log.info("Airport server started on port: {}", serverSocket.getLocalPort());
             startTime = Instant.now();
 
             while (running) {
                 if (paused) {
-                    log.info("Airport paused. Waiting...");
+                    log.info("Airport server is paused");
                     Thread.sleep(2000);
                     continue;
                 }
 
                 log.debug("Server connected with client at port: {}", serverSocket.getLocalPort());
 
+                Socket clientSocket = serverSocket.accept();
+
                 PlanePhaseProcessorServer planePhaseProcessorServer = new PlanePhaseProcessorServer(planesRadar);
                 PlaneHandlerServer planeHandlerServer = new PlaneHandlerServer(
-                        serverSocket,
+                        clientSocket,
                         planesRadar,
                         planePhaseProcessorServer
                 );
