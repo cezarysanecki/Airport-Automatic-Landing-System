@@ -64,13 +64,8 @@ public class PlaneClient implements Runnable {
         } catch (IOException | ClassNotFoundException ex) {
             log.error("PlaneClient [{}]: encountered an error: {}", plane.getFlightNumber(), ex.getMessage(), ex);
         } finally {
-            closeConnection();
+            socketClient.stopConnection();
         }
-    }
-
-    private void closeConnection() {
-        socketClient.stopConnection();
-        log.debug("Plane [{}]: connection stopped", plane.getFlightNumber());
     }
 
 }
