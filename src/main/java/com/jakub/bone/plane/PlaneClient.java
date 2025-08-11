@@ -21,8 +21,8 @@ public class PlaneClient implements Runnable {
     private final SocketClient socketClient;
     private final ClientPlane plane;
 
-    public PlaneClient(String ip, int port) {
-        this.socketClient = new SocketClient(ip, port);
+    public PlaneClient(String ip, int port) throws IOException {
+        this.socketClient = SocketClient.create(ip, port);
         this.plane = PlaneFactory.createPlane();
 
         log.debug("PlaneClient created for Plane [{}] at IP: {}, Port: {}", this.plane.getFlightNumber(), ip, port);
@@ -35,6 +35,7 @@ public class PlaneClient implements Runnable {
 
     private void connectAndHandle() {
         ThreadContext.put("type", "Client");
+
         try {
             socketClient.startConnection();
 
