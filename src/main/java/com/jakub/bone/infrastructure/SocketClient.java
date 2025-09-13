@@ -1,6 +1,5 @@
 package com.jakub.bone.infrastructure;
 
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -11,29 +10,31 @@ import java.net.Socket;
 @Log4j2
 public class SocketClient {
 
-    private final String ip;
-    private final int port;
+    private final Socket socket;
 
-    private Socket socket;
-
-    @Getter
     private ObjectOutputStream out;
-    @Getter
     private ObjectInputStream in;
 
-    public SocketClient(String ip, int port) {
-        this.ip = ip;
-        this.port = port;
+    private SocketClient(Socket socket) {
+        this.socket = socket;
+    }
+
+    public static SocketClient create(String ip, int port) throws IOException {
+        return new SocketClient(new Socket(ip, port));
+    }
+
+    public static SocketClient create(Socket socket) {
+        return new SocketClient(socket);
     }
 
     public void startConnection() {
         try {
-            this.socket = new Socket(ip, port);
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.in = new ObjectInputStream(socket.getInputStream());
-            log.info("Connection established successfully, {}", socket.toString());
+
+            log.info("Connected to server at {}:{}", socket.getInetAddress().getHostAddress(), socket.getPort());
         } catch (IOException ex) {
-            log.error("Failed to connect to server at {}:{} - {}", ip, port, ex.getMessage(), ex);
+            log.error("Failed to start connection: {}", ex.getMessage(), ex);
         }
     }
 
@@ -58,5 +59,13 @@ public class SocketClient {
                 }
             }
         }
+    }
+
+    public ObjectOutputStream getOut() {
+        return out;
+    }
+
+    public ObjectInputStream getIn() {
+        return in;
     }
 }

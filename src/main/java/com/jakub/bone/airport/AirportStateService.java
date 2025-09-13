@@ -45,9 +45,14 @@ public class AirportStateService {
 
         new Thread(() -> {
             for (int i = 0; i < 100; i++) {
-                PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT);
+                try {
+                    PlaneClient client = new PlaneClient(ServerConstants.IP, ServerConstants.PORT);
 
-                new Thread(client).start();
+                    new Thread(client).start();
+                } catch (IOException ex) {
+                    throw new RuntimeException("Failed to create PlaneClient due to I/O issues", ex);
+                }
+
 
                 try {
                     Thread.sleep(CLIENT_SPAWN_DELAY);
