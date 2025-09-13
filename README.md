@@ -16,7 +16,7 @@ podman-compose -f docker/docker-compose.yml up -d
 
 3. Place jimObjModelImporterJFX.jar in libs folder
 
-4. Build project db-ninit
+4. Build project db-init
 
 ```bash
 ./db-init/gradlew -p db-init build
