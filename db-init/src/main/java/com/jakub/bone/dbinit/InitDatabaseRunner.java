@@ -1,6 +1,5 @@
 package com.jakub.bone.dbinit;
 
-import com.jakub.bone.config.DbConstants;
 import lombok.extern.log4j.Log4j2;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;

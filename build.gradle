@@ -51,7 +51,7 @@ dependencies {
     jooqGenerator 'org.postgresql:postgresql:42.5.4'
 
     // jim3dsModelImporterJFX
-    implementation files('libs/jim3dsModelImporterJFX/jimObjModelImporterJFX.jar')
+    implementation files('libs/jimObjModelImporterJFX.jar')
 
     // Jetty
     implementation 'org.eclipse.jetty:jetty-server:11.0.15'
